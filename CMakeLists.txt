@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.31)
 project(EM_regularization)
 
+find_package(Eigen3 3.4 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIR})
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(EM_regularization main.cpp
         data.h
         data.cpp
-        algorithm/gmm.cpp)
+        algorithm/gmm.cpp
+        algorithm/gmmResult.h)
