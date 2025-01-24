@@ -5,4 +5,5 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(EM_regularization main.cpp
         data.h
-        data.cpp)
+        data.cpp
+        algorithm/gmm.cpp)
