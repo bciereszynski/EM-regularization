@@ -2,8 +2,9 @@
 #define GMM_H
 
 #include <random>
+#include "gmmResult.h"
 
-constexpr bool DEFAULT_VERBOSE = false;
+constexpr bool DEFAULT_VERBOSE = true;
 constexpr double DEFAULT_TOLERANCE = 1e-6;
 constexpr int DEFAULT_MAX_ITERATIONS = 100;
 
@@ -24,7 +25,9 @@ public:
         bool decompose_if_fails = true
     );
 
-    void fit();
+    GMMResult fit(const std::vector<std::vector<double>> &data, GMMResult &result);
+    GMMResult fit(const std::vector<std::vector<double>> &data, int k);
+    GMMResult fit(const std::vector<std::vector<double>> &data, const std::vector<std::vector<double>> &initial_clusters);
 };
 
 #endif // GMM_H
