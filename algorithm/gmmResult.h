@@ -44,22 +44,6 @@ public:
            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>::Identity(d, d))
        ) {}
 
-    GMMResult(const int n, const std::vector<std::vector<double>>& source_clusters)
-     : assignments(n, 0),
-       clusters(source_clusters),
-       objective(-std::numeric_limits<double>::infinity()),
-       iterations(0),
-       elapsed(0.0),
-       converged(false),
-       k(static_cast<int>(source_clusters.size()))
-    {
-        const int d = static_cast<int>(source_clusters[0].size());
-        assert(k > 0);
-        assert(d > 0);
-        weights = std::vector<double>(k, 1.0 / k),
-        covariances = std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>>(k,
-           Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>::Identity(d, d));
-    }
 };
 
 #endif // GMMRESULT_H
