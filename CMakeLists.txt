@@ -9,4 +9,5 @@ add_executable(EM_regularization main.cpp
         data.cpp
         algorithm/gmm.cpp
         algorithm/gmmResult.h
-        algorithm/sampling.cpp)
+        algorithm/sampling.cpp
+        algorithm/mathematical.cpp)
