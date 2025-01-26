@@ -25,9 +25,21 @@ public:
         bool decompose_if_fails = true
     );
 
-    GMMResult fit(const std::vector<std::vector<double>> &data, GMMResult &result);
-    GMMResult fit(const std::vector<std::vector<double>> &data, int k);
-    GMMResult fit(const std::vector<std::vector<double>> &data, const std::vector<int> &initial_clusters);
+    GMMResult fit(const std::vector<std::vector<double> > &data, GMMResult &result);
+
+    GMMResult fit(const std::vector<std::vector<double> > &data, int k);
+
+    GMMResult fit(const std::vector<std::vector<double> > &data, const std::vector<int> &initial_clusters);
+
+private:
+    std::pair<double, std::vector<std::vector<double> > > expectation(
+        const std::vector<std::vector<double> > &data, int k, const GMMResult &result,
+        const std::vector<std::vector<std::vector<double> > > &precisionsCholesky);
+
+    static std::vector<std::vector<double> > estimateWeightedLogProbabilities(
+        const std::vector<std::vector<double> > &data, int k, const GMMResult &result,
+        const std::vector<std::vector<std::vector<double> > > &precisionsCholesky
+    );
 };
 
 #endif // GMM_H

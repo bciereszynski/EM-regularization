@@ -3,6 +3,7 @@
 #include <iostream>
 #include <limits>
 
+#include "mathematical.h"
 #include "sampling.h"
 
 namespace {
@@ -56,28 +57,28 @@ GMMResult GMM::fit(const std::vector<std::vector<double> > &data, GMMResult &res
 
     result.iterations = max_iterations;
     result.converged = false;
-    double result_objective = -std::numeric_limits<double>::infinity();
-    double previous_objective;
+    result.objective = -std::numeric_limits<double>::infinity();
 
     auto log_responsibilities = std::vector<std::vector<double> >(n, std::vector<double>(k, 0.0));
-    auto precision_cholesky = std::vector<std::vector<std::vector<double> > >(k,
-                                                                              std::vector<std::vector<double> >(
-                                                                                  d, std::vector<double>(d, 0.0)));
-    // compute cholesky
+    auto precision_cholesky =
+            std::vector<std::vector<std::vector<double> > >(
+                k, std::vector<std::vector<double> >(d, std::vector<double>(d, 0.0)));
+    compute_precision_cholesky(result, precisions_cholesky);
 
     if (n == k) {
         result.converged = true;
         result.iterations = 1;
     } else
         for (int i = 0; i < max_iterations; ++i) {
-            previous_objective = result_objective;
+            double previous_objective = result.objective;
 
             const auto t0 = std::chrono::system_clock::now();
-            // expectation
-            // maximisation
+            auto [objective, log_responsibilities] = expectation(data, k, result, precision_cholesky);
+            // maximization_step(data, k, result, log_responsibilities, precisions_cholesky);
             const auto t1 = std::chrono::system_clock::now();
 
-            const auto change = result_objective - previous_objective;
+            result.objective = objective;
+            const auto change = result.objective - previous_objective;
 
             if (verbose) {
                 std::cout << "Iteration " << i + 1 << ": ";
@@ -137,4 +138,75 @@ GMMResult GMM::fit(const std::vector<std::vector<double> > &data, const std::vec
     initialize(result, data, initial_clusters, verbose);
     fit(data, result);
     return result;
+}
+
+std::pair<double, std::vector<std::vector<double> > >
+GMM::expectation(const std::vector<std::vector<double> > &data,
+                 const int k, const GMMResult &result,
+                 const std::vector<std::vector<std::vector<double> > > &precisionsCholesky) {
+    const int n = static_cast<int>(data.size());
+
+    const auto weighted_log_probabilities = estimateWeightedLogProbabilities(data, k, result, precisionsCholesky);
+
+    auto log_probabilities_norm = std::vector<double>(n, 0.0);
+
+    for (int i = 0; i < n; ++i) {
+        log_probabilities_norm[i] = log_sum_exp(weighted_log_probabilities[i]);
+    }
+
+    std::vector<std::vector<double> > log_responsibilities(n, std::vector<double>(k, 0.0));
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < k; ++j) {
+            log_responsibilities[i][j] = weighted_log_probabilities[i][j] - log_probabilities_norm[i];
+        }
+    }
+    double mean = std::accumulate(log_probabilities_norm.begin(), log_probabilities_norm.end(), 0.0) /
+                  log_probabilities_norm.size();
+
+    return {mean, log_responsibilities};
+}
+
+std::vector<std::vector<double> > GMM::estimateWeightedLogProbabilities(
+    const std::vector<std::vector<double> > &data, const int k, const GMMResult &result,
+    const std::vector<std::vector<std::vector<double> > > &precisionsCholesky
+) {
+    const int n = static_cast<int>(data.size());
+    const int d = static_cast<int>(data[0].size());
+
+    std::vector<double> log_det_cholesky(k, 0.0);
+
+    for (int i = 0; i < k; ++i) {
+        for (int j = 0; j < d; ++j) {
+            log_det_cholesky[i] += log(precisionsCholesky[i][j][j]);
+        }
+    }
+
+    std::vector<std::vector<double> > log_probabilities(n, std::vector<double>(k, 0.0));
+    for (int i = 0; i < k; ++i) {
+        for (int j = 0; j < n; ++j) {
+            std::vector<double> y(d);
+            // y = data[j] * precisionsCholesky[i] - (result.clusters[i]' * precisionsCholesky[i])
+            for (int row = 0; row < d; ++row) {
+                y[row] = 0.0;
+                for (int col = 0; col < d; ++col) {
+                    y[row] += data[j][col] * precisionsCholesky[i][col][row] -
+                            result.clusters[i][col] * precisionsCholesky[i][col][row];
+                }
+            }
+            double sum = 0.0;
+            for (const double val: y) {
+                sum += val * val;
+            }
+            log_probabilities[j][i] = sum;
+        }
+    }
+    std::vector<std::vector<double> > result_probabilities(n, std::vector<double>(k));
+    for (int j = 0; j < n; ++j) {
+        for (int i = 0; i < k; ++i) {
+            result_probabilities[j][i] = -0.5 * (d * std::log(2 * M_PI) + log_probabilities[j][i]) +
+                                         log_det_cholesky[i] + std::log(result.weights[i]);
+        }
+    }
+
+    return result_probabilities;
 }
