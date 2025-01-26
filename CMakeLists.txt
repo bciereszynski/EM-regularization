@@ -6,7 +6,7 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(EM_regularization main.cpp
-        data.h
         data.cpp
         algorithm/gmm.cpp
-        algorithm/gmmResult.h)
+        algorithm/gmmResult.h
+        algorithm/sampling.cpp)
