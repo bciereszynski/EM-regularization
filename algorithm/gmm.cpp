@@ -1,5 +1,31 @@
 #include "GMM.h"
 #include <iostream>
+#include "sampling.h"
+
+namespace {
+    void initialize(GMMResult& result, const std::vector<std::vector<double>>& data, const std::vector<int>& indices, const bool verbose) {
+        const int k = static_cast<int>(indices.size());
+        const int d = static_cast<int>(data[0].size());
+
+        for (int i = 0; i < k; ++i) {
+            for (int j = 0; j < d; ++j) {
+                result.clusters[i][j] = data[indices[i]][j];
+            }
+        }
+
+        if (verbose) {
+            std::cout << "Initial clusters:\n";
+            for (int i = 0; i < k; ++i) {
+                std::cout << "Cluster " << i + 1 << ": ";
+                for (int j = 0; j < d; ++j) {
+                    std::cout << result.clusters[i][j] << " ";
+                }
+                std::cout << "\n";
+            }
+        }
+    }
+}
+//namespace
 
 GMM::GMM(
     const double tolerance,
@@ -35,13 +61,15 @@ GMMResult GMM::fit(const std::vector<std::vector<double>> &data, const int k) {
 
     //try sampling
     //initialize
+    auto [sampled_data, indices] =  try_sampling_unique_data(rng, data, k);
+    initialize(result, sampled_data, indices, verbose);
     fit(data, result);
     return result;
 }
-GMMResult GMM::fit(const std::vector<std::vector<double>> &data, const std::vector<std::vector<double>> &initial_clusters){
+GMMResult GMM::fit(const std::vector<std::vector<double>> &data, const std::vector<int> &initial_clusters){
     const int n = static_cast<int>(data.size());
     const int d = static_cast<int>(data[0].size());
-    const int k = static_cast<int>(initial_clusters[0].size());
+    const int k = static_cast<int>(initial_clusters.size());
 
     GMMResult result(d, n, k);
 
@@ -52,7 +80,7 @@ GMMResult GMM::fit(const std::vector<std::vector<double>> &data, const std::vect
     assert(k > 0);
     assert(n >= k);
 
-    //initialize
+    initialize(result, data, initial_clusters, verbose);
     GMM::fit(data, result);
     return result;
 }

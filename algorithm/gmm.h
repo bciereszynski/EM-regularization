@@ -27,7 +27,7 @@ public:
 
     GMMResult fit(const std::vector<std::vector<double>> &data, GMMResult &result);
     GMMResult fit(const std::vector<std::vector<double>> &data, int k);
-    GMMResult fit(const std::vector<std::vector<double>> &data, const std::vector<std::vector<double>> &initial_clusters);
+    GMMResult fit(const std::vector<std::vector<double>> &data, const std::vector<int> &initial_clusters);
 };
 
 #endif // GMM_H
