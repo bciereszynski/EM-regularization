@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
+
 #include "data.h"
+#include "algorithm/gmm.h"
+#include "algorithm/gmmResult.h"
 
 int main(int argc, char* argv[])  {
     constexpr int default_n = 100;
@@ -16,7 +19,19 @@ int main(int argc, char* argv[])  {
 
     auto data = generate_data(n, d, seed);
 
+    std::cout << "Data:" << std::endl;
     for (const auto& row : data) {
+        for (const auto& value : row) {
+            std::cout << value << " ";
+        }
+        std::cout << "\n";
+    }
+
+    GMM gmm{};
+    auto result = gmm.fit(data, k);
+
+    std::cout << "Clusters:" << std::endl;
+    for (const auto& row : result.clusters) {
         for (const auto& value : row) {
             std::cout << value << " ";
         }
