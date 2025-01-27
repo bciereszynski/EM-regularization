@@ -84,7 +84,7 @@ GMMResult GMM::fit(const std::vector<std::vector<double> > &data, GMMResult &res
                 std::cout << "Iteration " << i + 1 << ": ";
                 std::cout << "Change:" << change << "\t";
                 std::cout << "Objective:" << result.objective << "\t";
-                std::cout << "Time: " << t1 - t0 << "\t";
+                std::cout << "Time: " << (t1 - t0).count() << "\t";
                 std::cout << std::endl;
             }
 
