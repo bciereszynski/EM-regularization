@@ -60,10 +60,9 @@ GMMResult GMM::fit(const std::vector<std::vector<double> > &data, GMMResult &res
     result.objective = -std::numeric_limits<double>::infinity();
 
     auto log_responsibilities = std::vector<std::vector<double> >(n, std::vector<double>(k, 0.0));
-    auto precision_cholesky =
-            std::vector<std::vector<std::vector<double> > >(
-                k, std::vector<std::vector<double> >(d, std::vector<double>(d, 0.0)));
-    compute_precision_cholesky(result, precisions_cholesky);
+    auto precision_cholesky = std::vector<Eigen::MatrixXd>(k, Eigen::MatrixXd(d, d));
+
+    computePrecisionCholesky(result, precision_cholesky);
 
     if (n == k) {
         result.converged = true;
@@ -143,7 +142,7 @@ GMMResult GMM::fit(const std::vector<std::vector<double> > &data, const std::vec
 std::pair<double, std::vector<std::vector<double> > >
 GMM::expectation(const std::vector<std::vector<double> > &data,
                  const int k, const GMMResult &result,
-                 const std::vector<std::vector<std::vector<double> > > &precisionsCholesky) {
+                 const std::vector<Eigen::MatrixXd> &precisionsCholesky) {
     const int n = static_cast<int>(data.size());
 
     const auto weighted_log_probabilities = estimateWeightedLogProbabilities(data, k, result, precisionsCholesky);
@@ -168,7 +167,7 @@ GMM::expectation(const std::vector<std::vector<double> > &data,
 
 std::vector<std::vector<double> > GMM::estimateWeightedLogProbabilities(
     const std::vector<std::vector<double> > &data, const int k, const GMMResult &result,
-    const std::vector<std::vector<std::vector<double> > > &precisionsCholesky
+    const std::vector<Eigen::MatrixXd> &precisionsCholesky
 ) {
     const int n = static_cast<int>(data.size());
     const int d = static_cast<int>(data[0].size());
@@ -177,7 +176,7 @@ std::vector<std::vector<double> > GMM::estimateWeightedLogProbabilities(
 
     for (int i = 0; i < k; ++i) {
         for (int j = 0; j < d; ++j) {
-            log_det_cholesky[i] += log(precisionsCholesky[i][j][j]);
+            log_det_cholesky[i] += log(precisionsCholesky[i](j, j));
         }
     }
 
@@ -189,8 +188,8 @@ std::vector<std::vector<double> > GMM::estimateWeightedLogProbabilities(
             for (int row = 0; row < d; ++row) {
                 y[row] = 0.0;
                 for (int col = 0; col < d; ++col) {
-                    y[row] += data[j][col] * precisionsCholesky[i][col][row] -
-                            result.clusters[i][col] * precisionsCholesky[i][col][row];
+                    y[row] += data[j][col] * precisionsCholesky[i](col, row) -
+                            result.clusters[i][col] * precisionsCholesky[i](col, row);
                 }
             }
             double sum = 0.0;
@@ -209,4 +208,29 @@ std::vector<std::vector<double> > GMM::estimateWeightedLogProbabilities(
     }
 
     return result_probabilities;
+}
+
+void GMM::computePrecisionCholesky(GMMResult &result,
+                                   std::vector<Eigen::MatrixXd> &precisions_cholesky) {
+    const int k = result.covariances.size();
+    const int d = result.covariances[0].rows();
+    for (int i = 0; i < k; ++i) {
+        try {
+            Eigen::LLT<Eigen::MatrixXd> cholesky(result.covariances[i]);
+            precisions_cholesky[i] = cholesky.matrixU().transpose().solve(Eigen::MatrixXd::Identity(d, d));
+        } catch (const std::exception &e) {
+            if (decompose_if_fails) {
+                Eigen::EigenSolver<Eigen::MatrixXd> eig(result.covariances[i]);
+                Eigen::MatrixXd eigenvalues = eig.eigenvalues().real().cwiseMax(1e-6).asDiagonal();
+                Eigen::MatrixXd eigenvectors = eig.eigenvectors().real();
+
+                result.covariances[i] = eigenvectors * eigenvalues * eigenvectors.transpose();
+
+                Eigen::LLT<Eigen::MatrixXd> cholesky_new(result.covariances[i]);
+                precisions_cholesky[i] = cholesky_new.matrixU().transpose().solve(Eigen::MatrixXd::Identity(d, d));
+            } else {
+                throw std::runtime_error("GMM Failed: " + std::string(e.what()));
+            }
+        }
+    }
 }

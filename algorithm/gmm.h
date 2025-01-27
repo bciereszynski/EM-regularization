@@ -34,11 +34,14 @@ public:
 private:
     std::pair<double, std::vector<std::vector<double> > > expectation(
         const std::vector<std::vector<double> > &data, int k, const GMMResult &result,
-        const std::vector<std::vector<std::vector<double> > > &precisionsCholesky);
+        const std::vector<Eigen::MatrixXd> &precisionsCholesky);
+
+    void computePrecisionCholesky(GMMResult &result,
+                                  std::vector<Eigen::MatrixXd> &precisions_cholesky);
 
     static std::vector<std::vector<double> > estimateWeightedLogProbabilities(
         const std::vector<std::vector<double> > &data, int k, const GMMResult &result,
-        const std::vector<std::vector<std::vector<double> > > &precisionsCholesky
+        const std::vector<Eigen::MatrixXd> &precisionsCholesky
     );
 };
 
