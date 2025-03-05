@@ -36,6 +36,18 @@ private:
         const std::vector<std::vector<double> > &data, int k, const GMMResult &result,
         const std::vector<Eigen::MatrixXd> &precisionsCholesky);
 
+    void maximization_step(const std::vector<std::vector<double> > &data, int k, GMMResult &result,
+                           const std::vector<std::vector<double> > &log_responsibilities,
+                           std::vector<Eigen::MatrixXd> &precision_cholesky);
+
+
+    std::tuple<std::vector<double>, std::vector<std::vector<double> >, std::vector<Eigen::Matrix<double, Eigen::Dynamic,
+        Eigen::Dynamic> > >
+    estimate_gaussian_parameters(
+        const std::vector<std::vector<double> > &data,
+        int k,
+        std::vector<std::vector<double> > &responsibilities);
+
     void computePrecisionCholesky(GMMResult &result,
                                   std::vector<Eigen::MatrixXd> &precisions_cholesky);
 

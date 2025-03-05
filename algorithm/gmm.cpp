@@ -3,6 +3,7 @@
 #include <iostream>
 #include <limits>
 
+#include "regularization/EmpiricalRegularizer.h"
 #include "mathematical.h"
 #include "sampling.h"
 
@@ -73,7 +74,7 @@ GMMResult GMM::fit(const std::vector<std::vector<double> > &data, GMMResult &res
 
             const auto t0 = std::chrono::system_clock::now();
             auto [objective, log_responsibilities] = expectation(data, k, result, precision_cholesky);
-            // maximization_step(data, k, result, log_responsibilities, precisions_cholesky);
+            maximization_step(data, k, result, log_responsibilities, precision_cholesky);
             const auto t1 = std::chrono::system_clock::now();
 
             result.objective = objective;
@@ -163,6 +164,84 @@ GMM::expectation(const std::vector<std::vector<double> > &data,
                   log_probabilities_norm.size();
 
     return {mean, log_responsibilities};
+}
+
+void GMM::maximization_step(const std::vector<std::vector<double> > &data, int k, GMMResult &result,
+                            const std::vector<std::vector<double> > &log_responsibilities,
+                            std::vector<Eigen::MatrixXd> &precision_cholesky) {
+    std::vector<std::vector<double> > responsibilities(log_responsibilities.size(),
+                                                       std::vector<double>(log_responsibilities[0].size()));
+    for (size_t i = 0; i < log_responsibilities.size(); ++i) {
+        for (size_t j = 0; j < log_responsibilities[i].size(); ++j) {
+            responsibilities[i][j] = std::exp(log_responsibilities[i][j]);
+        }
+    }
+    std::tie(result.weights, result.clusters, result.covariances) = estimate_gaussian_parameters(
+        data, k, responsibilities);
+    computePrecisionCholesky(result, precision_cholesky);
+}
+
+std::tuple<std::vector<double>, std::vector<std::vector<double> >, std::vector<Eigen::Matrix<double, Eigen::Dynamic,
+    Eigen::Dynamic> > >
+GMM::estimate_gaussian_parameters(
+    const std::vector<std::vector<double> > &data,
+    int k,
+    std::vector<std::vector<double> > &responsibilities
+) {
+    const int n = data.size();
+    const int d = data[0].size();
+    const double eps = 10 * std::numeric_limits<double>::epsilon();
+
+    std::vector<double> weights(k, eps);
+
+    for (int i = 0; i < k; ++i) {
+        double sum_resp = 0.0;
+        for (int j = 0; j < n; ++j) {
+            sum_resp += responsibilities[j][i];
+        }
+
+        if (sum_resp < 1e-32) {
+            for (int j = 0; j < n; ++j) {
+                responsibilities[j][i] = 1.0 / n;
+            }
+        }
+
+        for (int j = 0; j < n; ++j) {
+            weights[i] += responsibilities[j][i];
+        }
+    }
+
+    const double total_weight = std::accumulate(weights.begin(), weights.end(), 0.0);
+    for (double &w: weights) {
+        w /= total_weight;
+    }
+
+    std::vector<std::vector<double> > clusters(k, std::vector<double>(d, 0.0));
+    std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > covariances(k);
+
+    for (int i = 0; i < k; ++i) {
+        std::vector<double> responsibility_column(n, 0.0);
+        for (int j = 0; j < n; ++j) {
+            responsibility_column[j] = responsibilities[j][i];
+        }
+
+        EmpiricalRegularizer regularizer = EmpiricalRegularizer();
+        std::vector<std::vector<double> > covariances_temp;
+        std::vector<double> cluster_temp;
+        std::tie(covariances_temp, cluster_temp) = regularizer.fit(data, responsibility_column);
+
+        clusters[i] = cluster_temp;
+
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> cov_matrix(d, d);
+        for (int r = 0; r < d; ++r) {
+            for (int c = 0; c < d; ++c) {
+                cov_matrix(r, c) = covariances_temp[r][c];
+            }
+        }
+        covariances[i] = cov_matrix;
+    }
+
+    return std::make_tuple(weights, clusters, covariances);
 }
 
 std::vector<std::vector<double> > GMM::estimateWeightedLogProbabilities(
