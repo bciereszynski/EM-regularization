@@ -95,7 +95,14 @@ GMMResult GMM::fit(const std::vector<std::vector<double> > &data, GMMResult &res
             }
         }
 
-    // assign points to clusters
+    const auto probabilities = estimateWeightedLogProbabilities(data, k, result, precision_cholesky);
+
+    std::vector<bool> is_empty(k, true);
+    for (int i = 0; i < n; ++i) {
+        int cluster = assign_to_cluster(i, probabilities, is_empty);
+        is_empty[cluster] = false;
+        result.assignments[i] = cluster;
+    }
 
     result.elapsed = std::chrono::duration_cast<std::chrono::duration<double> >(
         std::chrono::system_clock::now() - start_time).count();
@@ -138,6 +145,31 @@ GMMResult GMM::fit(const std::vector<std::vector<double> > &data, const std::vec
     initialize(result, data, initial_clusters, verbose);
     fit(data, result);
     return result;
+}
+
+int GMM::assign_to_cluster(const int point, const std::vector<std::vector<double> > &probabilities,
+                           std::vector<bool> is_empty) {
+    const int k = probabilities[0].size();
+
+    int max_cluster = 0;
+    double max_probability = -std::numeric_limits<double>::infinity();
+
+    for (int cluster = 0; cluster < k; ++cluster) {
+        double probability = probabilities[point][cluster];
+
+        if (probability > max_probability) {
+            max_cluster = cluster;
+            max_probability = probability;
+        } else if (probability == max_probability) {
+            if (is_empty[cluster] && !is_empty[max_cluster]) {
+                max_cluster = cluster;
+                max_probability = probability;
+            }
+        }
+    }
+
+    std::cout << point << " : " << max_cluster << "\n";
+    return max_cluster;
 }
 
 std::pair<double, std::vector<std::vector<double> > >

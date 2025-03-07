@@ -32,6 +32,9 @@ public:
     GMMResult fit(const std::vector<std::vector<double> > &data, const std::vector<int> &initial_clusters);
 
 private:
+    int assign_to_cluster(int point, const std::vector<std::vector<double> > &probabilities,
+                          std::vector<bool> is_empty);
+
     std::pair<double, std::vector<std::vector<double> > > expectation(
         const std::vector<std::vector<double> > &data, int k, const GMMResult &result,
         const std::vector<Eigen::MatrixXd> &precisionsCholesky);
