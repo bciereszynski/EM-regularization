@@ -5,34 +5,44 @@
 #include "algorithm/gmm.h"
 #include "algorithm/gmmResult.h"
 
-int main(int argc, char* argv[])  {
-    constexpr int default_n = 100;
-    constexpr int default_d = 2;
-    constexpr int default_k = 2;
-    constexpr unsigned int default_seed = 1;
+int main(const int argc, char *argv[]) {
+    std::string path = R"(test_data/3_2_0.01_1.csv)";
+    int k = 2;
+    int d = 2;
+    int n = 100;
+    int seed = 0;
 
-    const int n = (argc > 1) ? std::stoi(argv[1]) : default_n;
-    const int d = (argc > 2) ? std::stoi(argv[2]) : default_d;
-    const int k = (argc > 3) ? std::stoi(argv[3]) : default_k;
-    const unsigned int seed = (argc > 4) ? std::stoul(argv[4]) : default_seed;
-
-
-    auto data = generate_data(n, d, seed);
-
-    std::cout << "Data:" << std::endl;
-    for (const auto& row : data) {
-        for (const auto& value : row) {
-            std::cout << value << " ";
+    for (int i = 1; i < argc; i++) {
+        if (std::string arg = argv[i]; arg == "--k" && i + 1 < argc) {
+            k = std::stoi(argv[++i]);
+        } else if (arg == "--path" && i + 1 < argc) {
+            path = argv[++i];
+            std::cerr << "Path entered - other options will be ignored" << std::endl;
+            break;
+        } else if (arg == "--n" && i + 1 < argc) {
+            n = std::stoi(argv[++i]);
+        } else if (arg == "--d" && i + 1 < argc) {
+            d = std::stoi(argv[++i]);
+        } else if (arg == "--seed" && i + 1 < argc) {
+            seed = std::stoi(argv[++i]);
         }
-        std::cout << "\n";
+    }
+
+    std::vector<std::vector<double> > data;
+    if (path.empty()) {
+        data = generate_data(n, d, seed);
+    } else {
+        int temp_k;
+        data = load_data_from_file(path, temp_k);
+        k = temp_k;
     }
 
     GMM gmm{};
     auto result = gmm.fit(data, k);
 
     std::cout << "Clusters:" << std::endl;
-    for (const auto& row : result.clusters) {
-        for (const auto& value : row) {
+    for (const auto &row: result.clusters) {
+        for (const auto &value: row) {
             std::cout << value << " ";
         }
         std::cout << "\n";

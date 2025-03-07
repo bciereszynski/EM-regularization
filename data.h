@@ -2,8 +2,10 @@
 #define GENERATE_DATA_H
 
 #include <vector>
+#include <string>
 
-// Deklaracja funkcji generate_data
-std::vector<std::vector<double>> generate_data(const int n, const int d, const unsigned int seed = 0);
+std::vector<std::vector<double> > generate_data(int n, int d, unsigned int seed = 0);
+
+std::vector<std::vector<double> > load_data_from_file(const std::string &path, int &k);
 
 #endif // GENERATE_DATA_H
