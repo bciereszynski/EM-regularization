@@ -14,4 +14,5 @@ add_executable(EM_regularization main.cpp
         algorithm/regularization/CovarianceMatrixRegularizer.cpp
         algorithm/regularization/CovarianceMatrixRegularizer.h
         algorithm/regularization/EmpiricalRegularizer.cpp
-        algorithm/gmm/gmm.h)
+        algorithm/gmm/gmm.h
+        algorithm/Evaluator.cpp)

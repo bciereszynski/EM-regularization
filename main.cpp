@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "data.h"
+#include "algorithm/Evaluator.h"
 #include "algorithm/gmm/gmm.h"
 #include "algorithm/gmm/gmmResult.h"
 
@@ -47,6 +48,11 @@ int main(const int argc, char *argv[]) {
         }
         std::cout << "\n";
     }
+
+    std::cout << "Evaluation:" << std::endl;
+
+    Evaluator evaluator(data, expected_clusters, k, result);
+    std::cout << "centroid_index_sphere: " << evaluator.centroid_index_sphere() << std::endl;
 
     return 0;
 }
