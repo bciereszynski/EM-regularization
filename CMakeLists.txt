@@ -7,10 +7,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(EM_regularization main.cpp
         data.cpp
-        algorithm/gmm.cpp
-        algorithm/gmmResult.h
+        algorithm/gmm/gmm.cpp
+        algorithm/gmm/gmmResult.h
         algorithm/sampling.cpp
         algorithm/mathematical.cpp
         algorithm/regularization/CovarianceMatrixRegularizer.cpp
         algorithm/regularization/CovarianceMatrixRegularizer.h
-        algorithm/regularization/EmpiricalRegularizer.cpp)
+        algorithm/regularization/EmpiricalRegularizer.cpp
+        algorithm/gmm/gmm.h)

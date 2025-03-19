@@ -2,8 +2,8 @@
 #include <vector>
 
 #include "data.h"
-#include "algorithm/gmm.h"
-#include "algorithm/gmmResult.h"
+#include "algorithm/gmm/gmm.h"
+#include "algorithm/gmm/gmmResult.h"
 
 int main(const int argc, char *argv[]) {
     std::string path = R"(test_data/3_2_0.01_1.csv)";

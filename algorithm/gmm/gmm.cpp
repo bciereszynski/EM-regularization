@@ -3,9 +3,9 @@
 #include <iostream>
 #include <limits>
 
-#include "regularization/EmpiricalRegularizer.h"
-#include "mathematical.h"
-#include "sampling.h"
+#include "../regularization/EmpiricalRegularizer.h"
+#include "../mathematical.h"
+#include "../sampling.h"
 
 namespace {
     void initialize(GMMResult &result, const std::vector<std::vector<double> > &data, const std::vector<int> &indices,
