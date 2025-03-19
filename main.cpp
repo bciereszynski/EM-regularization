@@ -29,12 +29,12 @@ int main(const int argc, char *argv[]) {
     }
 
     std::vector<std::vector<double> > data;
+    std::vector<int> expected_clusters;
+
     if (path.empty()) {
         data = generate_data(n, d, seed);
     } else {
-        int temp_k;
-        data = load_data_from_file(path, temp_k);
-        k = temp_k;
+        data = load_data_from_file(path, expected_clusters, k);
     }
 
     GMM gmm{};

@@ -19,10 +19,11 @@ std::vector<std::vector<double> > generate_data(const int n, const int d, const 
     return data;
 }
 
-std::vector<std::vector<double> > load_data_from_file(const std::string &path, int &k) {
+std::vector<std::vector<double> > load_data_from_file(const std::string &path, std::vector<int> &expected_clusters,
+                                                      int &k) {
     std::ifstream file(path);
     std::vector<std::vector<double> > data;
-    std::set<int> clusters;
+    std::set<int> unique_clusters;
 
     if (!file) {
         throw std::runtime_error("Could not open file: " + path);
@@ -38,7 +39,9 @@ std::vector<std::vector<double> > load_data_from_file(const std::string &path, i
         while (std::getline(ss, token, ',')) {
             if (first) {
                 first = false;
-                clusters.insert(std::stoi(token));
+                auto cluster_id = std::stoi(token);
+                unique_clusters.insert(cluster_id);
+                expected_clusters.push_back(cluster_id - 1);
                 continue;
             }
             row.push_back(std::stod(token));
@@ -51,6 +54,6 @@ std::vector<std::vector<double> > load_data_from_file(const std::string &path, i
 
     file.close();
 
-    k = clusters.size();
+    k = unique_clusters.size();
     return data;
 }
