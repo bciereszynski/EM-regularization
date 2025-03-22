@@ -44,6 +44,13 @@ public:
            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>::Identity(d, d))
        ) {}
 
+    void reset() {
+        objective = -std::numeric_limits<double>::infinity();
+    };
 };
+
+inline bool is_better(const GMMResult &a, const GMMResult &b) {
+    return a.objective > b.objective;
+}
 
 #endif // GMMRESULT_H
