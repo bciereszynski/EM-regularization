@@ -9,6 +9,7 @@
 class GeneticalAlgorithm {
     std::vector<GMMResult> population;
     std::set<int> empty;
+    std::mt19937 &rng;
 
     [[nodiscard]] size_t population_size() const;
 
@@ -20,8 +21,14 @@ class GeneticalAlgorithm {
 
     bool is_active(size_t i);
 
+    std::pair<GMMResult, GMMResult> binary_tournament();
+
+    GMMResult get_best_solution();
+
 public:
     GeneticalAlgorithm() = default;
+
+    GMMResult run();
 };
 
 
