@@ -17,4 +17,6 @@ add_executable(EM_regularization main.cpp
         algorithm/gmm/gmm.h
         algorithm/Evaluator.cpp
         algorithm/GeneticalAlgorithm.h
-        algorithm/GeneticalAlgorithm.cpp)
+        algorithm/GeneticalAlgorithm.cpp
+        external/hungarian/hungarian.cpp
+        external/hungarian/hungarian.h)

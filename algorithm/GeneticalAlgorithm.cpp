@@ -6,24 +6,44 @@
 
 
 #include <algorithm>
+#include "../external/hungarian/hungarian.h"
+#include "gmm/gmm.h"
 
-GMMResult GeneticalAlgorithm::run() {
+namespace {
+    double distance(const GMMResult &a, const int i, const GMMResult &b, const int j, const Eigen::MatrixXd &data) {
+        const Eigen::VectorXd meanA = Eigen::Map<const Eigen::VectorXd>(a.clusters[i].data(), a.clusters[i].size());
+        const Eigen::VectorXd meanB = Eigen::Map<const Eigen::VectorXd>(b.clusters[j].data(), b.clusters[j].size());
+
+        const Eigen::MatrixXd &covA = a.covariances[i];
+        const Eigen::MatrixXd &covB = b.covariances[j];
+
+        const double d1 = (meanA - meanB).transpose() * covA.inverse() * (meanA - meanB);
+        const double d2 = (meanA - meanB).transpose() * covB.inverse() * (meanA - meanB);
+
+        return (d1 + d2) / 2.0;
+    }
+}
+
+GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data) {
     auto best_obj = 0.0;
     auto iterations_without_improvement = 0;
 
+    auto gmm = GMM();
     // initialize base population
 
     for (int iter = 0; iter < 100; ++iter) {
         auto [parent1, parent2] = binary_tournament();
 
-        // auto child = crossover(parent1, parent2, rng);
+        auto child = crossover(parent1, parent2, data);
 
-        // mutate(child);
+        mutate(child, data);
 
-        // local search - as template
-        // add(child);
+        // local search
+        //gmm.fit(data, child);
+        pop.add(child);
 
         // eliminate worst
+        pop.eliminate(1, rng);
 
         // check for improvement
         const auto best_solution = get_best_solution();
@@ -41,42 +61,13 @@ GMMResult GeneticalAlgorithm::run() {
     return get_best_solution();
 }
 
-void GeneticalAlgorithm::add(const GMMResult &result) {
-    if (!empty.empty()) {
-        const int idx = *empty.begin();
-        empty.erase(empty.begin());
-        population[idx] = result;
-    } else {
-        population.push_back(result);
-    }
-}
-
-void GeneticalAlgorithm::remove(const size_t i) {
-    if (i < population.size()) {
-        population[i].reset();
-        empty.insert(i);
-    }
-}
-
-size_t GeneticalAlgorithm::active_population_size() const {
-    return population.size() - empty.size();
-}
-
-size_t GeneticalAlgorithm::population_size() const {
-    return population.size();
-}
-
-bool GeneticalAlgorithm::is_active(const size_t i) {
-    return empty.find(i) != empty.end();
-}
-
 std::pair<GMMResult, GMMResult> GeneticalAlgorithm::binary_tournament() {
-    std::vector<int> valid_indices(population_size());
+    std::vector<int> valid_indices(pop.size());
     std::iota(valid_indices.begin(), valid_indices.end(), 0);
 
     valid_indices.erase(
         std::remove_if(valid_indices.begin(), valid_indices.end(),
-                       [&](int i) { return is_active(i); }),
+                       [&](int i) { return pop.is_active(i); }),
         valid_indices.end()
     );
 
@@ -85,10 +76,10 @@ std::pair<GMMResult, GMMResult> GeneticalAlgorithm::binary_tournament() {
     }
     std::shuffle(valid_indices.begin(), valid_indices.end(), rng);
 
-    const GMMResult &parent1 = population[valid_indices[0]];
-    const GMMResult &parent2 = population[valid_indices[1]];
-    const GMMResult &parent3 = population[valid_indices[2]];
-    const GMMResult &parent4 = population[valid_indices[3]];
+    const GMMResult &parent1 = pop[valid_indices[0]];
+    const GMMResult &parent2 = pop[valid_indices[1]];
+    const GMMResult &parent3 = pop[valid_indices[2]];
+    const GMMResult &parent4 = pop[valid_indices[3]];
 
     return {
         is_better(parent1, parent2) ? parent1 : parent2,
@@ -97,21 +88,138 @@ std::pair<GMMResult, GMMResult> GeneticalAlgorithm::binary_tournament() {
 }
 
 GMMResult GeneticalAlgorithm::get_best_solution() {
-    if (active_population_size() == 0) {
+    if (pop.active_size() == 0) {
         throw std::runtime_error("No active solutions in population.");
     }
 
-    GMMResult best_solution = population[0];
+    GMMResult best_solution = pop[0];
     bool found = false;
 
-    for (size_t i = 0; i < population_size(); ++i) {
-        if (empty.find(i) == empty.end()) {
-            if (!found || is_better(population[i], best_solution)) {
-                best_solution = population[i];
-                found = true;
-            }
+    for (size_t i = 0; i < pop.size(); ++i) {
+        if (pop.is_active(i) && (!found || is_better(pop[i], best_solution))) {
+            best_solution = pop[i];
+            found = true;
         }
     }
 
     return best_solution;
+}
+
+void GeneticalAlgorithm::Population::eliminate(const size_t to_remove, std::mt19937 &rng) {
+    size_t removed = 0;
+    size_t n = size();
+
+    for (size_t i = 0; i < n; ++i) {
+        if (to_remove == removed) {
+            break;
+        }
+
+        for (size_t j = i + 1; j < n; ++j) {
+            if (to_remove == removed) {
+                break;
+            }
+
+            if (is_active(i) && is_active(j)) {
+                if (std::abs(population[i].objective - population[j].objective) < 1e-9) {
+                    removed++;
+                    if (std::uniform_real_distribution<>(0.0, 1.0)(rng) > 0.5) {
+                        remove(i);
+                    } else {
+                        remove(j);
+                    }
+                }
+            }
+        }
+    }
+
+    if (to_remove > removed) {
+        n = size();
+        const size_t remaining = active_size() - (to_remove - removed);
+
+        if (remaining >= active_size()) {
+            return;
+        }
+
+        std::vector<GMMResult> active_population;
+        for (size_t i = 0; i < n; ++i) {
+            if (!is_active(i)) {
+                active_population.push_back(population[i]);
+            }
+        }
+
+        std::sort(active_population.begin(), active_population.end(), is_better); // TODO - replace sort?
+
+        const GMMResult threshold = active_population[remaining];
+
+        for (size_t i = 0; i < n; ++i) {
+            if (is_active(i) && is_better(threshold, population[i])) {
+                remove(i);
+            }
+        }
+    }
+}
+
+void GeneticalAlgorithm::mutate(GMMResult &individual, const Eigen::MatrixXd &data) const {
+    const int k = individual.k;
+    const int n = data.rows();
+    const int d = data.cols();
+
+    if (n > 0 && k > 0) {
+        std::uniform_int_distribution<int> dist_k(0, k - 1);
+        std::uniform_int_distribution<int> dist_n(0, n - 1);
+
+        const int to = dist_k(rng);
+        const int from = dist_n(rng);
+
+        individual.clusters[to] = std::vector<double>(data.row(from).data(), data.row(from).data() + data.cols());
+
+        double sum_det = 0.0;
+        for (int j = 0; j < k; ++j) {
+            sum_det += individual.covariances[j].determinant();
+        }
+        const double m = sum_det / k;
+        const double value = (m > 0 ? m : 1.0) * (1.0 / d);
+
+        individual.covariances[to] = Eigen::MatrixXd::Identity(d, d) * value;
+
+        individual.reset();
+    }
+}
+
+GMMResult GeneticalAlgorithm::crossover(const GMMResult &parent1, const GMMResult &parent2,
+                                        const Eigen::MatrixXd &data) const {
+    const int k = parent1.k;
+
+    std::vector<std::vector<double> > weights(k, std::vector<double>(k));
+    for (int i = 0; i < k; ++i) {
+        for (int j = 0; j < k; ++j) {
+            weights[i][j] = distance(parent1, i, parent2, j, data);
+        }
+    }
+
+    std::vector<int> assignment;
+
+    auto h_alg = HungarianAlgorithm();
+    h_alg.Solve(weights, assignment);
+
+    GMMResult offspring = parent1;
+    offspring.reset();
+
+    std::uniform_real_distribution<double> dist(0.0, 1.0);
+
+    for (int i = 0; i < k; ++i) {
+        if (dist(rng) > 0.5) {
+            offspring.clusters[i] = parent1.clusters[i];
+            offspring.covariances[i] = parent1.covariances[i];
+        } else {
+            offspring.clusters[i] = parent2.clusters[assignment[i]];
+            offspring.covariances[i] = parent2.covariances[assignment[i]];
+        }
+    }
+
+    for (int i = 0; i < k; ++i) {
+        offspring.weights[i] = (parent1.weights[i] + parent2.weights[assignment[i]]) / 2;
+    }
+
+    return offspring;
 }
