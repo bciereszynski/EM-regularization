@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <random>
+#include <Eigen/Dense>
 
 struct RowComparator {
     bool operator()(const std::vector<double> &a, const std::vector<double> &b) const {
@@ -10,9 +11,9 @@ struct RowComparator {
     }
 };
 
-std::pair<std::vector<std::vector<double> >, std::vector<int> > try_sampling_unique_data(
+std::pair<Eigen::MatrixXd, std::vector<int> > try_sampling_unique_data(
     std::mt19937 &rng,
-    const std::vector<std::vector<double> > &data,
+    const Eigen::MatrixXd &data,
     int k
 );
 

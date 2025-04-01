@@ -39,7 +39,7 @@ GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data) {
         mutate(child, data);
 
         // local search
-        //gmm.fit(data, child);
+        // gmm.fit(data, child);
         pop.add(child);
 
         // eliminate worst

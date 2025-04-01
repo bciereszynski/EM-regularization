@@ -25,11 +25,13 @@ public:
         bool decompose_if_fails = true
     );
 
-    GMMResult fit(const std::vector<std::vector<double> > &data, GMMResult &result) const;
+    GMMResult fit(const Eigen::MatrixXd &data, GMMResult &result) const;
+
+    GMMResult fit(const Eigen::MatrixXd &data, int k);
 
     GMMResult fit(const std::vector<std::vector<double> > &data, int k);
 
-    [[nodiscard]] GMMResult fit(const std::vector<std::vector<double> > &data,
+    [[nodiscard]] GMMResult fit(const Eigen::MatrixXd &data,
                                 const std::vector<int> &initial_clusters) const;
 
 private:
@@ -37,12 +39,12 @@ private:
                                     std::vector<Eigen::MatrixXd> &precisions_cholesky) const;
 
     static std::pair<double, std::vector<std::vector<double> > > expectation_step(
-        const std::vector<std::vector<double> > &data,
+        const Eigen::MatrixXd &data,
         int k,
         const GMMResult &result,
         const std::vector<Eigen::MatrixXd> &precisionsCholesky);
 
-    void maximization_step(const std::vector<std::vector<double> > &data, int k, GMMResult &result,
+    void maximization_step(const Eigen::MatrixXd &data, int k, GMMResult &result,
                            const std::vector<std::vector<double> > &log_responsibilities,
                            std::vector<Eigen::MatrixXd> &precision_cholesky) const;
 };

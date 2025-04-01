@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <Eigen/Dense>
 
 #include "data.h"
-#include "algorithm/Evaluator.h"
 #include "algorithm/gmm/gmm.h"
 #include "algorithm/gmm/gmmResult.h"
 
@@ -33,7 +33,7 @@ int main(const int argc, char *argv[]) {
     std::vector<int> expected_clusters;
 
     if (path.empty()) {
-        data = generate_data(n, d, seed);
+        return 1;
     } else {
         data = load_data_from_file(path, expected_clusters, k);
     }
@@ -49,10 +49,6 @@ int main(const int argc, char *argv[]) {
         std::cout << "\n";
     }
 
-    std::cout << "Evaluation:" << std::endl;
-
-    Evaluator evaluator(data, expected_clusters, k, result);
-    std::cout << "centroid_index_sphere: " << evaluator.centroid_index_sphere() << std::endl;
 
     return 0;
 }

@@ -2,19 +2,20 @@
 #define COVARIANCEMATRIXREGULARIZER_H
 
 #include <vector>
+#include <Eigen/Dense>
 
-using DoubleMatrix = std::vector<std::vector<double> >;
-
+using DoubleMatrix = Eigen::MatrixXd;
+using DoubleVector = Eigen::VectorXd;
 
 class CovarianceMatrixRegularizer {
 public:
   virtual ~CovarianceMatrixRegularizer() = default;
 
-  virtual std::pair<DoubleMatrix, std::vector<double> > fit(
+  virtual std::pair<DoubleMatrix, DoubleVector> fit(
     const DoubleMatrix &data, const std::vector<double> &weights) = 0;
 
 protected:
-  static std::vector<double> get_mu(const DoubleMatrix &data, const std::vector<double> &weights);
+  static DoubleVector get_mu(const DoubleMatrix &data, const std::vector<double> &weights);
 };
 
 #endif //COVARIANCEMATRIXREGULARIZER_H
