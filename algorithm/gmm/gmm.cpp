@@ -4,8 +4,8 @@
 #include <limits>
 
 #include "../regularization/EmpiricalRegularizer.h"
-#include "../mathematical.h"
-#include "../sampling.h"
+#include "./helpers/mathematical.h"
+#include "./helpers/sampling.h"
 
 namespace {
     void initialize(GMMResult &result, const Eigen::MatrixXd &data, const std::vector<int> &indices,

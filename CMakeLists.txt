@@ -9,8 +9,8 @@ add_executable(EM_regularization main.cpp
         data.cpp
         algorithm/gmm/gmm.cpp
         algorithm/gmm/gmmResult.h
-        algorithm/sampling.cpp
-        algorithm/mathematical.cpp
+        algorithm/gmm/helpers/sampling.cpp
+        algorithm/gmm/helpers/mathematical.cpp
         algorithm/regularization/CovarianceMatrixRegularizer.cpp
         algorithm/regularization/CovarianceMatrixRegularizer.h
         algorithm/regularization/EmpiricalRegularizer.cpp
