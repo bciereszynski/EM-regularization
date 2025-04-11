@@ -24,14 +24,26 @@ namespace {
     }
 }
 
-GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data) {
+GMMResult GeneticalAlgorithm::run(const std::vector<std::vector<double> > &data, int k) {
+    Eigen::MatrixXd data_matrix(data.size(), data[0].size());
+    for (size_t i = 0; i < data.size(); ++i) {
+        data_matrix.row(i) = Eigen::VectorXd::Map(data[i].data(), data[i].size());
+    }
+    return run(data_matrix, k);
+}
+
+GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data, const int k) {
     auto best_obj = 0.0;
     auto iterations_without_improvement = 0;
 
-    auto gmm = GMM();
-    // initialize base population
+    auto gmm = GMM(rng);
 
-    for (int iter = 0; iter < 100; ++iter) {
+    for (int i = 0; i < pop_max_size; ++i) {
+        GMMResult result = gmm.fit(data, k);
+        pop.add(result);
+    }
+
+    for (int iter = 0; iter < max_iterations; ++iter) {
         auto [parent1, parent2] = binary_tournament();
 
         auto child = crossover(parent1, parent2, data);
@@ -39,11 +51,14 @@ GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data) {
         mutate(child, data);
 
         // local search
-        // gmm.fit(data, child);
+        gmm.fit(data, child);
         pop.add(child);
 
-        // eliminate worst
-        pop.eliminate(1, rng);
+        // reduce population size
+        auto size = pop.active_size();
+        if (size > pop_max_size) {
+            pop.eliminate(size - pop_min_size, rng);
+        }
 
         // check for improvement
         const auto best_solution = get_best_solution();
@@ -54,7 +69,7 @@ GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data) {
             ++iterations_without_improvement;
         }
 
-        if (iterations_without_improvement > 10) {
+        if (iterations_without_improvement > max_iterations_without_improvement) {
             break;
         }
     }
@@ -67,7 +82,7 @@ std::pair<GMMResult, GMMResult> GeneticalAlgorithm::binary_tournament() {
 
     valid_indices.erase(
         std::remove_if(valid_indices.begin(), valid_indices.end(),
-                       [&](int i) { return pop.is_active(i); }),
+                       [&](const int i) { return !pop.is_active(i); }),
         valid_indices.end()
     );
 
@@ -142,7 +157,7 @@ void GeneticalAlgorithm::Population::eliminate(const size_t to_remove, std::mt19
 
         std::vector<GMMResult> active_population;
         for (size_t i = 0; i < n; ++i) {
-            if (!is_active(i)) {
+            if (is_active(i)) {
                 active_population.push_back(population[i]);
             }
         }
@@ -159,7 +174,7 @@ void GeneticalAlgorithm::Population::eliminate(const size_t to_remove, std::mt19
     }
 }
 
-void GeneticalAlgorithm::mutate(GMMResult &individual, const Eigen::MatrixXd &data) const {
+void GeneticalAlgorithm::mutate(GMMResult &individual, const Eigen::MatrixXd &data) {
     const int k = individual.k;
     const int n = data.rows();
     const int d = data.cols();
@@ -187,7 +202,7 @@ void GeneticalAlgorithm::mutate(GMMResult &individual, const Eigen::MatrixXd &da
 }
 
 GMMResult GeneticalAlgorithm::crossover(const GMMResult &parent1, const GMMResult &parent2,
-                                        const Eigen::MatrixXd &data) const {
+                                        const Eigen::MatrixXd &data) {
     const int k = parent1.k;
 
     std::vector<std::vector<double> > weights(k, std::vector<double>(k));
@@ -222,4 +237,31 @@ GMMResult GeneticalAlgorithm::crossover(const GMMResult &parent1, const GMMResul
     }
 
     return offspring;
+}
+
+
+GeneticalAlgorithm::GeneticalAlgorithm(const std::mt19937 &rngRef, const int max_iterations,
+                                       const int max_iterations_without_improvement,
+                                       const int pop_min_size,
+                                       const int pop_max_size,
+                                       const bool verbose): rng(rngRef),
+                                                            verbose(verbose),
+                                                            max_iterations(max_iterations),
+                                                            max_iterations_without_improvement(
+                                                                max_iterations_without_improvement),
+                                                            pop_min_size(pop_min_size),
+                                                            pop_max_size(pop_max_size) {
+}
+
+GeneticalAlgorithm::GeneticalAlgorithm(const unsigned int seed, const int max_iterations,
+                                       const int max_iterations_without_improvement,
+                                       const int pop_min_size,
+                                       const int pop_max_size,
+                                       const bool verbose): rng(seed),
+                                                            verbose(verbose),
+                                                            max_iterations(max_iterations),
+                                                            max_iterations_without_improvement(
+                                                                max_iterations_without_improvement),
+                                                            pop_min_size(pop_min_size),
+                                                            pop_max_size(pop_max_size) {
 }

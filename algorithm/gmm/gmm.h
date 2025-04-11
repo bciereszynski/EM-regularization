@@ -4,7 +4,8 @@
 #include <random>
 #include "gmmResult.h"
 
-constexpr bool DEFAULT_VERBOSE = true;
+// TODO remname consts
+constexpr bool DEFAULT_VERBOSE = false;
 constexpr double DEFAULT_TOLERANCE = 1e-6;
 constexpr int DEFAULT_MAX_ITERATIONS = 100;
 
@@ -22,6 +23,14 @@ public:
         int max_iterations = DEFAULT_MAX_ITERATIONS,
         bool verbose = DEFAULT_VERBOSE,
         unsigned int seed = std::random_device{}(),
+        bool decompose_if_fails = true
+    );
+
+    explicit GMM(
+        const std::mt19937 &rng,
+        double tolerance = DEFAULT_TOLERANCE,
+        int max_iterations = DEFAULT_MAX_ITERATIONS,
+        bool verbose = DEFAULT_VERBOSE,
         bool decompose_if_fails = true
     );
 

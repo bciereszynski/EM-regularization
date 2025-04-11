@@ -6,6 +6,11 @@
 #include <set>
 #include <random>
 
+constexpr int GA_DEFAULT_MAX_ITERATIONS = 200;
+constexpr int GA_DEFAULT_MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 150;
+constexpr int GA_DEFAULT_POPULATION_MAX_SIZE = 50;
+constexpr int GA_DEFAULT_POPULATION_MIN_SIZE = 40;
+
 class GeneticalAlgorithm {
     class Population {
         std::vector<GMMResult> population;
@@ -49,22 +54,43 @@ class GeneticalAlgorithm {
     };
 
     Population pop;
-    std::mt19937 &rng;
+    std::mt19937 rng;
+
+    bool verbose;
+    int max_iterations;
+    int max_iterations_without_improvement;
+
+    int pop_min_size;
+    int pop_max_size;
 
     std::pair<GMMResult, GMMResult> binary_tournament();
 
     GMMResult get_best_solution();
 
-    void mutate(GMMResult &individual, const Eigen::MatrixXd &data) const;
+    void mutate(GMMResult &individual, const Eigen::MatrixXd &data);
 
     [[nodiscard]] GMMResult crossover(const GMMResult &parent1, const GMMResult &parent2,
-                                      const Eigen::MatrixXd &data) const;
+                                      const Eigen::MatrixXd &data);
 
 public:
-    explicit GeneticalAlgorithm(std::mt19937 &rngRef) : rng(rngRef) {
-    }
+    explicit GeneticalAlgorithm(const std::mt19937 &rngRef, int max_iterations = GA_DEFAULT_MAX_ITERATIONS,
+                                int max_iterations_without_improvement =
+                                        GA_DEFAULT_MAX_ITERATIONS_WITHOUT_IMPROVEMENT,
+                                int pop_min_size = GA_DEFAULT_POPULATION_MIN_SIZE,
+                                int pop_max_size = GA_DEFAULT_POPULATION_MAX_SIZE,
+                                bool verbose = false);
 
-    GMMResult run(const Eigen::MatrixXd &data);
+
+    explicit GeneticalAlgorithm(unsigned int seed, int max_iterations = GA_DEFAULT_MAX_ITERATIONS,
+                                int max_iterations_without_improvement =
+                                        GA_DEFAULT_MAX_ITERATIONS_WITHOUT_IMPROVEMENT,
+                                int pop_min_size = GA_DEFAULT_POPULATION_MIN_SIZE,
+                                int pop_max_size = GA_DEFAULT_POPULATION_MAX_SIZE,
+                                bool verbose = false);
+
+
+    GMMResult run(const Eigen::MatrixXd &data, int k);
+    GMMResult run(const std::vector<std::vector<double> > &data, int k);
 };
 
 #endif // GENETICALALGORITHM_H

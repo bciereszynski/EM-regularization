@@ -3,6 +3,7 @@
 #include <Eigen/Dense>
 
 #include "data.h"
+#include "algorithm/GeneticalAlgorithm.h"
 #include "algorithm/gmm/gmm.h"
 #include "algorithm/gmm/gmmResult.h"
 
@@ -11,7 +12,7 @@ int main(const int argc, char *argv[]) {
     int k = 2;
     int d = 2;
     int n = 100;
-    int seed = 0;
+    int seed = 42;
 
     for (int i = 1; i < argc; i++) {
         if (std::string arg = argv[i]; arg == "--k" && i + 1 < argc) {
@@ -38,8 +39,8 @@ int main(const int argc, char *argv[]) {
         data = load_data_from_file(path, expected_clusters, k);
     }
 
-    GMM gmm{};
-    auto result = gmm.fit(data, k);
+    GeneticalAlgorithm ga{std::mt19937(seed), 100, 100, 10, 100, true};
+    auto result = ga.run(data, k);
 
     std::cout << "Clusters:" << std::endl;
     for (const auto &row: result.clusters) {

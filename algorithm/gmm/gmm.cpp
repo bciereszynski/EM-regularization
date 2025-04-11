@@ -172,6 +172,19 @@ GMM::GMM(
     decompose_if_fails(decompose_if_fails) {
 }
 
+GMM::GMM(
+    const std::mt19937 &rng,
+    const double tolerance,
+    const int max_iterations,
+    const bool verbose,
+    const bool decompose_if_fails
+) : tolerance(tolerance),
+    max_iterations(max_iterations),
+    verbose(verbose),
+    rng(rng),
+    decompose_if_fails(decompose_if_fails) {
+}
+
 GMMResult GMM::fit(const std::vector<std::vector<double> > &data, int k) {
     Eigen::MatrixXd data_matrix(data.size(), data[0].size());
     for (size_t i = 0; i < data.size(); ++i) {
