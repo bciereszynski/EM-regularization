@@ -19,3 +19,21 @@ add_executable(EM_regularization main.cpp
         algorithm/GeneticalAlgorithm.cpp
         external/hungarian/hungarian.cpp
         external/hungarian/hungarian.h)
+
+enable_testing()
+find_package(GTest REQUIRED)
+
+add_executable(gmm_tests
+        Testing/test_gmm.cpp
+        algorithm/gmm/gmm.cpp
+        algorithm/gmm/gmmResult.h
+        algorithm/gmm/helpers/sampling.cpp
+        algorithm/gmm/helpers/mathematical.cpp
+        algorithm/regularization/CovarianceMatrixRegularizer.cpp
+        algorithm/regularization/CovarianceMatrixRegularizer.h
+        algorithm/regularization/EmpiricalRegularizer.cpp
+)
+target_link_libraries(gmm_tests PRIVATE GTest::gtest_main GTest::gtest Eigen3::Eigen)
+
+include(GoogleTest)
+gtest_discover_tests(gmm_tests)
