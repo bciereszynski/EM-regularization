@@ -1,6 +1,52 @@
 #include "../algorithm/gmm/gmm.h"
 #include <gtest/gtest.h>
+#include "../data.h"
 #include <Eigen/Dense>
+
+namespace {
+    std::vector<std::vector<double> > estimate_weighted_log_probabilities(
+        const Eigen::MatrixXd &data, const int k, const GMMResult &result,
+        const std::vector<Eigen::MatrixXd> &precisionsCholesky
+    ) {
+        const int n = data.rows();
+        const int d = data.cols();
+
+        std::vector<double> log_det_cholesky(k, 0.0);
+
+        for (int i = 0; i < k; ++i) {
+            for (int j = 0; j < d; ++j) {
+                log_det_cholesky[i] += log(precisionsCholesky[i](j, j));
+            }
+        }
+
+        std::vector<std::vector<double> > log_probabilities(n, std::vector<double>(k, 0.0));
+        for (int i = 0; i < k; ++i) {
+            Eigen::VectorXd cluster = Eigen::Map<const Eigen::VectorXd>(
+                result.clusters[i].data(), result.clusters[i].size());
+
+            Eigen::MatrixXd y = (data * precisionsCholesky[i]).rowwise() - (
+                                    cluster.transpose() * precisionsCholesky[i]); // n × d
+
+            for (int j = 0; j < n; ++j) {
+                double sum = 0.0;
+                for (int col = 0; col < y.cols(); ++col) {
+                    const double val = y(j, col);
+                    sum += val * val;
+                }
+                log_probabilities[j][i] = sum;
+            }
+        }
+        std::vector<std::vector<double> > result_probabilities(n, std::vector<double>(k));
+        for (int j = 0; j < n; ++j) {
+            for (int i = 0; i < k; ++i) {
+                result_probabilities[j][i] = -0.5 * (d * std::log(2 * M_PI) + log_probabilities[j][i]) +
+                                             log_det_cholesky[i] + std::log(result.weights[i]);
+            }
+        }
+
+        return result_probabilities;
+    }
+}
 
 class GMMTest_FriendAccess : public ::testing::Test {
 protected:
@@ -67,3 +113,84 @@ TEST_F(GMMTest_FriendAccess, ComputePrecisionCholesky_IdentityInput_YieldsIdenti
 TEST_F(GMMTest_FriendAccess, ComputePrecisionCholesky_RealisticCovariances_YieldsExpectedOutput) {
     TestComputePrecisionCholesky_NonIdentityCovariances();
 }
+
+TEST_F(GMMTest_FriendAccess, EstimateWeightedLogProbabilities_SimpleCase) {
+    constexpr int n = 2;
+    constexpr int d = 2;
+    constexpr int k = 1;
+
+    Eigen::MatrixXd data(n, d);
+    data << 1.0, 2.0,
+            3.0, 4.0;
+
+    GMMResult result(d, n, k);
+    result.clusters[0] = std::vector<double>{0.0, 0.0};
+    result.weights[0] = 1.0;
+
+    std::vector<Eigen::MatrixXd> precisions_cholesky(1, Eigen::MatrixXd::Identity(d, d));
+
+    const std::vector<std::vector<double> > log_probs = estimate_weighted_log_probabilities(
+        data, k, result, precisions_cholesky);
+
+    ASSERT_EQ(log_probs.size(), 2);
+    ASSERT_EQ(log_probs[0].size(), 1);
+
+    const double log2pi = std::log(2 * M_PI);
+    const double expected0 = -0.5 * (2 * log2pi + 1.0 * 1.0 + 2.0 * 2.0); // ||[1,2]||^2 = 1 + 4 = 5
+    const double expected1 = -0.5 * (2 * log2pi + 3.0 * 3.0 + 4.0 * 4.0); // ||[3,4]||^2 = 9 + 16 = 25
+
+    EXPECT_NEAR(log_probs[0][0], expected0, 1e-6);
+    EXPECT_NEAR(log_probs[1][0], expected1, 1e-6);
+}
+
+TEST_F(GMMTest_FriendAccess, EstimateWeightedLogProbabilities_RealData) {
+    int k = 3;
+    constexpr int d = 2;
+    std::vector<int> expected_clusters;
+    std::vector<std::vector<double> > data_raw = load_data_from_file(
+        "../test_data/3_2_-0.26_1.csv", expected_clusters, k);
+    Eigen::MatrixXd data(data_raw.size(), data_raw[0].size());
+    for (size_t i = 0; i < data_raw.size(); ++i) {
+        data.row(i) = Eigen::VectorXd::Map(data_raw[i].data(), data_raw[i].size());
+    }
+    const int n = data.rows();
+
+    GMMResult result(d, n, k);
+    result.clusters[0] = {10.706315370566315, -15.655038396575486};
+    result.clusters[1] = {1.5346346971608753, 10.172773119928657};
+    result.clusters[2] = {0.8125445826316164, -9.318465733509676};
+    result.weights = {0.12309068557448444, 0.30756460120925033, 0.5693447132162652};
+
+    std::vector<Eigen::MatrixXd> precisions_cholesky(k, Eigen::MatrixXd(d, d));
+
+    precisions_cholesky[0] << 0.17177833476190066, -0.24362417677019974,
+            0.0, 0.25287169133777315;
+
+    precisions_cholesky[1] << 0.09887213601054862, -0.057416313809908096,
+            0.0, 0.14862858798164388;
+
+    precisions_cholesky[2] << 0.11668136690747105, -0.06396386718928732,
+            0.0, 0.15380716255671226;
+
+    const std::vector<std::vector<double> > log_probs = estimate_weighted_log_probabilities(
+        data, k, result, precisions_cholesky);
+
+    ASSERT_EQ(log_probs.size(), n);
+    ASSERT_EQ(log_probs[0].size(), k);
+
+    const std::vector<std::vector<double> > expected = {
+        {-34.67444478856755, -7.490287069833688, -10.505420842688025},
+        {-9.391341909521708, -12.06466757490316, -7.889934866592154},
+        {-21.996834185639685, -14.555142916332544, -7.487430481051719},
+        {-51.43748366931587, -11.260459416036612, -9.180469588500568},
+        {-20.404300474376164, -8.582910721767998, -9.335866619446161}
+    };
+
+    for (int i = 0; i < expected.size(); ++i) {
+        for (int j = 0; j < k; ++j) {
+            EXPECT_NEAR(log_probs[i][j], expected[i][j], 1e-5)
+                    << "Mismatch at row " << i << ", col " << j;
+        }
+    }
+}
+
