@@ -25,6 +25,7 @@ find_package(GTest REQUIRED)
 
 add_executable(gmm_tests
         Testing/test_gmm.cpp
+        Testing/test_math.cpp
         algorithm/gmm/gmm.cpp
         algorithm/gmm/gmmResult.h
         algorithm/gmm/helpers/sampling.cpp

@@ -56,6 +56,8 @@ private:
     void maximization_step(const Eigen::MatrixXd &data, int k, GMMResult &result,
                            const std::vector<std::vector<double> > &log_responsibilities,
                            std::vector<Eigen::MatrixXd> &precision_cholesky) const;
+
+    friend class GMMTest_FriendAccess;
 };
 
 #endif // GMM_H
