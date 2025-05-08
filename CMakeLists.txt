@@ -25,6 +25,7 @@ enable_testing()
 find_package(GTest REQUIRED)
 
 add_executable(gmm_tests
+        data.cpp
         Testing/test_gmm.cpp
         Testing/test_math.cpp
         algorithm/gmm/gmm.cpp
