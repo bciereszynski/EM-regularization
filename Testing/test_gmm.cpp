@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../algorithm/gmm/gmm.h"
+#include "../src/algorithm/gmm/gmm.h"
 #include <Eigen/Dense>
 
 TEST(GMMTest, BasicClustering) {

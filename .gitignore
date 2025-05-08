@@ -1,13 +1,4 @@
 cmake-build-debug
 .idea
 .cmake
-/Makefile
-/EM_regularization
-/CTestTestfile.cmake
-/CMakeCache.txt
-/cmake_install.cmake
-/gmm_tests
-**/*_include*.cmake
-**/*_tests*.cmake
-CMakeFiles
 /Testing/Temporary/
