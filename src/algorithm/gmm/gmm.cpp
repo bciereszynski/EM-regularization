@@ -84,7 +84,7 @@ GMM::GMM(
     decompose_if_fails(decompose_if_fails) {
 }
 
-// flaga eigen - blas
+// TODO flaga eigen - blas
 GMMResult GMM::fit(const std::vector<std::vector<double> > &data, int k) {
     Eigen::MatrixXd data_matrix(data.size(), data[0].size());
     for (size_t i = 0; i < data.size(); ++i) {
@@ -149,7 +149,7 @@ GMMResult GMM::fit(const Eigen::MatrixXd &data, GMMResult &result) const {
         is_empty[cluster] = false;
         result.assignments[i] = cluster;
     }
-    // hight resolution clock
+    // TODO hight resolution clock
     result.elapsed = std::chrono::duration_cast<std::chrono::duration<double> >(
         std::chrono::system_clock::now() - start_time).count();
     return result;
