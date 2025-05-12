@@ -49,19 +49,19 @@ private:
                                     std::vector<Eigen::MatrixXd> &precisions_cholesky) const;
 
     static std::tuple<std::vector<double>, std::vector<std::vector<double> >,
-        std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > >
-    estimate_gaussian_parameters(const Eigen::MatrixXd &data, int k,
-                                 std::vector<std::vector<double> > &responsibilities,
-                                 CovarianceMatrixRegularizer &regularizer);
+        std::vector<Eigen::MatrixXd> >
+    estimate_gaussian_parameters(const Eigen::MatrixXd &, int,
+                                 Eigen::MatrixXd &,
+                                 CovarianceMatrixRegularizer &);
 
-    static std::pair<double, std::vector<std::vector<double> > > expectation_step(
+    static std::pair<double, Eigen::MatrixXd> expectation_step(
         const Eigen::MatrixXd &data,
         int k,
         const GMMResult &result,
         const std::vector<Eigen::MatrixXd> &precisionsCholesky);
 
     void maximization_step(const Eigen::MatrixXd &data, int k, GMMResult &result,
-                           const std::vector<std::vector<double> > &log_responsibilities,
+                           const Eigen::MatrixXd &log_responsibilities,
                            std::vector<Eigen::MatrixXd> &precision_cholesky) const;
 
     friend class GMMTest_FriendAccess;

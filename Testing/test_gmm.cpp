@@ -125,7 +125,7 @@ protected:
 
         for (size_t i = 0; i < expected_log_responsibilities.size(); ++i) {
             for (size_t j = 0; j < k; ++j) {
-                EXPECT_NEAR(log_responsibilities[i][j], expected_log_responsibilities[i][j], 1e-6)
+                EXPECT_NEAR(log_responsibilities(i, j), expected_log_responsibilities[i][j], 1e-6)
                     << "Mismatch at row " << i << ", col " << j;
             }
         }
@@ -172,7 +172,7 @@ protected:
 
         for (size_t i = 0; i < expected_log_responsibilities.size(); ++i) {
             for (size_t j = 0; j < k; ++j) {
-                EXPECT_NEAR(log_responsibilities[i][j], expected_log_responsibilities[i][j], 1e-6)
+                EXPECT_NEAR(log_responsibilities(i, j), expected_log_responsibilities[i][j], 1e-6)
                 << "Mismatch at row " << i << ", col " << j;
             }
         }

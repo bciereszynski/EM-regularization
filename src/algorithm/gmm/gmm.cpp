@@ -106,7 +106,7 @@ GMMResult GMM::fit(const Eigen::MatrixXd &data, GMMResult &result) const {
     result.converged = false;
     result.objective = -std::numeric_limits<double>::infinity();
 
-    auto log_responsibilities = std::vector<std::vector<double> >(n, std::vector<double>(k, 0.0));
+    Eigen::MatrixXd log_responsibilities(n, k);
     auto precision_cholesky = std::vector<Eigen::MatrixXd>(k, Eigen::MatrixXd(d, d));
 
     compute_precision_cholesky(result, precision_cholesky);
@@ -119,7 +119,8 @@ GMMResult GMM::fit(const Eigen::MatrixXd &data, GMMResult &result) const {
             const double previous_objective = result.objective;
 
             const auto t0 = std::chrono::system_clock::now();
-            auto [objective, log_responsibilities] = expectation_step(data, k, result, precision_cholesky);
+            auto [objective, temp_log_responsibilities] = expectation_step(data, k, result, precision_cholesky);
+            log_responsibilities = temp_log_responsibilities;
             maximization_step(data, k, result, log_responsibilities, precision_cholesky);
             const auto t1 = std::chrono::system_clock::now();
 
@@ -193,7 +194,7 @@ GMMResult GMM::fit(const Eigen::MatrixXd &data, const std::vector<int> &initial_
     return result;
 }
 
-std::pair<double, std::vector<std::vector<double> > >
+std::pair<double, Eigen::MatrixXd>
 GMM::expectation_step(const Eigen::MatrixXd &data,
                       const int k, const GMMResult &result,
                       const std::vector<Eigen::MatrixXd> &precisionsCholesky) {
@@ -208,10 +209,10 @@ GMM::expectation_step(const Eigen::MatrixXd &data,
         log_probabilities_norm[i] = log_sum_exp(weighted_log_probabilities[i]);
     }
 
-    std::vector<std::vector<double> > log_responsibilities(n, std::vector<double>(k, 0.0));
+    Eigen::MatrixXd log_responsibilities(n, k);
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < k; ++j) {
-            log_responsibilities[i][j] = weighted_log_probabilities[i][j] - log_probabilities_norm[i];
+            log_responsibilities(i, j) = weighted_log_probabilities[i][j] - log_probabilities_norm[i];
         }
     }
     double mean = std::accumulate(log_probabilities_norm.begin(), log_probabilities_norm.end(), 0.0) /
@@ -221,15 +222,9 @@ GMM::expectation_step(const Eigen::MatrixXd &data,
 }
 
 void GMM::maximization_step(const Eigen::MatrixXd &data, const int k, GMMResult &result,
-                            const std::vector<std::vector<double> > &log_responsibilities,
+                            const Eigen::MatrixXd &log_responsibilities,
                             std::vector<Eigen::MatrixXd> &precision_cholesky) const {
-    std::vector<std::vector<double> > responsibilities(log_responsibilities.size(),
-                                                       std::vector<double>(log_responsibilities[0].size()));
-    for (size_t i = 0; i < log_responsibilities.size(); ++i) {
-        for (size_t j = 0; j < log_responsibilities[i].size(); ++j) {
-            responsibilities[i][j] = std::exp(log_responsibilities[i][j]);
-        }
-    }
+    Eigen::MatrixXd responsibilities = log_responsibilities.array().exp();
     auto regularizer = EmpiricalRegularizer();
     std::tie(result.weights, result.clusters, result.covariances) = GMM::estimate_gaussian_parameters(
         data, k, responsibilities, regularizer);
@@ -262,9 +257,9 @@ void GMM::compute_precision_cholesky(GMMResult &result,
 }
 
 std::tuple<std::vector<double>, std::vector<std::vector<double> >,
-    std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > >
+    std::vector<Eigen::MatrixXd> >
 GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
-                                  std::vector<std::vector<double> > &responsibilities,
+                                  Eigen::MatrixXd &responsibilities,
                                   CovarianceMatrixRegularizer &regularizer) {
     const int n = data.rows();
     const int d = data.cols();
@@ -273,20 +268,13 @@ GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
     std::vector<double> weights(k, eps);
 
     for (int i = 0; i < k; ++i) {
-        double sum_resp = 0.0;
-        for (int j = 0; j < n; ++j) {
-            sum_resp += responsibilities[j][i];
-        }
+        double sum_resp = responsibilities.col(i).sum();
 
         if (sum_resp < 1e-32) {
-            for (int j = 0; j < n; ++j) {
-                responsibilities[j][i] = 1.0 / n;
-            }
+            responsibilities.col(i).setConstant(1.0 / n);
         }
 
-        for (int j = 0; j < n; ++j) {
-            weights[i] += responsibilities[j][i];
-        }
+        weights[i] = responsibilities.col(i).sum();
     }
 
     const double total_weight = std::accumulate(weights.begin(), weights.end(), 0.0);
@@ -298,10 +286,8 @@ GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
     std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > covariances(k);
 
     for (int i = 0; i < k; ++i) {
-        std::vector<double> responsibility_column(n, 0.0);
-        for (int j = 0; j < n; ++j) {
-            responsibility_column[j] = responsibilities[j][i];
-        }
+        std::vector<double> responsibility_column(responsibilities.col(i).data(),
+                                                  responsibilities.col(i).data() + n);
 
         Eigen::MatrixXd covariances_temp;
         Eigen::VectorXd cluster_temp;
