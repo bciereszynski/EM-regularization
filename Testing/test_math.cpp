@@ -2,51 +2,8 @@
 #include <gtest/gtest.h>
 #include "../src/data.h"
 #include <Eigen/Dense>
+#include "../src/algorithm/gmm/helpers/mathematical.h"
 
-namespace {
-    std::vector<std::vector<double> > estimate_weighted_log_probabilities(
-        const Eigen::MatrixXd &data, const int k, const GMMResult &result,
-        const std::vector<Eigen::MatrixXd> &precisionsCholesky
-    ) {
-        const int n = data.rows();
-        const int d = data.cols();
-
-        std::vector<double> log_det_cholesky(k, 0.0);
-
-        for (int i = 0; i < k; ++i) {
-            for (int j = 0; j < d; ++j) {
-                log_det_cholesky[i] += log(precisionsCholesky[i](j, j));
-            }
-        }
-
-        std::vector<std::vector<double> > log_probabilities(n, std::vector<double>(k, 0.0));
-        for (int i = 0; i < k; ++i) {
-            Eigen::VectorXd cluster = Eigen::Map<const Eigen::VectorXd>(
-                result.clusters[i].data(), result.clusters[i].size());
-
-            Eigen::MatrixXd y = (data * precisionsCholesky[i]).rowwise() - (
-                                    cluster.transpose() * precisionsCholesky[i]); // n × d
-
-            for (int j = 0; j < n; ++j) {
-                double sum = 0.0;
-                for (int col = 0; col < y.cols(); ++col) {
-                    const double val = y(j, col);
-                    sum += val * val;
-                }
-                log_probabilities[j][i] = sum;
-            }
-        }
-        std::vector<std::vector<double> > result_probabilities(n, std::vector<double>(k));
-        for (int j = 0; j < n; ++j) {
-            for (int i = 0; i < k; ++i) {
-                result_probabilities[j][i] = -0.5 * (d * std::log(2 * M_PI) + log_probabilities[j][i]) +
-                                             log_det_cholesky[i] + std::log(result.weights[i]);
-            }
-        }
-
-        return result_probabilities;
-    }
-}
 
 class GMMTest_FriendAccess : public ::testing::Test {
 protected:
@@ -114,7 +71,7 @@ TEST_F(GMMTest_FriendAccess, ComputePrecisionCholesky_RealisticCovariances_Yield
     TestComputePrecisionCholesky_NonIdentityCovariances();
 }
 
-TEST_F(GMMTest_FriendAccess, EstimateWeightedLogProbabilities_SimpleCase) {
+TEST(MathTest, EstimateWeightedLogProbabilities_SimpleCase) {
     constexpr int n = 2;
     constexpr int d = 2;
     constexpr int k = 1;
@@ -143,7 +100,7 @@ TEST_F(GMMTest_FriendAccess, EstimateWeightedLogProbabilities_SimpleCase) {
     EXPECT_NEAR(log_probs[1][0], expected1, 1e-6);
 }
 
-TEST_F(GMMTest_FriendAccess, EstimateWeightedLogProbabilities_RealData) {
+TEST(MathTest, EstimateWeightedLogProbabilities_RealData) {
     int k = 3;
     constexpr int d = 2;
     std::vector<int> expected_clusters;

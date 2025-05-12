@@ -2,6 +2,7 @@
 #define MATHEMATICAL_H
 
 #include <vector>
+#include "../gmmResult.h"
 
 template<typename T>
 T one(const T &x) {
@@ -14,5 +15,10 @@ T zero(const T &x) {
 }
 
 double log_sum_exp(const std::vector<double> &probabilities);
+
+std::vector<std::vector<double> > estimate_weighted_log_probabilities(
+    const Eigen::MatrixXd &data, int k, const GMMResult &result,
+    const std::vector<Eigen::MatrixXd> &precisionsCholesky
+);
 
 #endif //MATHEMATICAL_H
