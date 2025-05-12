@@ -54,61 +54,6 @@ namespace {
 
         return max_cluster;
     }
-
-    std::tuple<std::vector<double>, std::vector<std::vector<double> >, std::vector<Eigen::Matrix<double, Eigen::Dynamic,
-        Eigen::Dynamic> > > estimate_gaussian_parameters(
-        const Eigen::MatrixXd &data,
-        const int k,
-        std::vector<std::vector<double> > &responsibilities
-    ) {
-        const int n = data.rows();
-        const int d = data.cols();
-        constexpr double eps = 10 * std::numeric_limits<double>::epsilon();
-
-        std::vector<double> weights(k, eps);
-
-        for (int i = 0; i < k; ++i) {
-            double sum_resp = 0.0;
-            for (int j = 0; j < n; ++j) {
-                sum_resp += responsibilities[j][i];
-            }
-
-            if (sum_resp < 1e-32) {
-                for (int j = 0; j < n; ++j) {
-                    responsibilities[j][i] = 1.0 / n;
-                }
-            }
-
-            for (int j = 0; j < n; ++j) {
-                weights[i] += responsibilities[j][i];
-            }
-        }
-
-        const double total_weight = std::accumulate(weights.begin(), weights.end(), 0.0);
-        for (double &w: weights) {
-            w /= total_weight;
-        }
-
-        std::vector<std::vector<double> > clusters(k, std::vector<double>(d, 0.0));
-        std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > covariances(k);
-
-        for (int i = 0; i < k; ++i) {
-            std::vector<double> responsibility_column(n, 0.0);
-            for (int j = 0; j < n; ++j) {
-                responsibility_column[j] = responsibilities[j][i];
-            }
-
-            auto regularizer = EmpiricalRegularizer();
-            Eigen::MatrixXd covariances_temp;
-            Eigen::VectorXd cluster_temp;
-            std::tie(covariances_temp, cluster_temp) = regularizer.fit(data, responsibility_column);
-
-            clusters[i] = std::vector<double>(cluster_temp.data(), cluster_temp.data() + cluster_temp.size());
-            covariances[i] = covariances_temp;
-        }
-
-        return std::make_tuple(weights, clusters, covariances);
-    }
 }
 
 
@@ -314,4 +259,57 @@ void GMM::compute_precision_cholesky(GMMResult &result,
             }
         }
     }
+}
+
+std::tuple<std::vector<double>, std::vector<std::vector<double> >,
+    std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > >
+GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
+                                  std::vector<std::vector<double> > &responsibilities) {
+    const int n = data.rows();
+    const int d = data.cols();
+    constexpr double eps = 10 * std::numeric_limits<double>::epsilon();
+
+    std::vector<double> weights(k, eps);
+
+    for (int i = 0; i < k; ++i) {
+        double sum_resp = 0.0;
+        for (int j = 0; j < n; ++j) {
+            sum_resp += responsibilities[j][i];
+        }
+
+        if (sum_resp < 1e-32) {
+            for (int j = 0; j < n; ++j) {
+                responsibilities[j][i] = 1.0 / n;
+            }
+        }
+
+        for (int j = 0; j < n; ++j) {
+            weights[i] += responsibilities[j][i];
+        }
+    }
+
+    const double total_weight = std::accumulate(weights.begin(), weights.end(), 0.0);
+    for (double &w: weights) {
+        w /= total_weight;
+    }
+
+    std::vector<std::vector<double> > clusters(k, std::vector<double>(d, 0.0));
+    std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > covariances(k);
+
+    for (int i = 0; i < k; ++i) {
+        std::vector<double> responsibility_column(n, 0.0);
+        for (int j = 0; j < n; ++j) {
+            responsibility_column[j] = responsibilities[j][i];
+        }
+
+        auto regularizer = EmpiricalRegularizer();
+        Eigen::MatrixXd covariances_temp;
+        Eigen::VectorXd cluster_temp;
+        std::tie(covariances_temp, cluster_temp) = regularizer.fit(data, responsibility_column);
+
+        clusters[i] = std::vector<double>(cluster_temp.data(), cluster_temp.data() + cluster_temp.size());
+        covariances[i] = covariances_temp;
+    }
+
+    return std::make_tuple(weights, clusters, covariances);
 }
