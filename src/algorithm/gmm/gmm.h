@@ -65,6 +65,7 @@ private:
                            std::vector<Eigen::MatrixXd> &precision_cholesky) const;
 
     friend class GMMTest_FriendAccess;
+    friend class MathTest_FriendAccess;
 };
 
 #endif // GMM_H

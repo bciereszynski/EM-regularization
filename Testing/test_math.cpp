@@ -5,7 +5,7 @@
 #include "../src/algorithm/gmm/helpers/mathematical.h"
 
 
-class GMMTest_FriendAccess : public ::testing::Test {
+class MathTest_FriendAccess : public ::testing::Test {
 protected:
     GMM gmm{1e-3, 100, false, 42, false};
 
@@ -63,11 +63,11 @@ protected:
 };
 
 // Test case
-TEST_F(GMMTest_FriendAccess, ComputePrecisionCholesky_IdentityInput_YieldsIdentityOutput) {
+TEST_F(MathTest_FriendAccess, ComputePrecisionCholesky_IdentityInput_YieldsIdentityOutput) {
     TestComputePrecisionCholesky();
 }
 
-TEST_F(GMMTest_FriendAccess, ComputePrecisionCholesky_RealisticCovariances_YieldsExpectedOutput) {
+TEST_F(MathTest_FriendAccess, ComputePrecisionCholesky_RealisticCovariances_YieldsExpectedOutput) {
     TestComputePrecisionCholesky_NonIdentityCovariances();
 }
 
