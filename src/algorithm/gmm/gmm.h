@@ -3,6 +3,7 @@
 
 #include <random>
 #include "gmmResult.h"
+#include "../regularization/EmpiricalRegularizer.h"
 
 // TODO remname consts
 constexpr bool DEFAULT_VERBOSE = false;
@@ -50,7 +51,8 @@ private:
     static std::tuple<std::vector<double>, std::vector<std::vector<double> >,
         std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > >
     estimate_gaussian_parameters(const Eigen::MatrixXd &data, int k,
-                                 std::vector<std::vector<double> > &responsibilities);
+                                 std::vector<std::vector<double> > &responsibilities,
+                                 CovarianceMatrixRegularizer &regularizer);
 
     static std::pair<double, std::vector<std::vector<double> > > expectation_step(
         const Eigen::MatrixXd &data,

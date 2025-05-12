@@ -3,7 +3,6 @@
 #include <iostream>
 #include <limits>
 
-#include "../regularization/EmpiricalRegularizer.h"
 #include "./helpers/mathematical.h"
 #include "./helpers/sampling.h"
 
@@ -231,8 +230,9 @@ void GMM::maximization_step(const Eigen::MatrixXd &data, const int k, GMMResult 
             responsibilities[i][j] = std::exp(log_responsibilities[i][j]);
         }
     }
-    std::tie(result.weights, result.clusters, result.covariances) = estimate_gaussian_parameters(
-        data, k, responsibilities);
+    auto regularizer = EmpiricalRegularizer();
+    std::tie(result.weights, result.clusters, result.covariances) = GMM::estimate_gaussian_parameters(
+        data, k, responsibilities, regularizer);
     compute_precision_cholesky(result, precision_cholesky);
 }
 
@@ -264,7 +264,8 @@ void GMM::compute_precision_cholesky(GMMResult &result,
 std::tuple<std::vector<double>, std::vector<std::vector<double> >,
     std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > >
 GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
-                                  std::vector<std::vector<double> > &responsibilities) {
+                                  std::vector<std::vector<double> > &responsibilities,
+                                  CovarianceMatrixRegularizer &regularizer) {
     const int n = data.rows();
     const int d = data.cols();
     constexpr double eps = 10 * std::numeric_limits<double>::epsilon();
@@ -302,7 +303,6 @@ GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
             responsibility_column[j] = responsibilities[j][i];
         }
 
-        auto regularizer = EmpiricalRegularizer();
         Eigen::MatrixXd covariances_temp;
         Eigen::VectorXd cluster_temp;
         std::tie(covariances_temp, cluster_temp) = regularizer.fit(data, responsibility_column);
