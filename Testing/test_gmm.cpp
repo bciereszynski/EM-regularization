@@ -115,19 +115,18 @@ protected:
 
         EXPECT_NEAR(mean_log_likelihood, -100.48916207565158, 1e-6);
 
-        const std::vector<std::vector<double> > expected_log_responsibilities = {
-            {-303.987598853661, 0.0, -220.36558061847856},
-            {-0.5640781381025022, -310.7288120901821, -0.8413788673385341},
-            {-66.73156857059266, -500.03062047627327, 0.0},
-            {-130.91721955111578, -179.62875633005083, 0.0},
-            {-93.5978919047501, 0.0, -49.83641435898852}
-        };
+        Eigen::MatrixXd expected_log_responsibilities(5, 3);
+        expected_log_responsibilities <<
+                -303.987598853661, 0.0, -220.36558061847856,
+                -0.5640781381025022, -310.7288120901821, -0.8413788673385341,
+                -66.73156857059266, -500.03062047627327, 0.0,
+                -130.91721955111578, -179.62875633005083, 0.0,
+                -93.5978919047501, 0.0, -49.83641435898852;
 
-        for (size_t i = 0; i < expected_log_responsibilities.size(); ++i) {
-            for (size_t j = 0; j < k; ++j) {
-                EXPECT_NEAR(log_responsibilities(i, j), expected_log_responsibilities[i][j], 1e-6)
-                    << "Mismatch at row " << i << ", col " << j;
-            }
+        for (int i = 0; i < 5; ++i) {
+            EXPECT_TRUE(log_responsibilities.row(i).isApprox(expected_log_responsibilities.row(i), 1e-6))
+            << "Mismatch in responsibility " << i << "\nExpected:\n" << expected_log_responsibilities.row(i)
+            << "\nGot:\n" << log_responsibilities.row(i);
         }
     }
 
@@ -162,19 +161,18 @@ protected:
 
         EXPECT_NEAR(mean_log_likelihood, -7.5749208453554004, 1e-6);
 
-        const std::vector<std::vector<double> > expected_log_responsibilities = {
-            {-27.232032487796047, -0.04787476906218746, -3.063008541916525},
-            {-1.715062305720429, -4.3883879711018805, -0.21365526279087454},
-            {-14.510256021188855, -7.068564751881714, -0.0008523166008886918},
-            {-42.37473621066418, -2.1977119573849304, -0.11772212984888597},
-            {-12.207318389146511, -0.3859286365383454, -1.1388845342165084}
-        };
+        Eigen::MatrixXd expected_log_responsibilities(5, 3);
+        expected_log_responsibilities <<
+                -27.232032487796047, -0.04787476906218746, -3.063008541916525,
+                -1.715062305720429, -4.3883879711018805, -0.21365526279087454,
+                -14.510256021188855, -7.068564751881714, -0.0008523166008886918,
+                -42.37473621066418, -2.1977119573849304, -0.11772212984888597,
+                -12.207318389146511, -0.3859286365383454, -1.1388845342165084;
 
-        for (size_t i = 0; i < expected_log_responsibilities.size(); ++i) {
-            for (size_t j = 0; j < k; ++j) {
-                EXPECT_NEAR(log_responsibilities(i, j), expected_log_responsibilities[i][j], 1e-6)
-                << "Mismatch at row " << i << ", col " << j;
-            }
+        for (int i = 0; i < expected_log_responsibilities.rows(); ++i) {
+            EXPECT_TRUE(log_responsibilities.row(i).isApprox(expected_log_responsibilities.row(i), 1e-6))
+                << "Mismatch at row " << i << "\nExpected:\n" << expected_log_responsibilities.row(i)
+                << "\nGot:\n" << log_responsibilities.row(i);
         }
     }
 };
