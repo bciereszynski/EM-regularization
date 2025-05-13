@@ -41,14 +41,11 @@ std::vector<std::vector<double> > estimate_weighted_log_probabilities(
             log_det_cholesky[i] += log(precisionsCholesky[i](j, j));
         }
     }
-
     std::vector<std::vector<double> > log_probabilities(n, std::vector<double>(k, 0.0));
     for (int i = 0; i < k; ++i) {
-        Eigen::VectorXd cluster = Eigen::Map<const Eigen::VectorXd>(
-            result.clusters[i].data(), result.clusters[i].size());
+        Eigen::VectorXd cluster = result.clusters.row(i).transpose();
 
-        Eigen::MatrixXd y = (data * precisionsCholesky[i]).rowwise() - (
-                                cluster.transpose() * precisionsCholesky[i]); // n × d
+        Eigen::MatrixXd y = (data * precisionsCholesky[i]).rowwise() - cluster.transpose() * precisionsCholesky[i];
 
         for (int j = 0; j < n; ++j) {
             double sum = 0.0;

@@ -12,20 +12,15 @@ namespace {
         const int k = static_cast<int>(indices.size());
         const int d = data.cols();
 
+        result.clusters = Eigen::MatrixXd(k, d);
         for (int i = 0; i < k; ++i) {
-            for (int j = 0; j < d; ++j) {
-                result.clusters[i][j] = data(indices[i], j);
-            }
+            result.clusters.row(i) = data.row(indices[i]);
         }
 
         if (verbose) {
             std::cout << "Initial clusters:\n";
             for (int i = 0; i < k; ++i) {
-                std::cout << "Cluster " << i + 1 << ": ";
-                for (int j = 0; j < d; ++j) {
-                    std::cout << result.clusters[i][j] << " ";
-                }
-                std::cout << "\n";
+                std::cout << "Cluster " << i + 1 << ": " << result.clusters.row(i) << "\n";
             }
         }
     }
@@ -100,7 +95,7 @@ GMMResult GMM::fit(const Eigen::MatrixXd &data, GMMResult &result) const {
     const auto start_time = std::chrono::system_clock::now();
     const int n = data.rows();
     const int d = data.cols();
-    const int k = static_cast<int>(result.clusters.size());
+    const int k = static_cast<int>(result.clusters.rows());
 
     result.iterations = max_iterations;
     result.converged = false;
@@ -256,7 +251,7 @@ void GMM::compute_precision_cholesky(GMMResult &result,
     }
 }
 
-std::tuple<std::vector<double>, std::vector<std::vector<double> >,
+std::tuple<std::vector<double>, Eigen::MatrixXd,
     std::vector<Eigen::MatrixXd> >
 GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
                                   Eigen::MatrixXd &responsibilities,
@@ -282,7 +277,7 @@ GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
         w /= total_weight;
     }
 
-    std::vector<std::vector<double> > clusters(k, std::vector<double>(d, 0.0));
+    Eigen::MatrixXd clusters(k, d);
     std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > covariances(k);
 
     for (int i = 0; i < k; ++i) {
@@ -293,7 +288,7 @@ GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
         Eigen::VectorXd cluster_temp;
         std::tie(covariances_temp, cluster_temp) = regularizer.fit(data, responsibility_column);
 
-        clusters[i] = std::vector<double>(cluster_temp.data(), cluster_temp.data() + cluster_temp.size());
+        clusters.row(i) = cluster_temp.transpose();
         covariances[i] = covariances_temp;
     }
 

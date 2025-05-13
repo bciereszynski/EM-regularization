@@ -48,7 +48,7 @@ private:
     void compute_precision_cholesky(GMMResult &result,
                                     std::vector<Eigen::MatrixXd> &precisions_cholesky) const;
 
-    static std::tuple<std::vector<double>, std::vector<std::vector<double> >,
+    static std::tuple<std::vector<double>, Eigen::MatrixXd,
         std::vector<Eigen::MatrixXd> >
     estimate_gaussian_parameters(const Eigen::MatrixXd &, int,
                                  Eigen::MatrixXd &,

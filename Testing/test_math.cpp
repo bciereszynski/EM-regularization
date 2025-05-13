@@ -81,7 +81,7 @@ TEST(MathTest, EstimateWeightedLogProbabilities_SimpleCase) {
             3.0, 4.0;
 
     GMMResult result(d, n, k);
-    result.clusters[0] = std::vector<double>{0.0, 0.0};
+    result.clusters.row(0) = Eigen::VectorXd::Constant(2, 0.0);
     result.weights[0] = 1.0;
 
     std::vector<Eigen::MatrixXd> precisions_cholesky(1, Eigen::MatrixXd::Identity(d, d));
@@ -113,9 +113,9 @@ TEST(MathTest, EstimateWeightedLogProbabilities_RealData) {
     const int n = data.rows();
 
     GMMResult result(d, n, k);
-    result.clusters[0] = {10.706315370566315, -15.655038396575486};
-    result.clusters[1] = {1.5346346971608753, 10.172773119928657};
-    result.clusters[2] = {0.8125445826316164, -9.318465733509676};
+    result.clusters << 10.706315370566315, -15.655038396575486,
+            1.5346346971608753, 10.172773119928657,
+            0.8125445826316164, -9.318465733509676;
     result.weights = {0.12309068557448444, 0.30756460120925033, 0.5693447132162652};
 
     std::vector<Eigen::MatrixXd> precisions_cholesky(k, Eigen::MatrixXd(d, d));

@@ -11,8 +11,8 @@
 
 namespace {
     double distance(const GMMResult &a, const int i, const GMMResult &b, const int j, const Eigen::MatrixXd &data) {
-        const Eigen::VectorXd meanA = Eigen::Map<const Eigen::VectorXd>(a.clusters[i].data(), a.clusters[i].size());
-        const Eigen::VectorXd meanB = Eigen::Map<const Eigen::VectorXd>(b.clusters[j].data(), b.clusters[j].size());
+        const Eigen::VectorXd meanA = a.clusters.row(i).transpose();
+        const Eigen::VectorXd meanB = b.clusters.row(j).transpose();
 
         const Eigen::MatrixXd &covA = a.covariances[i];
         const Eigen::MatrixXd &covB = b.covariances[j];
@@ -186,7 +186,7 @@ void GeneticalAlgorithm::mutate(GMMResult &individual, const Eigen::MatrixXd &da
         const int to = dist_k(rng);
         const int from = dist_n(rng);
 
-        individual.clusters[to] = std::vector<double>(data.row(from).data(), data.row(from).data() + data.cols());
+        individual.clusters.row(to) = data.row(from);
 
         double sum_det = 0.0;
         for (int j = 0; j < k; ++j) {
@@ -224,10 +224,10 @@ GMMResult GeneticalAlgorithm::crossover(const GMMResult &parent1, const GMMResul
 
     for (int i = 0; i < k; ++i) {
         if (dist(rng) > 0.5) {
-            offspring.clusters[i] = parent1.clusters[i];
+            offspring.clusters.row(i) = parent1.clusters.row(i);
             offspring.covariances[i] = parent1.covariances[i];
         } else {
-            offspring.clusters[i] = parent2.clusters[assignment[i]];
+            offspring.clusters.row(i) = parent2.clusters.row(assignment[i]);
             offspring.covariances[i] = parent2.covariances[assignment[i]];
         }
     }

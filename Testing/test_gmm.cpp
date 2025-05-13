@@ -103,9 +103,9 @@ protected:
         const int d = data.cols();
 
         GMMResult result(d, n, k);
-        result.clusters[0] = {8.072821980338327, -18.486899691951532};
-        result.clusters[1] = {-8.15593365254254, 15.568038996903327};
-        result.clusters[2] = {3.2971078319133493, -15.064491056854397};
+        result.clusters << 8.072821980338327, -18.486899691951532,
+                -8.15593365254254, 15.568038996903327,
+                3.2971078319133493, -15.064491056854397;
         result.weights = {0.3333333333333333, 0.3333333333333333, 0.3333333333333333};
 
         std::vector<Eigen::MatrixXd> precisions_cholesky(k, Eigen::MatrixXd::Identity(d, d));
@@ -144,9 +144,9 @@ protected:
         const int d = data.cols();
 
         GMMResult result(d, n, k);
-        result.clusters[0] = {10.706315370566315, -15.655038396575486};
-        result.clusters[1] = {1.5346346971608753, 10.172773119928657};
-        result.clusters[2] = {0.8125445826316164, -9.318465733509676};
+        result.clusters << 10.706315370566315, -15.655038396575486,
+                1.5346346971608753, 10.172773119928657,
+                0.8125445826316164, -9.318465733509676;
         result.weights = {0.12309068557448444, 0.30756460120925033, 0.5693447132162652};
 
         std::vector<Eigen::MatrixXd> precisions_cholesky(k, Eigen::MatrixXd(d, d));

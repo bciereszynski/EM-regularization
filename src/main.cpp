@@ -42,12 +42,7 @@ int main(const int argc, char *argv[]) {
     auto result = ga.run(data, k);
 
     std::cout << "Clusters:" << std::endl;
-    for (const auto &row: result.clusters) {
-        for (const auto &value: row) {
-            std::cout << value << " ";
-        }
-        std::cout << "\n";
-    }
+    std::cout << result.clusters << std::endl;
 
 
     return 0;
