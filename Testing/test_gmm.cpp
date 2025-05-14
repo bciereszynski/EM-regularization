@@ -237,6 +237,69 @@ protected:
             << "Covariance matrix mismatch at index " << i;
         }
     }
+
+    static void Test_Maximisation_Step() {
+        Eigen::MatrixXd data(11, 2);
+        data << 8.446952398696654, 11.512125077077995,
+                15.499610048784618, -3.161120404454193,
+                -9.743336473406703, -18.80630870985824,
+                -17.86342608516553, -11.382757975845214,
+                14.398746744052609, 8.170480801024427,
+                15.330418855520072, -8.057175056487976,
+                4.882465698592702, -0.5870989988150339,
+                -8.907657689495553, 18.466866205980494,
+                2.492129816536738, -14.800565015825306,
+                16.857415857407293, 5.338050934290413,
+                -23.45789229394996, -2.679611133069019;
+
+        Eigen::MatrixXd log_responsibilities(11, 3);
+        log_responsibilities << 0.0, -584.9106217870079, -586.367024561603,
+                0.0, -525.5352092674308, -694.150877033445,
+                -594.7711967948704, 0.0, -163.55722764227863,
+                -711.5884711638098, 0.0, -53.52140856407806,
+                0.0, -711.5884711638098, -775.4248071159499,
+                0.0, -424.34300807332846, -634.6232240127079,
+                0.0, -233.33351845001846, -320.1498446453707,
+                -0.007880701372130261, -161.00878636417707, -4.847276135417928,
+                -121.70320577427677, 0.0, -197.1455547663949,
+                0.0, -735.5273015257319, -837.7696318031681,
+                -775.4248071159499, -53.52140856407806, 0.0;
+
+        const std::vector<double> expected_weights = {0.6356500245402693, 0.2727272727272728, 0.09162270273245789};
+
+        Eigen::MatrixXd expected_centers(3, 2);
+        expected_centers << 9.521802600275707, 4.510367687529266,
+                -8.371544247345165, -14.996543900509586,
+                -23.344566457264932, -2.514909854874149;
+
+        const std::vector<Eigen::MatrixXd> expected_covariances = {
+            (Eigen::MatrixXd(2, 2) << 72.47093182603915, -47.76866097711419,
+             -47.76866097711419, 71.38576144184982).finished(),
+            (Eigen::MatrixXd(2, 2) << 69.99901630029576, -8.982124169630735,
+             -8.982124169630735, 9.204054778365268).finished(),
+            (Eigen::MatrixXd(2, 2) << 1.6360747652529521, 2.3777773272343468,
+             2.3777773272343468, 3.4557253360212914).finished()
+        };
+
+        GMMResult result(2, 11, 3);
+        std::vector<Eigen::MatrixXd> precision_cholesky(3, Eigen::MatrixXd::Identity(2, 2));
+
+        const GMM gmm;
+        gmm.maximization_step(data, 3, result, log_responsibilities, precision_cholesky);
+
+        for (int i = 0; i < 3; ++i) {
+            EXPECT_NEAR(result.weights[i], expected_weights[i], 1e-6) << "Mismatch in weight " << i;
+        }
+
+        EXPECT_TRUE(result.clusters.isApprox(expected_centers, 1e-6))
+        << "Mismatch in centers\nExpected:\n" << expected_centers << "\nGot:\n" << result.clusters;
+
+        for (int i = 0; i < 3; ++i) {
+            EXPECT_TRUE(result.covariances[i].isApprox(expected_covariances[i], 1e-6))
+            << "Mismatch in covariance " << i << "\nExpected:\n" << expected_covariances[i]
+            << "\nGot:\n" << result.covariances[i];
+        }
+    }
 };
 
 TEST_F(GMMTest_FriendAccess, ExpectationStep) {
@@ -249,4 +312,8 @@ TEST_F(GMMTest_FriendAccess, ExpectationStep_SecondCase) {
 
 TEST_F(GMMTest_FriendAccess, TestEstimateGaussian) {
     TestEstimateGaussian();
+}
+
+TEST_F(GMMTest_FriendAccess, TestMaximisationStep) {
+    Test_Maximisation_Step();
 }
