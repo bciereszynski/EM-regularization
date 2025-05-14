@@ -85,6 +85,37 @@ TEST(GMMTest, HandlesHighDimensionalData) {
         });
 }
 
+
+TEST(GMMTest, TestFit) {
+    Eigen::MatrixXd data(11, 2);
+    data << 8.446952398696654, 11.512125077077995,
+            15.499610048784618, -3.161120404454193,
+            -9.743336473406703, -18.80630870985824,
+            -17.86342608516553, -11.382757975845214,
+            14.398746744052609, 8.170480801024427,
+            15.330418855520072, -8.057175056487976,
+            4.882465698592702, -0.5870989988150339,
+            -8.907657689495553, 18.466866205980494,
+            2.492129816536738, -14.800565015825306,
+            16.857415857407293, 5.338050934290413,
+            -23.45789229394996, -2.679611133069019;
+
+    constexpr int k = 3;
+    constexpr int max_iterations = 1000;
+    constexpr double tolerance = 0.001;
+
+    GMM gmm(tolerance, max_iterations, false, 42, true);
+
+    const auto result = gmm.fit(data, k);
+
+    const std::vector<int> expected_assignments = {1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 0};
+
+    ASSERT_EQ(result.assignments.size(), expected_assignments.size());
+    for (size_t i = 0; i < expected_assignments.size(); ++i) {
+        EXPECT_EQ(result.assignments[i], expected_assignments[i]) << "Mismatch in assignment at index " << i;
+    }
+}
+
 class GMMTest_FriendAccess : public ::testing::Test {
 protected:
     GMM gmm{1e-3, 100, false, 42, false};
