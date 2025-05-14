@@ -175,6 +175,68 @@ protected:
                 << "\nGot:\n" << log_responsibilities.row(i);
         }
     }
+
+    static void TestEstimateGaussian() {
+        Eigen::MatrixXd data(11, 2);
+        data << 8.446952398696654, 11.512125077077995,
+                15.499610048784618, -3.161120404454193,
+                -9.743336473406703, -18.80630870985824,
+                -17.86342608516553, -11.382757975845214,
+                14.398746744052609, 8.170480801024427,
+                15.330418855520072, -8.057175056487976,
+                4.882465698592702, -0.5870989988150339,
+                -8.907657689495553, 18.466866205980494,
+                2.492129816536738, -14.800565015825306,
+                16.857415857407293, 5.338050934290413,
+                -23.45789229394996, -2.679611133069019;
+
+        Eigen::MatrixXd responsibilities(11, 3);
+        responsibilities << 1.0, 9.474243693098393e-255, 2.2081921561690226e-255,
+                1.0, 5.7937342287019054e-229, 3.4206173646287936e-302,
+                4.944828537633115e-259, 1.0, 9.289633056584679e-72,
+                9.1422604084118e-310, 1.0, 5.7009547897076775e-24,
+                1.0, 9.1422604084118e-310, 0.0,
+                1.0, 5.130659100553779e-185, 2.4357668952132955e-276,
+                1.0, 4.618920572015882e-102, 9.13459061470043e-140,
+                0.9921502699429642, 1.1878799283334782e-70, 0.007849730057035107,
+                1.3962696635361188e-53, 1.0, 2.4031087966987318e-86,
+                1.0, 3.669e-320, 0.0,
+                0.0, 5.7009547897076775e-24, 1.0;
+
+        const std::vector<double> expected_weights = {0.6356500245402693, 0.2727272727272728, 0.09162270273245789};
+
+        Eigen::MatrixXd expected_centers(3, 2);
+        expected_centers << 9.521802600275707, 4.510367687529266,
+                -8.371544247345165, -14.996543900509586,
+                -23.344566457264932, -2.514909854874149;
+
+        std::vector<Eigen::MatrixXd> expected_covariances = {
+            (Eigen::MatrixXd(2, 2) << 72.47093182603915, -47.76866097711419,
+             -47.76866097711419, 71.38576144184982).finished(),
+            (Eigen::MatrixXd(2, 2) << 69.99901630029576, -8.982124169630735,
+             -8.982124169630735, 9.204054778365268).finished(),
+            (Eigen::MatrixXd(2, 2) << 1.6360747652529521, 2.3777773272343468,
+             2.3777773272343468, 3.4557253360212914).finished()
+        };
+
+        EmpiricalRegularizer regularizer;
+
+        auto [computed_weights, computed_centers, computed_covariances] =
+                GMM::estimate_gaussian_parameters(data, 3, responsibilities, regularizer);
+
+        ASSERT_EQ(computed_weights.size(), expected_weights.size());
+        for (size_t i = 0; i < computed_weights.size(); ++i) {
+            ASSERT_NEAR(computed_weights[i], expected_weights[i], 1e-6) << "Weight mismatch at index " << i;
+        }
+
+        ASSERT_TRUE(computed_centers.isApprox(expected_centers, 1e-6)) << "Centers do not match.";
+
+        ASSERT_EQ(computed_covariances.size(), expected_covariances.size());
+        for (size_t i = 0; i < computed_covariances.size(); ++i) {
+            ASSERT_TRUE(computed_covariances[i].isApprox(expected_covariances[i], 1e-6))
+            << "Covariance matrix mismatch at index " << i;
+        }
+    }
 };
 
 TEST_F(GMMTest_FriendAccess, ExpectationStep) {
@@ -183,4 +245,8 @@ TEST_F(GMMTest_FriendAccess, ExpectationStep) {
 
 TEST_F(GMMTest_FriendAccess, ExpectationStep_SecondCase) {
     TestExpectationStep_SecondCase();
+}
+
+TEST_F(GMMTest_FriendAccess, TestEstimateGaussian) {
+    TestEstimateGaussian();
 }
