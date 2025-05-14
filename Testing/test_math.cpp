@@ -17,7 +17,7 @@ protected:
             result.covariances[i] = Eigen::MatrixXd::Identity(d, d);
         }
         std::vector<Eigen::MatrixXd> precisions_cholesky(k, Eigen::MatrixXd(d, d));
-        gmm.compute_precision_cholesky(result, precisions_cholesky);
+        gmm.compute_precisions_cholesky(result, precisions_cholesky);
         const Eigen::MatrixXd expected = Eigen::MatrixXd::Identity(d, d);
 
         for (int i = 0; i < k; ++i) {
@@ -41,7 +41,7 @@ protected:
                 30.54605547510448, 54.97462858435647;
 
         std::vector<Eigen::MatrixXd> precisions_cholesky(k, Eigen::MatrixXd(d, d));
-        gmm.compute_precision_cholesky(result, precisions_cholesky);
+        gmm.compute_precisions_cholesky(result, precisions_cholesky);
 
         std::vector<Eigen::MatrixXd> expected = {
             (Eigen::MatrixXd(2, 2) << 0.17177833476190066, 0.0,

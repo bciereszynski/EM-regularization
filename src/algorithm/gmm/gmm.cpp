@@ -104,7 +104,7 @@ GMMResult GMM::fit(const Eigen::MatrixXd &data, GMMResult &result) const {
     Eigen::MatrixXd log_responsibilities(n, k);
     auto precision_cholesky = std::vector<Eigen::MatrixXd>(k, Eigen::MatrixXd(d, d));
 
-    compute_precision_cholesky(result, precision_cholesky);
+    compute_precisions_cholesky(result, precision_cholesky);
 
     if (n == k) {
         result.converged = true;
@@ -223,11 +223,11 @@ void GMM::maximization_step(const Eigen::MatrixXd &data, const int k, GMMResult 
     auto regularizer = EmpiricalRegularizer();
     std::tie(result.weights, result.clusters, result.covariances) = GMM::estimate_gaussian_parameters(
         data, k, responsibilities, regularizer);
-    compute_precision_cholesky(result, precision_cholesky);
+    compute_precisions_cholesky(result, precision_cholesky);
 }
 
-void GMM::compute_precision_cholesky(GMMResult &result,
-                                     std::vector<Eigen::MatrixXd> &precisions_cholesky) const {
+void GMM::compute_precisions_cholesky(GMMResult &result,
+                                      std::vector<Eigen::MatrixXd> &precisions_cholesky) const {
     const int k = result.covariances.size();
     const int d = result.covariances[0].rows();
     for (int i = 0; i < k; ++i) {

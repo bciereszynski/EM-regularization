@@ -45,8 +45,8 @@ public:
                                 const std::vector<int> &initial_clusters) const;
 
 private:
-    void compute_precision_cholesky(GMMResult &result,
-                                    std::vector<Eigen::MatrixXd> &precisions_cholesky) const;
+    void compute_precisions_cholesky(GMMResult &result,
+                                     std::vector<Eigen::MatrixXd> &precisions_cholesky) const;
 
     static std::tuple<std::vector<double>, Eigen::MatrixXd,
         std::vector<Eigen::MatrixXd> >
