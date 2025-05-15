@@ -8,6 +8,7 @@
 #include <algorithm>
 #include "../external/hungarian/hungarian.h"
 #include "gmm/gmm.h"
+#include <chrono>
 
 namespace {
     double distance(const GMMResult &a, const int i, const GMMResult &b, const int j, const Eigen::MatrixXd &data) {
@@ -33,17 +34,19 @@ GMMResult GeneticalAlgorithm::run(const std::vector<std::vector<double> > &data,
 }
 
 GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data, const int k) {
-    auto best_obj = 0.0;
+    auto best_obj = -std::numeric_limits<double>::infinity();
     auto iterations_without_improvement = 0;
 
     auto gmm = GMM(rng);
 
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < pop_max_size; ++i) {
         GMMResult result = gmm.fit(data, k);
         pop.add(result);
     }
 
-    for (int iter = 0; iter < max_iterations; ++iter) {
+    int iter;
+    for (iter = 0; iter < max_iterations; ++iter) {
         auto [parent1, parent2] = binary_tournament();
 
         auto child = crossover(parent1, parent2, data);
@@ -73,7 +76,14 @@ GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data, const int k) {
             break;
         }
     }
-    return get_best_solution();
+
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed_time = end_time - start_time;
+    GMMResult best_solution = get_best_solution();
+    best_solution.elapsed = elapsed_time.count();
+    best_solution.iterations = iter;
+
+    return best_solution;
 }
 
 std::pair<GMMResult, GMMResult> GeneticalAlgorithm::binary_tournament() {
