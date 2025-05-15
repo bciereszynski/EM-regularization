@@ -8,7 +8,7 @@ class GMMResult {
 public:
     std::vector<int> assignments;
     std::vector<double> weights;
-    std::vector<std::vector<double> > clusters;
+    Eigen::MatrixXd clusters;
     std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > covariances;
     double objective;
     int iterations;
@@ -19,7 +19,7 @@ public:
     GMMResult(
         const std::vector<int> &assignments,
         const std::vector<double> &weights,
-        const std::vector<std::vector<double> > &clusters,
+        const Eigen::MatrixXd &clusters,
         const std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > &covariances,
         const double objective = -std::numeric_limits<double>::infinity(),
         const int iterations = 0,
@@ -33,14 +33,14 @@ public:
         iterations(iterations),
         elapsed(elapsed),
         converged(converged),
-        k(static_cast<int>(clusters.size())) {
+        k(static_cast<int>(clusters.rows())) {
     }
 
     GMMResult(const int d, const int n, const int k)
         : GMMResult(
             std::vector<int>(n, 0),
             std::vector<double>(k, 1.0 / k),
-            std::vector<std::vector<double> >(k, std::vector<double>(d, 0)),
+            Eigen::MatrixXd::Zero(k, d),
             std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> >(k,
                 Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>::Identity(d, d))
         ) {

@@ -3,8 +3,10 @@
 
 #include <random>
 #include "gmmResult.h"
+#include "../regularization/EmpiricalRegularizer.h"
 
-constexpr bool DEFAULT_VERBOSE = true;
+// TODO remname consts
+constexpr bool DEFAULT_VERBOSE = false;
 constexpr double DEFAULT_TOLERANCE = 1e-6;
 constexpr int DEFAULT_MAX_ITERATIONS = 100;
 
@@ -25,6 +27,14 @@ public:
         bool decompose_if_fails = true
     );
 
+    explicit GMM(
+        const std::mt19937 &rng,
+        double tolerance = DEFAULT_TOLERANCE,
+        int max_iterations = DEFAULT_MAX_ITERATIONS,
+        bool verbose = DEFAULT_VERBOSE,
+        bool decompose_if_fails = true
+    );
+
     GMMResult fit(const Eigen::MatrixXd &data, GMMResult &result) const;
 
     GMMResult fit(const Eigen::MatrixXd &data, int k);
@@ -35,18 +45,27 @@ public:
                                 const std::vector<int> &initial_clusters) const;
 
 private:
-    void compute_precision_cholesky(GMMResult &result,
-                                    std::vector<Eigen::MatrixXd> &precisions_cholesky) const;
+    void compute_precisions_cholesky(GMMResult &result,
+                                     std::vector<Eigen::MatrixXd> &precisions_cholesky) const;
 
-    static std::pair<double, std::vector<std::vector<double> > > expectation_step(
+    static std::tuple<std::vector<double>, Eigen::MatrixXd,
+        std::vector<Eigen::MatrixXd> >
+    estimate_gaussian_parameters(const Eigen::MatrixXd &, int,
+                                 Eigen::MatrixXd &,
+                                 CovarianceMatrixRegularizer &);
+
+    static std::pair<double, Eigen::MatrixXd> expectation_step(
         const Eigen::MatrixXd &data,
         int k,
         const GMMResult &result,
         const std::vector<Eigen::MatrixXd> &precisionsCholesky);
 
     void maximization_step(const Eigen::MatrixXd &data, int k, GMMResult &result,
-                           const std::vector<std::vector<double> > &log_responsibilities,
+                           const Eigen::MatrixXd &log_responsibilities,
                            std::vector<Eigen::MatrixXd> &precision_cholesky) const;
+
+    friend class GMMTest_FriendAccess;
+    friend class MathTest_FriendAccess;
 };
 
 #endif // GMM_H

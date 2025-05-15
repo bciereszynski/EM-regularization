@@ -16,6 +16,8 @@ public:
 
 protected:
   static DoubleVector get_mu(const DoubleMatrix &data, const std::vector<double> &weights);
+
+  friend class RegularizationTest_FriendAccess;
 };
 
 #endif //COVARIANCEMATRIXREGULARIZER_H

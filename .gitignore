@@ -1,2 +1,5 @@
 cmake-build-debug
 .idea
+.cmake
+/Testing/Temporary/
+/cmake-build-release-wsl---gcc/

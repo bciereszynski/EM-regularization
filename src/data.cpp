@@ -19,6 +19,7 @@ std::vector<std::vector<double> > generate_data(const int n, const int d, const 
     return data;
 }
 
+// TODO - make it return EigenMatrix?
 std::vector<std::vector<double> > load_data_from_file(const std::string &path, std::vector<int> &expected_clusters,
                                                       int &k) {
     std::ifstream file(path);
