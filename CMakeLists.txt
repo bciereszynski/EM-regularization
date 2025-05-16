@@ -26,12 +26,16 @@ add_executable(gmm_tests
         Testing/test_regularization.cpp
         Testing/test_gmm.cpp
         Testing/test_math.cpp
+        Testing/test_GA.cpp
         src/algorithm/gmm/gmm.cpp
         src/algorithm/gmm/gmmResult.h
         src/algorithm/gmm/helpers/sampling.cpp
         src/algorithm/gmm/helpers/mathematical.cpp
         src/algorithm/regularization/CovarianceMatrixRegularizer.cpp
         src/algorithm/regularization/EmpiricalRegularizer.cpp
+        src/algorithm/GeneticalAlgorithm.cpp
+        src/external/hungarian/hungarian.cpp
+        src/algorithm/SqMahalanobis.cpp
 )
 target_link_libraries(gmm_tests PRIVATE GTest::gtest_main GTest::gtest Eigen3::Eigen)
 
