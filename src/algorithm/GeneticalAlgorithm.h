@@ -65,6 +65,8 @@ class GeneticalAlgorithm {
 
     std::pair<GMMResult, GMMResult> binary_tournament();
 
+    static double distance(const GMMResult &a, int i, const GMMResult &b, int j);
+
     GMMResult get_best_solution();
 
     void mutate(GMMResult &individual, const Eigen::MatrixXd &data);
@@ -90,7 +92,10 @@ public:
 
 
     GMMResult run(const Eigen::MatrixXd &data, int k);
+
     GMMResult run(const std::vector<std::vector<double> > &data, int k);
+
+    friend class GATest_FriendAccess;
 };
 
 #endif // GENETICALALGORITHM_H

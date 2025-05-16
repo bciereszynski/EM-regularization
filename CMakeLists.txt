@@ -15,6 +15,7 @@ add_executable(EM_regularization src/main.cpp
         src/algorithm/regularization/EmpiricalRegularizer.cpp
         src/algorithm/GeneticalAlgorithm.cpp
         src/external/hungarian/hungarian.cpp
+        src/algorithm/SqMahalanobis.cpp
 )
 
 enable_testing()

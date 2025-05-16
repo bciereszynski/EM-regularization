@@ -3,6 +3,7 @@
 //
 
 #include "GeneticalAlgorithm.h"
+#include "SqMahalanobis.h"
 
 
 #include <algorithm>
@@ -10,19 +11,15 @@
 #include "gmm/gmm.h"
 #include <chrono>
 
-namespace {
-    double distance(const GMMResult &a, const int i, const GMMResult &b, const int j, const Eigen::MatrixXd &data) {
-        const Eigen::VectorXd meanA = a.clusters.row(i).transpose();
-        const Eigen::VectorXd meanB = b.clusters.row(j).transpose();
 
-        const Eigen::MatrixXd &covA = a.covariances[i];
-        const Eigen::MatrixXd &covB = b.covariances[j];
+double GeneticalAlgorithm::distance(const GMMResult &a, const int i, const GMMResult &b, const int j) {
+    SqMahalanobis sqma(a.covariances[i], true);
+    SqMahalanobis sqmb(b.covariances[j], true);
 
-        const double d1 = (meanA - meanB).transpose() * covA.inverse() * (meanA - meanB);
-        const double d2 = (meanA - meanB).transpose() * covB.inverse() * (meanA - meanB);
+    const double distance1 = Distances::evaluate(sqma, a.clusters.row(i), b.clusters.row(j));
+    const double distance2 = Distances::evaluate(sqmb, a.clusters.row(i), b.clusters.row(j));
 
-        return (d1 + d2) / 2.0;
-    }
+    return (distance1 + distance2) / 2.0;
 }
 
 GMMResult GeneticalAlgorithm::run(const std::vector<std::vector<double> > &data, int k) {
@@ -218,7 +215,7 @@ GMMResult GeneticalAlgorithm::crossover(const GMMResult &parent1, const GMMResul
     std::vector<std::vector<double> > weights(k, std::vector<double>(k));
     for (int i = 0; i < k; ++i) {
         for (int j = 0; j < k; ++j) {
-            weights[i][j] = distance(parent1, i, parent2, j, data);
+            weights[i][j] = distance(parent1, i, parent2, j);
         }
     }
 
