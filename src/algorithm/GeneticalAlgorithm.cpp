@@ -13,8 +13,8 @@
 
 
 double GeneticalAlgorithm::distance(const GMMResult &a, const int i, const GMMResult &b, const int j) {
-    SqMahalanobis sqma(a.covariances[i], true);
-    SqMahalanobis sqmb(b.covariances[j], true);
+    const SqMahalanobis sqma(a.covariances[i], true);
+    const SqMahalanobis sqmb(b.covariances[j], true);
 
     const double distance1 = Distances::evaluate(sqma, a.clusters.row(i), b.clusters.row(j));
     const double distance2 = Distances::evaluate(sqmb, a.clusters.row(i), b.clusters.row(j));
@@ -39,8 +39,11 @@ GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data, const int k) {
     auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < pop_max_size; ++i) {
         GMMResult result = gmm.fit(data, k);
+        std::cout << "Initial solution " << i << ": " << result.objective << " " << result.iterations << " " << result.
+                elapsed << std::endl;
         pop.add(result);
     }
+
 
     int iter;
     for (iter = 0; iter < max_iterations; ++iter) {

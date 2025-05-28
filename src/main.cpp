@@ -11,7 +11,7 @@ int main(const int argc, char *argv[]) {
     int k = 2;
     int d = 2;
     int n = 100;
-    int seed = 42;
+    int seed = 123;
 
     for (int i = 1; i < argc; i++) {
         if (std::string arg = argv[i]; arg == "--k" && i + 1 < argc) {
@@ -38,11 +38,14 @@ int main(const int argc, char *argv[]) {
         data = load_data_from_file(path, expected_clusters, k);
     }
 
-    GeneticalAlgorithm ga{std::mt19937(seed), 100, 100, 10, 100, true};
-    auto result = ga.run(data, k);
+    GeneticalAlgorithm ga{std::mt19937(seed), 200, 150, 40, 50, true};
+    const auto result = ga.run(data, k);
 
     std::cout << "Clusters:" << std::endl;
     std::cout << result.clusters << std::endl;
+    std::cout << result.iterations << std::endl;
+    std::cout << result.elapsed << std::endl;
+    std::cout << result.objective << std::endl;
 
 
     return 0;
