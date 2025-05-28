@@ -104,7 +104,7 @@ TEST(GMMTest, TestFit) {
     constexpr int max_iterations = 1000;
     constexpr double tolerance = 0.001;
 
-    GMM gmm(tolerance, max_iterations, false, 42, true);
+    GMM gmm(tolerance, max_iterations, true, 42, true);
 
     const auto result = gmm.fit(data, k);
 
@@ -114,6 +114,9 @@ TEST(GMMTest, TestFit) {
     for (size_t i = 0; i < expected_assignments.size(); ++i) {
         EXPECT_EQ(result.assignments[i], expected_assignments[i]) << "Mismatch in assignment at index " << i;
     }
+
+    constexpr double expected_objective = -5.751353;
+    EXPECT_NEAR(result.objective, expected_objective, 1e-6) << "Objective mismatch";
 }
 
 class GMMTest_FriendAccess : public ::testing::Test {
