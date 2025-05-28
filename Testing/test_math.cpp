@@ -151,3 +151,23 @@ TEST(MathTest, EstimateWeightedLogProbabilities_RealData) {
     }
 }
 
+TEST(LogSumExpTest, LogSumExp) {
+    struct TestCase {
+        std::vector<double> input;
+        double expected;
+    };
+
+    std::vector<TestCase> cases = {
+        {{-100.0, -200.0, -300.0}, -100.0},
+        {{-1.0, -2.0, -3.0}, -0.5923940355556196},
+        {{0.0, 0.0, 0.0}, 1.0986122886681098},
+        {{1.0, 2.0, 3.0}, 3.40760596444438},
+        {{10.0, 100.0, 1000.0}, 1000.0},
+        {{1e-10, 2e-10, 3e-10}, 1.0986122888681098}
+    };
+
+    for (const auto &[input, expected]: cases) {
+        const double result = log_sum_exp(input);
+        EXPECT_NEAR(result, expected, 1e-10);
+    }
+}

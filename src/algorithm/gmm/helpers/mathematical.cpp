@@ -4,28 +4,17 @@
 #include <limits>
 
 double log_sum_exp(const std::vector<double> &probabilities) {
-    double max = -std::numeric_limits<double>::infinity();
-    double sum = 0.0;
+    const double max_val = *std::max_element(probabilities.begin(), probabilities.end());
 
-    for (const auto &p: probabilities) {
-        if (std::isnan(p) || std::isnan(max)) {
-            max = std::numeric_limits<double>::quiet_NaN();
-            sum += std::exp(std::numeric_limits<double>::quiet_NaN());
-        } else {
-            if (p > max) {
-                sum = (sum + one(sum)) * std::exp(max - p);
-                max = p;
-            } else if (p < max) {
-                sum += std::exp(p - max);
-            } else {
-                sum += std::exp(zero(p - max));
-            }
-        }
+    if (std::isinf(max_val)) return max_val;
+
+    double sum = 0.0;
+    for (const double v: probabilities) {
+        sum += std::exp(v - max_val);
     }
 
-    return max + std::log1p(sum);
+    return max_val + std::log(sum);
 }
-
 
 std::vector<std::vector<double> > estimate_weighted_log_probabilities(
     const Eigen::MatrixXd &data, const int k, const GMMResult &result,
