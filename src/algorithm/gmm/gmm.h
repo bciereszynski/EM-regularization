@@ -7,8 +7,8 @@
 
 // TODO remname consts
 constexpr bool DEFAULT_VERBOSE = false;
-constexpr double DEFAULT_TOLERANCE = 1e-6;
-constexpr int DEFAULT_MAX_ITERATIONS = 100;
+constexpr double DEFAULT_TOLERANCE = 1e-3;
+constexpr int DEFAULT_MAX_ITERATIONS = 1000;
 
 // The GMM is a clustering algorithm that models the underlying data distribution as a mixture of Gaussian distributions.
 class GMM {

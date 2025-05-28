@@ -9,7 +9,6 @@ add_executable(EM_regularization src/main.cpp
         src/data.cpp
         src/algorithm/gmm/gmm.cpp
         src/algorithm/gmm/gmmResult.h
-        src/algorithm/gmm/helpers/sampling.cpp
         src/algorithm/gmm/helpers/mathematical.cpp
         src/algorithm/regularization/CovarianceMatrixRegularizer.cpp
         src/algorithm/regularization/EmpiricalRegularizer.cpp
@@ -29,7 +28,6 @@ add_executable(gmm_tests
         Testing/test_GA.cpp
         src/algorithm/gmm/gmm.cpp
         src/algorithm/gmm/gmmResult.h
-        src/algorithm/gmm/helpers/sampling.cpp
         src/algorithm/gmm/helpers/mathematical.cpp
         src/algorithm/regularization/CovarianceMatrixRegularizer.cpp
         src/algorithm/regularization/EmpiricalRegularizer.cpp

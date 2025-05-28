@@ -4,27 +4,8 @@
 #include <limits>
 
 #include "./helpers/mathematical.h"
-#include "./helpers/sampling.h"
 
 namespace {
-    void initialize(GMMResult &result, const Eigen::MatrixXd &data, const std::vector<int> &indices,
-                    const bool verbose) {
-        const int k = static_cast<int>(indices.size());
-        const int d = data.cols();
-
-        result.clusters = Eigen::MatrixXd(k, d);
-        for (int i = 0; i < k; ++i) {
-            result.clusters.row(i) = data.row(indices[i]);
-        }
-
-        if (verbose) {
-            std::cout << "Initial clusters:\n";
-            for (int i = 0; i < k; ++i) {
-                std::cout << "Cluster " << i + 1 << ": " << result.clusters.row(i) << "\n";
-            }
-        }
-    }
-
     int assign_to_cluster(const int point, const std::vector<std::vector<double> > &probabilities,
                           std::vector<bool> is_empty) {
         const int k = probabilities[0].size();
@@ -164,27 +145,15 @@ GMMResult GMM::fit(const Eigen::MatrixXd &data, const int k) {
     assert(k > 0);
     assert(n >= k);
 
-    auto [sampled_data, indices] = try_sampling_unique_data(rng, data, k);
-    initialize(result, sampled_data, indices, verbose);
-    fit(data, result);
-    return result;
-}
+    std::vector<int> permutation(n);
+    std::iota(permutation.begin(), permutation.end(), 0);
 
-GMMResult GMM::fit(const Eigen::MatrixXd &data, const std::vector<int> &initial_clusters) const {
-    const int n = data.rows();
-    const int d = data.cols();
-    const int k = static_cast<int>(initial_clusters.size());
+    std::shuffle(permutation.begin(), permutation.end(), rng);
 
-    GMMResult result(d, n, k);
-
-    if (n == 0) {
-        return result;
+    result.clusters = Eigen::MatrixXd(k, d);
+    for (int i = 0; i < k; ++i) {
+        result.clusters.row(i) = data.row(permutation[i]);
     }
-    assert(d > 0);
-    assert(k > 0);
-    assert(n >= k);
-
-    initialize(result, data, initial_clusters, verbose);
     fit(data, result);
     return result;
 }
