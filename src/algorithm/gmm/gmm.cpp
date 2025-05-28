@@ -6,15 +6,15 @@
 #include "./helpers/mathematical.h"
 
 namespace {
-    int assign_to_cluster(const int point, const std::vector<std::vector<double> > &probabilities,
+    int assign_to_cluster(const int point, const Eigen::MatrixXd &probabilities,
                           std::vector<bool> is_empty) {
-        const int k = probabilities[0].size();
+        const int k = probabilities.cols();
 
         int max_cluster = 0;
         double max_probability = -std::numeric_limits<double>::infinity();
 
         for (int cluster = 0; cluster < k; ++cluster) {
-            const double probability = probabilities[point][cluster];
+            const double probability = probabilities(point, cluster);
 
             if (probability > max_probability) {
                 max_cluster = cluster;
@@ -170,17 +170,35 @@ GMM::expectation_step(const Eigen::MatrixXd &data,
     auto log_probabilities_norm = std::vector<double>(n, 0.0);
 
     for (int i = 0; i < n; ++i) {
-        log_probabilities_norm[i] = log_sum_exp(weighted_log_probabilities[i]);
+        log_probabilities_norm[i] = log_sum_exp(weighted_log_probabilities.row(i));
     }
 
     Eigen::MatrixXd log_responsibilities(n, k);
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < k; ++j) {
-            log_responsibilities(i, j) = weighted_log_probabilities[i][j] - log_probabilities_norm[i];
+            log_responsibilities(i, j) = weighted_log_probabilities(i, j) - log_probabilities_norm[i];
         }
     }
     double mean = std::accumulate(log_probabilities_norm.begin(), log_probabilities_norm.end(), 0.0) /
                   log_probabilities_norm.size();
+
+    // std::cout << "weighted_log_probabilities:\n";
+    // for (int i = 0; i < n; ++i) {
+    //     std::cout << "Row " << i << ": ";
+    //     for (int j = 0; j < k; ++j) {
+    //         std::cout << weighted_log_probabilities[i][j] << " ";
+    //     }
+    //     std::cout << "\n";
+    // }
+    //
+    // std::cout << "log_probabilities_norm:\n";
+    // for (int i = 0; i < n; ++i) {
+    //     std::cout << "i=" << i << ": " << log_probabilities_norm[i] << "\n";
+    // }
+    //
+    // std::cout << "log_responsibilities:\n" << log_responsibilities << "\n";
+    //
+    // std::cout << "mean: " << mean << "\n";
 
     return {mean, log_responsibilities};
 }

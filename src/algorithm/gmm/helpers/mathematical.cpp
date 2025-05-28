@@ -3,55 +3,37 @@
 #include <cmath>
 #include <limits>
 
-double log_sum_exp(const std::vector<double> &probabilities) {
-    const double max_val = *std::max_element(probabilities.begin(), probabilities.end());
+double log_sum_exp(const Eigen::Ref<const Eigen::VectorXd> &values) {
+    const double max_val = values.maxCoeff();
 
     if (std::isinf(max_val)) return max_val;
 
-    double sum = 0.0;
-    for (const double v: probabilities) {
-        sum += std::exp(v - max_val);
-    }
-
-    return max_val + std::log(sum);
+    return max_val + std::log((values.array() - max_val).exp().sum());
 }
 
-std::vector<std::vector<double> > estimate_weighted_log_probabilities(
+
+Eigen::MatrixXd estimate_weighted_log_probabilities(
     const Eigen::MatrixXd &data, const int k, const GMMResult &result,
     const std::vector<Eigen::MatrixXd> &precisionsCholesky
 ) {
     const int n = data.rows();
     const int d = data.cols();
 
-    std::vector<double> log_det_cholesky(k, 0.0);
+    Eigen::MatrixXd log_probabilities(n, k);
 
     for (int i = 0; i < k; ++i) {
-        for (int j = 0; j < d; ++j) {
-            log_det_cholesky[i] += log(precisionsCholesky[i](j, j));
-        }
-    }
-    std::vector<std::vector<double> > log_probabilities(n, std::vector<double>(k, 0.0));
-    for (int i = 0; i < k; ++i) {
-        Eigen::VectorXd cluster = result.clusters.row(i).transpose();
+        const Eigen::VectorXd mean = result.clusters.row(i).transpose();
+        const Eigen::MatrixXd &cholesky = precisionsCholesky[i];
 
-        Eigen::MatrixXd y = (data * precisionsCholesky[i]).rowwise() - cluster.transpose() * precisionsCholesky[i];
+        const double log_det = cholesky.diagonal().array().log().sum();
 
-        for (int j = 0; j < n; ++j) {
-            double sum = 0.0;
-            for (int col = 0; col < y.cols(); ++col) {
-                const double val = y(j, col);
-                sum += val * val;
-            }
-            log_probabilities[j][i] = sum;
-        }
-    }
-    std::vector<std::vector<double> > result_probabilities(n, std::vector<double>(k));
-    for (int j = 0; j < n; ++j) {
-        for (int i = 0; i < k; ++i) {
-            result_probabilities[j][i] = -0.5 * (d * std::log(2 * M_PI) + log_probabilities[j][i]) +
-                                         log_det_cholesky[i] + std::log(result.weights[i]);
-        }
+        Eigen::MatrixXd y = (data.rowwise() - mean.transpose()) * cholesky;
+
+        Eigen::VectorXd prob = y.rowwise().squaredNorm();
+
+        log_probabilities.col(i) = (-0.5 * (d * std::log(2 * M_PI) + prob.array()) +
+                                    log_det + std::log(result.weights[i])).matrix();
     }
 
-    return result_probabilities;
+    return log_probabilities;
 }

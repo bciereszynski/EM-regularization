@@ -86,18 +86,18 @@ TEST(MathTest, EstimateWeightedLogProbabilities_SimpleCase) {
 
     std::vector<Eigen::MatrixXd> precisions_cholesky(1, Eigen::MatrixXd::Identity(d, d));
 
-    const std::vector<std::vector<double> > log_probs = estimate_weighted_log_probabilities(
+    const Eigen::MatrixXd log_probs = estimate_weighted_log_probabilities(
         data, k, result, precisions_cholesky);
 
-    ASSERT_EQ(log_probs.size(), 2);
-    ASSERT_EQ(log_probs[0].size(), 1);
+    ASSERT_EQ(log_probs.rows(), 2);
+    ASSERT_EQ(log_probs.cols(), 1);
 
     const double log2pi = std::log(2 * M_PI);
     const double expected0 = -0.5 * (2 * log2pi + 1.0 * 1.0 + 2.0 * 2.0); // ||[1,2]||^2 = 1 + 4 = 5
     const double expected1 = -0.5 * (2 * log2pi + 3.0 * 3.0 + 4.0 * 4.0); // ||[3,4]||^2 = 9 + 16 = 25
 
-    EXPECT_NEAR(log_probs[0][0], expected0, 1e-6);
-    EXPECT_NEAR(log_probs[1][0], expected1, 1e-6);
+    EXPECT_NEAR(log_probs(0, 0), expected0, 1e-6);
+    EXPECT_NEAR(log_probs(1, 0), expected1, 1e-6);
 }
 
 TEST(MathTest, EstimateWeightedLogProbabilities_RealData) {
@@ -129,11 +129,11 @@ TEST(MathTest, EstimateWeightedLogProbabilities_RealData) {
     precisions_cholesky[2] << 0.11668136690747105, -0.06396386718928732,
             0.0, 0.15380716255671226;
 
-    const std::vector<std::vector<double> > log_probs = estimate_weighted_log_probabilities(
+    const Eigen::MatrixXd log_probs = estimate_weighted_log_probabilities(
         data, k, result, precisions_cholesky);
 
-    ASSERT_EQ(log_probs.size(), n);
-    ASSERT_EQ(log_probs[0].size(), k);
+    ASSERT_EQ(log_probs.rows(), n);
+    ASSERT_EQ(log_probs.cols(), k);
 
     const std::vector<std::vector<double> > expected = {
         {-34.67444478856755, -7.490287069833688, -10.505420842688025},
@@ -145,7 +145,7 @@ TEST(MathTest, EstimateWeightedLogProbabilities_RealData) {
 
     for (int i = 0; i < expected.size(); ++i) {
         for (int j = 0; j < k; ++j) {
-            EXPECT_NEAR(log_probs[i][j], expected[i][j], 1e-5)
+            EXPECT_NEAR(log_probs(i, j), expected[i][j], 1e-5)
                     << "Mismatch at row " << i << ", col " << j;
         }
     }
@@ -167,7 +167,8 @@ TEST(LogSumExpTest, LogSumExp) {
     };
 
     for (const auto &[input, expected]: cases) {
-        const double result = log_sum_exp(input);
+        Eigen::VectorXd vec = Eigen::Map<const Eigen::VectorXd>(input.data(), input.size());
+        const double result = log_sum_exp(vec);
         EXPECT_NEAR(result, expected, 1e-10);
     }
 }
