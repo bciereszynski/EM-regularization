@@ -16,23 +16,20 @@ class GMM {
     int max_iterations;
     bool verbose;
     std::mt19937 rng;
-    bool decompose_if_fails;
 
 public:
     explicit GMM(
         double tolerance = DEFAULT_TOLERANCE,
         int max_iterations = DEFAULT_MAX_ITERATIONS,
         bool verbose = DEFAULT_VERBOSE,
-        unsigned int seed = std::random_device{}(),
-        bool decompose_if_fails = true
+        unsigned int seed = std::random_device{}()
     );
 
     explicit GMM(
         const std::mt19937 &rng,
         double tolerance = DEFAULT_TOLERANCE,
         int max_iterations = DEFAULT_MAX_ITERATIONS,
-        bool verbose = DEFAULT_VERBOSE,
-        bool decompose_if_fails = true
+        bool verbose = DEFAULT_VERBOSE
     );
 
     GMMResult fit(const Eigen::MatrixXd &data, GMMResult &result) const;
@@ -45,8 +42,8 @@ public:
                                 const std::vector<int> &initial_clusters) const;
 
 private:
-    void compute_precisions_cholesky(GMMResult &result,
-                                     std::vector<Eigen::MatrixXd> &precisions_cholesky) const;
+    static void compute_precisions_cholesky(GMMResult &result,
+                                     std::vector<Eigen::MatrixXd> &precisions_cholesky) ;
 
     static std::tuple<std::vector<double>, Eigen::MatrixXd,
         std::vector<Eigen::MatrixXd> >
@@ -60,9 +57,9 @@ private:
         const GMMResult &result,
         const std::vector<Eigen::MatrixXd> &precisionsCholesky);
 
-    void maximization_step(const Eigen::MatrixXd &data, int k, GMMResult &result,
+    static void maximization_step(const Eigen::MatrixXd &data, int k, GMMResult &result,
                            const Eigen::MatrixXd &log_responsibilities,
-                           std::vector<Eigen::MatrixXd> &precision_cholesky) const;
+                           std::vector<Eigen::MatrixXd> &precision_cholesky) ;
 
     friend class GMMTest_FriendAccess;
     friend class MathTest_FriendAccess;

@@ -7,7 +7,7 @@ TEST(GMMTest, BasicClustering) {
     Eigen::MatrixXd data(6, 1);
     data << 1.0, 1.1, 0.9, 5.0, 5.1, 4.9;
 
-    GMM model(1e-4, 100, false, 42, true);
+    GMM model(1e-4, 100, false, 42);
     const auto result = model.fit(data, 2);
 
     EXPECT_EQ(result.assignments.size(), 6);
@@ -26,7 +26,7 @@ TEST(GMMTest, CorrectAssignments) {
         {5.0, 5.1}, {5.1, 4.9}, {4.9, 5.2} // Cluster 1
     };
 
-    GMM model(1e-6, 100, false, 42, true);
+    GMM model(1e-6, 100, false, 42);
 
     const auto result = model.fit(data, 2);
 
@@ -48,7 +48,7 @@ TEST(GMMTest, CorrectAssignments) {
 }
 
 TEST(GMMTest, WeightsSumToOne) {
-    GMM model(1e-6, 100, false, 42, true);
+    GMM model(1e-6, 100, false, 42);
     Eigen::MatrixXd data(4, 2);
     data << 0.0, 0.0, 0.1, 0.1, 5.0, 5.0, 5.1, 5.1;
     const auto result = model.fit(data, 2);
@@ -57,7 +57,7 @@ TEST(GMMTest, WeightsSumToOne) {
 }
 
 TEST(GMMTest, HandlesEmptyInput) {
-    GMM model(1e-6, 100, false, 42, true);
+    GMM model(1e-6, 100, false, 42);
     const Eigen::MatrixXd data;
     EXPECT_NO_THROW({
         const auto result = model.fit(data, 2);
@@ -66,7 +66,7 @@ TEST(GMMTest, HandlesEmptyInput) {
 }
 
 TEST(GMMTest, HandlesMinimalInputOnePoint) {
-    GMM model(1e-6, 100, false, 42, true);
+    GMM model(1e-6, 100, false, 42);
     Eigen::MatrixXd data(1, 2); // One point in 2D
     data << 1.0, 2.0;
     EXPECT_NO_THROW({
@@ -77,7 +77,7 @@ TEST(GMMTest, HandlesMinimalInputOnePoint) {
 }
 
 TEST(GMMTest, HandlesHighDimensionalData) {
-    GMM model(1e-6, 100, false, 42, true);
+    GMM model(1e-6, 100, false, 42);
     const Eigen::MatrixXd data = Eigen::MatrixXd::Random(10, 50);
     EXPECT_NO_THROW({
         const auto result = model.fit(data, 3);
@@ -108,7 +108,7 @@ TEST(GMMTest, TestFit) {
     const int d = data.cols();
     GMMResult result(d, n, k);
 
-    const GMM gmm(tolerance, max_iterations, true, 42, true);
+    const GMM gmm(tolerance, max_iterations, true, 42);
     result.clusters = Eigen::MatrixXd(k, d);
     result.clusters << 14.398746744052609, 8.170480801024427,
             -17.86342608516553, -11.382757975845214,
@@ -129,7 +129,7 @@ TEST(GMMTest, TestFit) {
 
 class GMMTest_FriendAccess : public ::testing::Test {
 protected:
-    GMM gmm{1e-3, 100, false, 42, false};
+    GMM gmm{1e-3, 100, false, 42};
 
     static void TestExpectationStep() {
         int k = 3;

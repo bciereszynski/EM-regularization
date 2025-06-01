@@ -38,26 +38,22 @@ GMM::GMM(
     const double tolerance,
     const int max_iterations,
     const bool verbose,
-    const unsigned int seed,
-    const bool decompose_if_fails
+    const unsigned int seed
 ) : tolerance(tolerance),
     max_iterations(max_iterations),
     verbose(verbose),
-    rng(seed),
-    decompose_if_fails(decompose_if_fails) {
+    rng(seed) {
 }
 
 GMM::GMM(
     const std::mt19937 &rng,
     const double tolerance,
     const int max_iterations,
-    const bool verbose,
-    const bool decompose_if_fails
+    const bool verbose
 ) : tolerance(tolerance),
     max_iterations(max_iterations),
     verbose(verbose),
-    rng(rng),
-    decompose_if_fails(decompose_if_fails) {
+    rng(rng) {
 }
 
 // TODO flaga eigen - blas
@@ -205,7 +201,7 @@ GMM::expectation_step(const Eigen::MatrixXd &data,
 
 void GMM::maximization_step(const Eigen::MatrixXd &data, const int k, GMMResult &result,
                             const Eigen::MatrixXd &log_responsibilities,
-                            std::vector<Eigen::MatrixXd> &precision_cholesky) const {
+                            std::vector<Eigen::MatrixXd> &precision_cholesky) {
     Eigen::MatrixXd responsibilities = log_responsibilities.array().exp();
     auto regularizer = EmpiricalRegularizer();
     std::tie(result.weights, result.clusters, result.covariances) = GMM::estimate_gaussian_parameters(
@@ -214,26 +210,23 @@ void GMM::maximization_step(const Eigen::MatrixXd &data, const int k, GMMResult 
 }
 
 void GMM::compute_precisions_cholesky(GMMResult &result,
-                                      std::vector<Eigen::MatrixXd> &precisions_cholesky) const {
+                                      std::vector<Eigen::MatrixXd> &precisions_cholesky) {
     const int k = result.covariances.size();
     const int d = result.covariances[0].rows();
+
     for (int i = 0; i < k; ++i) {
         try {
             Eigen::LLT<Eigen::MatrixXd> cholesky(result.covariances[i]);
             precisions_cholesky[i] = cholesky.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
         } catch (const std::exception &e) {
-            if (decompose_if_fails) {
-                Eigen::EigenSolver<Eigen::MatrixXd> eig(result.covariances[i]);
-                Eigen::MatrixXd eigenvalues = eig.eigenvalues().real().cwiseMax(1e-6).asDiagonal();
-                Eigen::MatrixXd eigenvectors = eig.eigenvectors().real();
+            Eigen::EigenSolver<Eigen::MatrixXd> eig(result.covariances[i]);
+            Eigen::MatrixXd eigenvalues = eig.eigenvalues().real().cwiseMax(1e-6).asDiagonal();
+            Eigen::MatrixXd eigenvectors = eig.eigenvectors().real();
 
-                result.covariances[i] = eigenvectors * eigenvalues * eigenvectors.transpose();
+            result.covariances[i] = eigenvectors * eigenvalues * eigenvectors.transpose();
 
-                Eigen::LLT<Eigen::MatrixXd> cholesky_new(result.covariances[i]);
-                precisions_cholesky[i] = cholesky_new.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
-            } else {
-                throw std::runtime_error("GMM Failed: " + std::string(e.what()));
-            }
+            Eigen::LLT<Eigen::MatrixXd> cholesky_new(result.covariances[i]);
+            precisions_cholesky[i] = cholesky_new.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
         }
     }
 }

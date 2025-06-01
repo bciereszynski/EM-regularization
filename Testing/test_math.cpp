@@ -7,7 +7,7 @@
 
 class MathTest_FriendAccess : public ::testing::Test {
 protected:
-    GMM gmm{1e-3, 100, false, 42, false};
+    GMM gmm{1e-3, 100, false, 42};
 
     void TestComputePrecisionCholesky() const {
         constexpr int k = 3;
