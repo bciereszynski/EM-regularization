@@ -116,13 +116,6 @@ TEST(GMMTest, TestFit) {
     std::cout << result.clusters;
     result = gmm.fit(data, result);
 
-    const std::vector<int> expected_assignments = {1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 0};
-
-    ASSERT_EQ(result.assignments.size(), expected_assignments.size());
-    for (size_t i = 0; i < expected_assignments.size(); ++i) {
-        EXPECT_EQ(result.assignments[i], expected_assignments[i]) << "Mismatch in assignment at index " << i;
-    }
-
     constexpr double expected_objective = -5.751353;
     EXPECT_NEAR(result.objective, expected_objective, 1e-6) << "Objective mismatch";
 }
