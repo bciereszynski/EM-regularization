@@ -104,9 +104,17 @@ TEST(GMMTest, TestFit) {
     constexpr int max_iterations = 1000;
     constexpr double tolerance = 0.001;
 
-    GMM gmm(tolerance, max_iterations, true, 42, true);
+    const int n = data.rows();
+    const int d = data.cols();
+    GMMResult result(d, n, k);
 
-    const auto result = gmm.fit(data, k);
+    const GMM gmm(tolerance, max_iterations, true, 42, true);
+    result.clusters = Eigen::MatrixXd(k, d);
+    result.clusters << 14.398746744052609, 8.170480801024427,
+            -17.86342608516553, -11.382757975845214,
+            -23.45789229394996, -2.679611133069019;
+    std::cout << result.clusters;
+    result = gmm.fit(data, result);
 
     const std::vector<int> expected_assignments = {1, 1, 2, 2, 1, 1, 1, 1, 2, 1, 0};
 
