@@ -39,8 +39,6 @@ GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data, const int k) {
     auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < pop_max_size; ++i) {
         GMMResult result = gmm.fit(data, k);
-        std::cout << "Initial solution " << i << ": " << result.objective << " " << result.iterations << " " << result.
-                elapsed << std::endl;
         pop.add(result);
     }
 

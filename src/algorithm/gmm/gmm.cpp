@@ -178,24 +178,6 @@ GMM::expectation_step(const Eigen::MatrixXd &data,
     double mean = std::accumulate(log_probabilities_norm.begin(), log_probabilities_norm.end(), 0.0) /
                   log_probabilities_norm.size();
 
-    // std::cout << "weighted_log_probabilities:\n";
-    // for (int i = 0; i < n; ++i) {
-    //     std::cout << "Row " << i << ": ";
-    //     for (int j = 0; j < k; ++j) {
-    //         std::cout << weighted_log_probabilities[i][j] << " ";
-    //     }
-    //     std::cout << "\n";
-    // }
-    //
-    // std::cout << "log_probabilities_norm:\n";
-    // for (int i = 0; i < n; ++i) {
-    //     std::cout << "i=" << i << ": " << log_probabilities_norm[i] << "\n";
-    // }
-    //
-    // std::cout << "log_responsibilities:\n" << log_responsibilities << "\n";
-    //
-    // std::cout << "mean: " << mean << "\n";
-
     return {mean, log_responsibilities};
 }
 
