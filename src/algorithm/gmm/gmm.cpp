@@ -220,7 +220,7 @@ void GMM::compute_precisions_cholesky(GMMResult &result,
     for (int i = 0; i < k; ++i) {
         try {
             Eigen::LLT<Eigen::MatrixXd> cholesky(result.covariances[i]);
-            precisions_cholesky[i] = cholesky.matrixU().transpose().solve(Eigen::MatrixXd::Identity(d, d));
+            precisions_cholesky[i] = cholesky.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
         } catch (const std::exception &e) {
             if (decompose_if_fails) {
                 Eigen::EigenSolver<Eigen::MatrixXd> eig(result.covariances[i]);
@@ -230,7 +230,7 @@ void GMM::compute_precisions_cholesky(GMMResult &result,
                 result.covariances[i] = eigenvectors * eigenvalues * eigenvectors.transpose();
 
                 Eigen::LLT<Eigen::MatrixXd> cholesky_new(result.covariances[i]);
-                precisions_cholesky[i] = cholesky_new.matrixU().transpose().solve(Eigen::MatrixXd::Identity(d, d));
+                precisions_cholesky[i] = cholesky_new.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
             } else {
                 throw std::runtime_error("GMM Failed: " + std::string(e.what()));
             }
