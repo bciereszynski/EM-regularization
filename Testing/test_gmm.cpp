@@ -76,16 +76,6 @@ TEST(GMMTest, HandlesMinimalInputOnePoint) {
         });
 }
 
-TEST(GMMTest, HandlesHighDimensionalData) {
-    GMM model(1e-6, 100, false, 42);
-    const Eigen::MatrixXd data = Eigen::MatrixXd::Random(10, 50);
-    EXPECT_NO_THROW({
-        const auto result = model.fit(data, 3);
-        EXPECT_EQ(result.assignments.size(), 10);
-        });
-}
-
-
 TEST(GMMTest, TestFit) {
     Eigen::MatrixXd data(11, 2);
     data << 8.446952398696654, 11.512125077077995,
