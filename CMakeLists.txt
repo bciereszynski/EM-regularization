@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.31)
 project(EM_regularization)
 
-find_package(Eigen3 3.4 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
 set(CMAKE_CXX_STANDARD 17)
+add_definitions(-DEIGEN_USE_BLAS)
+
+find_package(Eigen3 3.4 REQUIRED)
+find_package(BLAS REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIR})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g")
 add_executable(EM_regularization src/main.cpp
         src/data.cpp
@@ -35,7 +38,8 @@ add_executable(gmm_tests
         src/external/hungarian/hungarian.cpp
         src/algorithm/SqMahalanobis.cpp
 )
-target_link_libraries(gmm_tests PRIVATE GTest::gtest_main GTest::gtest Eigen3::Eigen)
+target_link_libraries(gmm_tests PRIVATE GTest::gtest_main GTest::gtest Eigen3::Eigen ${BLAS_LIBRARIES})
+target_link_libraries(EM_regularization PRIVATE ${BLAS_LIBRARIES})
 
 include(GoogleTest)
 gtest_discover_tests(gmm_tests)

@@ -56,7 +56,6 @@ GMM::GMM(
     rng(rng) {
 }
 
-// TODO flaga eigen - blas
 GMMResult GMM::fit(const std::vector<std::vector<double> > &data, int k) {
     Eigen::MatrixXd data_matrix(data.size(), data[0].size());
     for (size_t i = 0; i < data.size(); ++i) {
