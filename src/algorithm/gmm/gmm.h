@@ -5,7 +5,6 @@
 #include "gmmResult.h"
 #include "../regularization/EmpiricalRegularizer.h"
 
-// TODO remname consts
 constexpr bool DEFAULT_VERBOSE = false;
 constexpr double DEFAULT_TOLERANCE = 1e-3;
 constexpr int DEFAULT_MAX_ITERATIONS = 1000;
@@ -43,7 +42,7 @@ public:
 
 private:
     static void compute_precisions_cholesky(GMMResult &result,
-                                     std::vector<Eigen::MatrixXd> &precisions_cholesky) ;
+                                            std::vector<Eigen::MatrixXd> &precisions_cholesky);
 
     static std::tuple<std::vector<double>, Eigen::MatrixXd,
         std::vector<Eigen::MatrixXd> >
@@ -58,8 +57,8 @@ private:
         const std::vector<Eigen::MatrixXd> &precisionsCholesky);
 
     static void maximization_step(const Eigen::MatrixXd &data, int k, GMMResult &result,
-                           const Eigen::MatrixXd &log_responsibilities,
-                           std::vector<Eigen::MatrixXd> &precision_cholesky) ;
+                                  const Eigen::MatrixXd &log_responsibilities,
+                                  std::vector<Eigen::MatrixXd> &precision_cholesky);
 
     friend class GMMTest_FriendAccess;
     friend class MathTest_FriendAccess;

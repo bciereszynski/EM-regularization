@@ -38,7 +38,7 @@ int main(const int argc, char *argv[]) {
         data = load_data_from_file(path, expected_clusters, k);
     }
 
-    GeneticalAlgorithm ga{std::mt19937(seed), 500, 150, 40, 50, false};
+    GeneticalAlgorithm ga{std::mt19937(seed), 200, 150, 40, 50, false};
     const auto result = ga.run(data, k);
 
     std::cout << "Clusters:" << std::endl;

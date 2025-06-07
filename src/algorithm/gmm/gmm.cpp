@@ -69,7 +69,7 @@ GMMResult GMM::fit(const Eigen::MatrixXd &data, GMMResult &result) const {
     if (verbose) {
         std::cout << "Starting GMM...\n";
     }
-    const auto start_time = std::chrono::system_clock::now();
+    const auto start_time = std::chrono::high_resolution_clock::now();
     const int n = data.rows();
     const int d = data.cols();
     const int k = static_cast<int>(result.clusters.rows());
@@ -122,9 +122,8 @@ GMMResult GMM::fit(const Eigen::MatrixXd &data, GMMResult &result) const {
         is_empty[cluster] = false;
         result.assignments[i] = cluster;
     }
-    // TODO hight resolution clock
-    result.elapsed = std::chrono::duration_cast<std::chrono::duration<double> >(
-        std::chrono::system_clock::now() - start_time).count();
+    const std::chrono::duration<double> elapsed_time = std::chrono::high_resolution_clock::now() - start_time;
+    result.elapsed = elapsed_time.count();
     return result;
 }
 

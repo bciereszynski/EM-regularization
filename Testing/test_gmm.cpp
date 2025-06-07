@@ -117,7 +117,6 @@ protected:
     static void TestExpectationStep() {
         int k = 3;
         std::vector<int> expected_clusters;
-        // TODO review all matrixes to EIGEN
         std::vector<std::vector<double> > data_raw = load_data_from_file(
             "../test_data/3_2_-0.26_1.csv", expected_clusters, k);
         Eigen::MatrixXd data(data_raw.size(), data_raw[0].size());
