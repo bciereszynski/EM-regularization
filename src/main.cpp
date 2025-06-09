@@ -43,6 +43,8 @@ int main(const int argc, char *argv[]) {
     data = load_data_from_file(R"(data/3_2_-0.26_1.csv)", expected_clusters, k);
     const auto result = ga.run(data, k);
     print_result(result);
+
+    GMM gmm{1e-3, 200, false, 123};
     for (const auto &entry: fs::directory_iterator(directory)) {
         if (!entry.is_regular_file() || entry.path().extension() != ".csv") {
             continue;
@@ -50,9 +52,12 @@ int main(const int argc, char *argv[]) {
         std::string path = entry.path().string();
         data = load_data_from_file(path, expected_clusters, k);
 
-        GMMResult result_i(d, data.size(), k);
-        std::cout << path << " ";
         GMMResult result_i(data[0].size(), data.size(), k);
+        std::cout << "gmm " << path << " ";
+        result_i = gmm.fit(data, k);
+        print_result(result_i);
+
+        std::cout << "gmm_GA " << path << " ";
         try {
             result_i = ga.run(data, k);
         } catch (std::exception &e) {
