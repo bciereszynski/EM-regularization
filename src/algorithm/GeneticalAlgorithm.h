@@ -51,6 +51,11 @@ class GeneticalAlgorithm {
         }
 
         void eliminate(size_t to_remove, std::mt19937 &rng);
+
+        void clear() {
+            empty.clear();
+            population.clear();
+        }
     };
 
     Population pop;
