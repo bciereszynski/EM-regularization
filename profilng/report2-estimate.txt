@@ -1,0 +1,460 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 20.43      0.47     0.47    41846     0.00     0.00  EmpiricalRegularizer::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, std::vector<double, std::allocator<double> > const&)
+ 20.43      0.94     0.47     6808     0.00     0.00  estimate_weighted_log_probabilities(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&)
+ 18.26      1.36     0.42     6307     0.00     0.00  GMM::expectation_step(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&)
+ 16.96      1.75     0.39      501     0.00     0.00  GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const
+ 12.61      2.04     0.29  6550000     0.00     0.00  double __vector(4) Eigen::internal::pexp_double<double __vector(4)>(double __vector(4))
+  2.61      2.10     0.06    45106     0.00     0.00  Eigen::HessenbergDecomposition<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::_compute(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, 1, -1, 1, 1, -1>&)
+  1.74      2.14     0.04    45106     0.00     0.00  Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0]
+  1.30      2.17     0.03   542452     0.00     0.00  Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::resize(long, long)
+  1.30      2.20     0.03   138897     0.00     0.00  void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0]
+  1.30      2.23     0.03    45106     0.00     0.00  void Eigen::MatrixBase<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1> const, -1, 1, false> >(Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1> const, -1, 1, false> const&, double const&, double*)
+  0.87      2.25     0.02    45106     0.00     0.00  void Eigen::HouseholderSequence<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1>, 1>::evalTo<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&) const
+  0.43      2.26     0.01   132058     0.00     0.00  void Eigen::internal::evaluateProductBlockingSizesHeuristic<double, double, 4, long>(long&, long&, long&, long) [clone .constprop.0]
+  0.43      2.27     0.01    45106     0.00     0.00  Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::doComputeEigenvectors()
+  0.43      2.28     0.01    43600     0.00     0.00  SqMahalanobis::evaluate(Eigen::Matrix<double, -1, 1, 0, -1, 1> const&, Eigen::Matrix<double, -1, 1, 0, -1, 1> const&) const
+  0.43      2.29     0.01      501     0.00     0.00  void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&)
+  0.43      2.30     0.01                             _init
+  0.00      2.30     0.00   135318     0.00     0.00  void Eigen::internal::call_dense_assignment_loop<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::internal::assign_op<double, double> >(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, Eigen::internal::assign_op<double, double> const&)
+  0.00      2.30     0.00   133812     0.00     0.00  Eigen::internal::aligned_malloc(unsigned long)
+  0.00      2.30     0.00    88092     0.00     0.00  Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, 1, true>::Block(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, long) [clone .lto_priv.0]
+  0.00      2.30     0.00    87646     0.00     0.00  void Eigen::internal::gemv_dense_selector<2, 1, true>::run<Eigen::Transpose<Eigen::Matrix<double, -1, -1, 0, -1, -1> const>, Eigen::Transpose<Eigen::Transpose<Eigen::Matrix<double, -1, 1, 0, -1, 1> > const>, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> > >(Eigen::Transpose<Eigen::Matrix<double, -1, -1, 0, -1, -1> const> const&, Eigen::Transpose<Eigen::Transpose<Eigen::Matrix<double, -1, 1, 0, -1, 1> > const> const&, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> >&, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> >::Scalar const&)
+  0.00      2.30     0.00    48003     0.00     0.00  std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>::operator()()
+  0.00      2.30     0.00    45379     0.00     0.00  Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >::resize(long, long) [clone .constprop.0]
+  0.00      2.30     0.00    43600     0.00     0.00  SqMahalanobis::SqMahalanobis(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, bool) [clone .constprop.0]
+  0.00      2.30     0.00    10697     0.00     0.00  Eigen::Matrix<double, -1, -1, 0, -1, -1>* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*>(__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, __gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*)
+  0.00      2.30     0.00     6808     0.00     0.00  GMM::compute_precisions_cholesky(GMMResult&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&)
+  0.00      2.30     0.00     4288     0.00     0.00  GMMResult::GMMResult(GMMResult const&) [clone .lto_priv.0]
+  0.00      2.30     0.00     2600     0.00     0.00  Eigen::internal::partial_lu_impl<double, 0, int, -1>::blocked_lu(long, long, double*, long, int*, int&, long)
+  0.00      2.30     0.00     1887     0.00     0.00  void std::__unguarded_linear_insert<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0]
+  0.00      2.30     0.00     1700     0.00     0.00  std::_Rb_tree<int, int, std::_Identity<int>, std::less<int>, std::allocator<int> >::_M_get_insert_unique_pos(int const&)
+  0.00      2.30     0.00      402     0.00     0.00  GeneticalAlgorithm::get_best_solution()
+  0.00      2.30     0.00      400     0.00     0.00  GeneticalAlgorithm::binary_tournament()
+  0.00      2.30     0.00      287     0.00     0.00  void std::vector<GMMResult, std::allocator<GMMResult> >::_M_realloc_append<GMMResult const&>(GMMResult const&)
+  0.00      2.30     0.00      221     0.00     0.00  GMMResult::~GMMResult() [clone .lto_priv.0]
+  0.00      2.30     0.00      193     0.00     0.00  Eigen::internal::general_matrix_matrix_triangular_product<long, double, 0, false, double, 1, false, 0, 1, 1, 1>::run(long, long, double const*, long, double const*, long, double*, long, long, double const&, Eigen::internal::level3_blocking<double, double>&) [clone .constprop.0]
+  0.00      2.30     0.00      102     0.00     0.00  GMMResult::GMMResult(int, int, int)
+  0.00      2.30     0.00      101     0.00     0.00  GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int)
+  0.00      2.30     0.00       40     0.00     0.00  void std::__introsort_loop<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0]
+  0.00      2.30     0.00        3     0.00     0.00  print_result(GMMResult)
+  0.00      2.30     0.00        3     0.00     0.00  std::filesystem::__cxx11::path::~path()
+  0.00      2.30     0.00        3     0.00     0.00  std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > >::~vector() [clone .lto_priv.0]
+  0.00      2.30     0.00        2     0.00     0.00  load_data_from_file(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<int, std::allocator<int> >&, int&)
+  0.00      2.30     0.00        2     0.00     1.14  GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int)
+  0.00      2.30     0.00        2     0.00     1.14  GeneticalAlgorithm::run(std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > > const&, int)
+  0.00      2.30     0.00        2     0.00     0.00  std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release()
+  0.00      2.30     0.00        1     0.00     0.00  Eigen::internal::queryCacheSizes(int&, int&, int&)
+  0.00      2.30     0.00        1     0.00     0.00  std::vector<GMMResult, std::allocator<GMMResult> >::~vector() [clone .lto_priv.0]
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2024 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 0.43% of 2.30 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     99.6    0.00    2.29                 main [1]
+                0.00    2.28       2/2           GeneticalAlgorithm::run(std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > > const&, int) [3]
+                0.00    0.00       1/101         GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [8]
+                0.00    0.00       2/2           load_data_from_file(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<int, std::allocator<int> >&, int&) [25]
+                0.00    0.00       9/95297       void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+                0.00    0.00       1/102         GMMResult::GMMResult(int, int, int) [26]
+                0.00    0.00       1/542452      Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::resize(long, long) [16]
+                0.00    0.00       3/3           std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > >::~vector() [clone .lto_priv.0] [48]
+                0.00    0.00       3/3           print_result(GMMResult) [46]
+                0.00    0.00       3/4288        GMMResult::GMMResult(GMMResult const&) [clone .lto_priv.0] [38]
+                0.00    0.00       3/3           std::filesystem::__cxx11::path::~path() [47]
+                0.00    0.00       2/221         GMMResult::~GMMResult() [clone .lto_priv.0] [43]
+                0.00    0.00       2/2           std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release() [49]
+                0.00    0.00       1/1           std::vector<GMMResult, std::allocator<GMMResult> >::~vector() [clone .lto_priv.0] [51]
+-----------------------------------------------
+                0.00    2.28       2/2           GeneticalAlgorithm::run(std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > > const&, int) [3]
+[2]     99.3    0.00    2.28       2         GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+                0.31    1.49     400/501         GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const [4]
+                0.00    0.46     100/101         GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [8]
+                0.00    0.02     400/400         GeneticalAlgorithm::binary_tournament() [19]
+                0.00    0.00     402/402         GeneticalAlgorithm::get_best_solution() [24]
+                0.00    0.00    2038/95297       void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+                0.00    0.00    2600/2600        Eigen::internal::partial_lu_impl<double, 0, int, -1>::blocked_lu(long, long, double*, long, int*, int&, long) [39]
+                0.00    0.00    1895/4288        GMMResult::GMMResult(GMMResult const&) [clone .lto_priv.0] [38]
+                0.00    0.00    1400/1887        void std::__unguarded_linear_insert<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] [40]
+                0.00    0.00     400/1700        std::_Rb_tree<int, int, std::_Identity<int>, std::less<int>, std::allocator<int> >::_M_get_insert_unique_pos(int const&) [41]
+                0.00    0.00     287/287         void std::vector<GMMResult, std::allocator<GMMResult> >::_M_realloc_append<GMMResult const&>(GMMResult const&) [42]
+                0.00    0.00      40/40          void std::__introsort_loop<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] [45]
+                0.00    0.00      40/221         GMMResult::~GMMResult() [clone .lto_priv.0] [43]
+-----------------------------------------------
+                0.00    2.28       2/2           main [1]
+[3]     99.3    0.00    2.28       2         GeneticalAlgorithm::run(std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > > const&, int) [3]
+                0.00    2.28       2/2           GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+-----------------------------------------------
+                0.08    0.38     101/501         GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [8]
+                0.31    1.49     400/501         GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+[4]     98.2    0.39    1.87     501         GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const [4]
+                0.42    0.73    6307/6307        GMM::expectation_step(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&) [5]
+                0.47    0.01   41846/41846       EmpiricalRegularizer::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, std::vector<double, std::allocator<double> > const&) [6]
+                0.00    0.20    6808/6808        GMM::compute_precisions_cholesky(GMMResult&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&) [10]
+                0.03    0.00     501/6808        estimate_weighted_log_probabilities(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&) [7]
+                0.00    0.00    7309/542452      Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::resize(long, long) [16]
+                0.00    0.00    6307/10697       Eigen::Matrix<double, -1, -1, 0, -1, -1>* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*>(__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, __gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*) [37]
+                0.00    0.00     501/4288        GMMResult::GMMResult(GMMResult const&) [clone .lto_priv.0] [38]
+-----------------------------------------------
+                0.42    0.73    6307/6307        GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const [4]
+[5]     50.1    0.42    0.73    6307         GMM::expectation_step(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&) [5]
+                0.44    0.01    6307/6808        estimate_weighted_log_probabilities(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&) [7]
+                0.29    0.00 6550000/6550000     double __vector(4) Eigen::internal::pexp_double<double __vector(4)>(double __vector(4)) [9]
+-----------------------------------------------
+                0.47    0.01   41846/41846       GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const [4]
+[6]     21.0    0.47    0.01   41846         EmpiricalRegularizer::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, std::vector<double, std::allocator<double> > const&) [6]
+                0.01    0.00  167384/542452      Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::resize(long, long) [16]
+                0.00    0.00   41846/132058      void Eigen::internal::evaluateProductBlockingSizesHeuristic<double, double, 4, long>(long&, long&, long&, long) [clone .constprop.0] [20]
+-----------------------------------------------
+                0.03    0.00     501/6808        GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const [4]
+                0.44    0.01    6307/6808        GMM::expectation_step(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&) [5]
+[7]     20.7    0.47    0.01    6808         estimate_weighted_log_probabilities(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&) [7]
+                0.00    0.00   45106/132058      void Eigen::internal::evaluateProductBlockingSizesHeuristic<double, double, 4, long>(long&, long&, long&, long) [clone .constprop.0] [20]
+                0.00    0.00   51914/542452      Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::resize(long, long) [16]
+-----------------------------------------------
+                0.00    0.00       1/101         main [1]
+                0.00    0.46     100/101         GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+[8]     20.0    0.00    0.46     101         GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [8]
+                0.08    0.38     101/501         GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const [4]
+                0.00    0.00     101/501         void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&) [18]
+                0.00    0.00     101/102         GMMResult::GMMResult(int, int, int) [26]
+-----------------------------------------------
+                0.29    0.00 6550000/6550000     GMM::expectation_step(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&) [5]
+[9]     12.6    0.29    0.00 6550000         double __vector(4) Eigen::internal::pexp_double<double __vector(4)>(double __vector(4)) [9]
+-----------------------------------------------
+                0.00    0.20    6808/6808        GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const [4]
+[10]     8.7    0.00    0.20    6808         GMM::compute_precisions_cholesky(GMMResult&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&) [10]
+                0.04    0.14   45106/45106       Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [11]
+                0.01    0.00   45106/95297       void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+                0.00    0.00   45106/132058      void Eigen::internal::evaluateProductBlockingSizesHeuristic<double, double, 4, long>(long&, long&, long&, long) [clone .constprop.0] [20]
+                0.00    0.00   45106/133812      Eigen::internal::aligned_malloc(unsigned long) [31]
+-----------------------------------------------
+                0.04    0.14   45106/45106       GMM::compute_precisions_cholesky(GMMResult&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&) [10]
+[11]     7.7    0.04    0.14   45106         Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [11]
+                0.06    0.00   45106/45106       Eigen::HessenbergDecomposition<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::_compute(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, 1, -1, 1, 1, -1>&) [12]
+                0.02    0.03   45106/45106       void Eigen::HouseholderSequence<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1>, 1>::evalTo<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&) const [13]
+                0.01    0.00  270636/542452      Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::resize(long, long) [16]
+                0.01    0.00   45106/45106       Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::doComputeEigenvectors() [21]
+                0.00    0.00  135318/135318      void Eigen::internal::call_dense_assignment_loop<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::internal::assign_op<double, double> >(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, Eigen::internal::assign_op<double, double> const&) [30]
+                0.00    0.00   88092/88092       Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, 1, true>::Block(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, long) [clone .lto_priv.0] [32]
+                0.00    0.00   45106/133812      Eigen::internal::aligned_malloc(unsigned long) [31]
+                0.00    0.00   45106/45379       Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >::resize(long, long) [clone .constprop.0] [35]
+                0.00    0.00   44046/87646       void Eigen::internal::gemv_dense_selector<2, 1, true>::run<Eigen::Transpose<Eigen::Matrix<double, -1, -1, 0, -1, -1> const>, Eigen::Transpose<Eigen::Transpose<Eigen::Matrix<double, -1, 1, 0, -1, 1> > const>, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> > >(Eigen::Transpose<Eigen::Matrix<double, -1, -1, 0, -1, -1> const> const&, Eigen::Transpose<Eigen::Transpose<Eigen::Matrix<double, -1, 1, 0, -1, 1> > const> const&, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> >&, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> >::Scalar const&) [33]
+-----------------------------------------------
+                0.06    0.00   45106/45106       Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [11]
+[12]     2.6    0.06    0.00   45106         Eigen::HessenbergDecomposition<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::_compute(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, 1, -1, 1, 1, -1>&) [12]
+-----------------------------------------------
+                0.02    0.03   45106/45106       Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [11]
+[13]     2.3    0.02    0.03   45106         void Eigen::HouseholderSequence<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1>, 1>::evalTo<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&) const [13]
+                0.03    0.00   45106/45106       void Eigen::MatrixBase<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1> const, -1, 1, false> >(Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1> const, -1, 1, false> const&, double const&, double*) [17]
+                0.00    0.00   45106/542452      Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::resize(long, long) [16]
+-----------------------------------------------
+[14]     1.7    0.03    0.01   95297+87200   <cycle 1 as a whole> [14]
+                0.03    0.01  138897             void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+                0.00    0.00   43600             SqMahalanobis::SqMahalanobis(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, bool) [clone .constprop.0] <cycle 1> [36]
+-----------------------------------------------
+                               43600             SqMahalanobis::SqMahalanobis(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, bool) [clone .constprop.0] <cycle 1> [36]
+                0.00    0.00       9/95297       main [1]
+                0.00    0.00    2038/95297       GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+                0.00    0.00    2602/95297       load_data_from_file(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<int, std::allocator<int> >&, int&) [25]
+                0.00    0.00    3542/95297       GeneticalAlgorithm::get_best_solution() [24]
+                0.01    0.00   42000/95297       void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&) [18]
+                0.01    0.00   45106/95297       GMM::compute_precisions_cholesky(GMMResult&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&) [10]
+[15]     1.7    0.03    0.01  138897         void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+                0.01    0.00   43600/43600       SqMahalanobis::evaluate(Eigen::Matrix<double, -1, 1, 0, -1, 1> const&, Eigen::Matrix<double, -1, 1, 0, -1, 1> const&) const [22]
+                0.00    0.00   48003/48003       std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>::operator()() [34]
+                0.00    0.00     487/1887        void std::__unguarded_linear_insert<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] [40]
+                0.00    0.00     400/4288        GMMResult::GMMResult(GMMResult const&) [clone .lto_priv.0] [38]
+                0.00    0.00     193/193         Eigen::internal::general_matrix_matrix_triangular_product<long, double, 0, false, double, 1, false, 0, 1, 1, 1>::run(long, long, double const*, long, double const*, long, double*, long, long, double const&, Eigen::internal::level3_blocking<double, double>&) [clone .constprop.0] [44]
+                               43600             SqMahalanobis::SqMahalanobis(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, bool) [clone .constprop.0] <cycle 1> [36]
+-----------------------------------------------
+                0.00    0.00       1/542452      main [1]
+                0.00    0.00     102/542452      GMMResult::GMMResult(int, int, int) [26]
+                0.00    0.00    7309/542452      GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const [4]
+                0.00    0.00   45106/542452      void Eigen::HouseholderSequence<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1>, 1>::evalTo<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&) const [13]
+                0.00    0.00   51914/542452      estimate_weighted_log_probabilities(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&) [7]
+                0.01    0.00  167384/542452      EmpiricalRegularizer::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, std::vector<double, std::allocator<double> > const&) [6]
+                0.01    0.00  270636/542452      Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [11]
+[16]     1.3    0.03    0.00  542452         Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::resize(long, long) [16]
+-----------------------------------------------
+                0.03    0.00   45106/45106       void Eigen::HouseholderSequence<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1>, 1>::evalTo<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&) const [13]
+[17]     1.3    0.03    0.00   45106         void Eigen::MatrixBase<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1> const, -1, 1, false> >(Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1> const, -1, 1, false> const&, double const&, double*) [17]
+-----------------------------------------------
+                0.00    0.00     101/501         GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [8]
+                0.01    0.01     400/501         GeneticalAlgorithm::binary_tournament() [19]
+[18]     1.2    0.01    0.02     501         void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&) [18]
+                0.01    0.00   42000/95297       void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+-----------------------------------------------
+                0.00    0.02     400/400         GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+[19]     1.0    0.00    0.02     400         GeneticalAlgorithm::binary_tournament() [19]
+                0.01    0.01     400/501         void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&) [18]
+                0.00    0.00     800/4288        GMMResult::GMMResult(GMMResult const&) [clone .lto_priv.0] [38]
+-----------------------------------------------
+                0.00    0.00   41846/132058      EmpiricalRegularizer::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, std::vector<double, std::allocator<double> > const&) [6]
+                0.00    0.00   45106/132058      GMM::compute_precisions_cholesky(GMMResult&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&) [10]
+                0.00    0.00   45106/132058      estimate_weighted_log_probabilities(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&) [7]
+[20]     0.4    0.01    0.00  132058         void Eigen::internal::evaluateProductBlockingSizesHeuristic<double, double, 4, long>(long&, long&, long&, long) [clone .constprop.0] [20]
+                0.00    0.00       1/1           Eigen::internal::queryCacheSizes(int&, int&, int&) [50]
+-----------------------------------------------
+                0.01    0.00   45106/45106       Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [11]
+[21]     0.4    0.01    0.00   45106         Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::doComputeEigenvectors() [21]
+-----------------------------------------------
+                0.01    0.00   43600/43600       void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+[22]     0.4    0.01    0.00   43600         SqMahalanobis::evaluate(Eigen::Matrix<double, -1, 1, 0, -1, 1> const&, Eigen::Matrix<double, -1, 1, 0, -1, 1> const&) const [22]
+                0.00    0.00   43600/133812      Eigen::internal::aligned_malloc(unsigned long) [31]
+                0.00    0.00   43600/87646       void Eigen::internal::gemv_dense_selector<2, 1, true>::run<Eigen::Transpose<Eigen::Matrix<double, -1, -1, 0, -1, -1> const>, Eigen::Transpose<Eigen::Transpose<Eigen::Matrix<double, -1, 1, 0, -1, 1> > const>, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> > >(Eigen::Transpose<Eigen::Matrix<double, -1, -1, 0, -1, -1> const> const&, Eigen::Transpose<Eigen::Transpose<Eigen::Matrix<double, -1, 1, 0, -1, 1> > const> const&, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> >&, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> >::Scalar const&) [33]
+-----------------------------------------------
+                                                 <spontaneous>
+[23]     0.4    0.01    0.00                 _init [23]
+-----------------------------------------------
+                0.00    0.00     402/402         GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+[24]     0.1    0.00    0.00     402         GeneticalAlgorithm::get_best_solution() [24]
+                0.00    0.00    3542/95297       void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+                0.00    0.00     402/4288        GMMResult::GMMResult(GMMResult const&) [clone .lto_priv.0] [38]
+-----------------------------------------------
+                0.00    0.00       2/2           main [1]
+[25]     0.0    0.00    0.00       2         load_data_from_file(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<int, std::allocator<int> >&, int&) [25]
+                0.00    0.00    2602/95297       void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+                0.00    0.00    1300/1700        std::_Rb_tree<int, int, std::_Identity<int>, std::less<int>, std::allocator<int> >::_M_get_insert_unique_pos(int const&) [41]
+-----------------------------------------------
+                0.00    0.00       1/102         main [1]
+                0.00    0.00     101/102         GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [8]
+[26]     0.0    0.00    0.00     102         GMMResult::GMMResult(int, int, int) [26]
+                0.00    0.00     102/542452      Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::resize(long, long) [16]
+                0.00    0.00     102/10697       Eigen::Matrix<double, -1, -1, 0, -1, -1>* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*>(__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, __gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*) [37]
+-----------------------------------------------
+                0.00    0.00  135318/135318      Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [11]
+[30]     0.0    0.00    0.00  135318         void Eigen::internal::call_dense_assignment_loop<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::internal::assign_op<double, double> >(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, Eigen::internal::assign_op<double, double> const&) [30]
+-----------------------------------------------
+                0.00    0.00   43600/133812      SqMahalanobis::evaluate(Eigen::Matrix<double, -1, 1, 0, -1, 1> const&, Eigen::Matrix<double, -1, 1, 0, -1, 1> const&) const [22]
+                0.00    0.00   45106/133812      GMM::compute_precisions_cholesky(GMMResult&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&) [10]
+                0.00    0.00   45106/133812      Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [11]
+[31]     0.0    0.00    0.00  133812         Eigen::internal::aligned_malloc(unsigned long) [31]
+-----------------------------------------------
+                0.00    0.00   88092/88092       Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [11]
+[32]     0.0    0.00    0.00   88092         Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, 1, true>::Block(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, long) [clone .lto_priv.0] [32]
+-----------------------------------------------
+                0.00    0.00   43600/87646       SqMahalanobis::evaluate(Eigen::Matrix<double, -1, 1, 0, -1, 1> const&, Eigen::Matrix<double, -1, 1, 0, -1, 1> const&) const [22]
+                0.00    0.00   44046/87646       Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [11]
+[33]     0.0    0.00    0.00   87646         void Eigen::internal::gemv_dense_selector<2, 1, true>::run<Eigen::Transpose<Eigen::Matrix<double, -1, -1, 0, -1, -1> const>, Eigen::Transpose<Eigen::Transpose<Eigen::Matrix<double, -1, 1, 0, -1, 1> > const>, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> > >(Eigen::Transpose<Eigen::Matrix<double, -1, -1, 0, -1, -1> const> const&, Eigen::Transpose<Eigen::Transpose<Eigen::Matrix<double, -1, 1, 0, -1, 1> > const> const&, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> >&, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> >::Scalar const&) [33]
+-----------------------------------------------
+                0.00    0.00   48003/48003       void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+[34]     0.0    0.00    0.00   48003         std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>::operator()() [34]
+-----------------------------------------------
+                0.00    0.00     273/45379       void std::__introsort_loop<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] [45]
+                0.00    0.00   45106/45379       Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [11]
+[35]     0.0    0.00    0.00   45379         Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >::resize(long, long) [clone .constprop.0] [35]
+-----------------------------------------------
+                               43600             void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+[36]     0.0    0.00    0.00   43600         SqMahalanobis::SqMahalanobis(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, bool) [clone .constprop.0] <cycle 1> [36]
+                               43600             void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+-----------------------------------------------
+                0.00    0.00     102/10697       GMMResult::GMMResult(int, int, int) [26]
+                0.00    0.00    4288/10697       GMMResult::GMMResult(GMMResult const&) [clone .lto_priv.0] [38]
+                0.00    0.00    6307/10697       GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const [4]
+[37]     0.0    0.00    0.00   10697         Eigen::Matrix<double, -1, -1, 0, -1, -1>* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*>(__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, __gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*) [37]
+-----------------------------------------------
+                0.00    0.00       3/4288        main [1]
+                0.00    0.00     287/4288        void std::vector<GMMResult, std::allocator<GMMResult> >::_M_realloc_append<GMMResult const&>(GMMResult const&) [42]
+                0.00    0.00     400/4288        void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+                0.00    0.00     402/4288        GeneticalAlgorithm::get_best_solution() [24]
+                0.00    0.00     501/4288        GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const [4]
+                0.00    0.00     800/4288        GeneticalAlgorithm::binary_tournament() [19]
+                0.00    0.00    1895/4288        GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+[38]     0.0    0.00    0.00    4288         GMMResult::GMMResult(GMMResult const&) [clone .lto_priv.0] [38]
+                0.00    0.00    4288/10697       Eigen::Matrix<double, -1, -1, 0, -1, -1>* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*>(__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, __gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*) [37]
+-----------------------------------------------
+                0.00    0.00    2600/2600        GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+[39]     0.0    0.00    0.00    2600         Eigen::internal::partial_lu_impl<double, 0, int, -1>::blocked_lu(long, long, double*, long, int*, int&, long) [39]
+-----------------------------------------------
+                0.00    0.00     487/1887        void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+                0.00    0.00    1400/1887        GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+[40]     0.0    0.00    0.00    1887         void std::__unguarded_linear_insert<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] [40]
+-----------------------------------------------
+                0.00    0.00     400/1700        GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+                0.00    0.00    1300/1700        load_data_from_file(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<int, std::allocator<int> >&, int&) [25]
+[41]     0.0    0.00    0.00    1700         std::_Rb_tree<int, int, std::_Identity<int>, std::less<int>, std::allocator<int> >::_M_get_insert_unique_pos(int const&) [41]
+-----------------------------------------------
+                0.00    0.00     287/287         GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+[42]     0.0    0.00    0.00     287         void std::vector<GMMResult, std::allocator<GMMResult> >::_M_realloc_append<GMMResult const&>(GMMResult const&) [42]
+                0.00    0.00     287/4288        GMMResult::GMMResult(GMMResult const&) [clone .lto_priv.0] [38]
+-----------------------------------------------
+                0.00    0.00       2/221         main [1]
+                0.00    0.00      40/221         GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+                0.00    0.00     179/221         void std::__introsort_loop<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] [45]
+[43]     0.0    0.00    0.00     221         GMMResult::~GMMResult() [clone .lto_priv.0] [43]
+-----------------------------------------------
+                0.00    0.00     193/193         void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] <cycle 1> [15]
+[44]     0.0    0.00    0.00     193         Eigen::internal::general_matrix_matrix_triangular_product<long, double, 0, false, double, 1, false, 0, 1, 1, 1>::run(long, long, double const*, long, double const*, long, double*, long, long, double const&, Eigen::internal::level3_blocking<double, double>&) [clone .constprop.0] [44]
+-----------------------------------------------
+                                 179             void std::__introsort_loop<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] [45]
+                0.00    0.00      40/40          GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [2]
+[45]     0.0    0.00    0.00      40+179     void std::__introsort_loop<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] [45]
+                0.00    0.00     273/45379       Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >::resize(long, long) [clone .constprop.0] [35]
+                0.00    0.00     179/221         GMMResult::~GMMResult() [clone .lto_priv.0] [43]
+                                 179             void std::__introsort_loop<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0] [45]
+-----------------------------------------------
+                0.00    0.00       3/3           main [1]
+[46]     0.0    0.00    0.00       3         print_result(GMMResult) [46]
+-----------------------------------------------
+                0.00    0.00       3/3           main [1]
+[47]     0.0    0.00    0.00       3         std::filesystem::__cxx11::path::~path() [47]
+-----------------------------------------------
+                0.00    0.00       3/3           main [1]
+[48]     0.0    0.00    0.00       3         std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > >::~vector() [clone .lto_priv.0] [48]
+-----------------------------------------------
+                0.00    0.00       2/2           main [1]
+[49]     0.0    0.00    0.00       2         std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release() [49]
+-----------------------------------------------
+                0.00    0.00       1/1           void Eigen::internal::evaluateProductBlockingSizesHeuristic<double, double, 4, long>(long&, long&, long&, long) [clone .constprop.0] [20]
+[50]     0.0    0.00    0.00       1         Eigen::internal::queryCacheSizes(int&, int&, int&) [50]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[51]     0.0    0.00    0.00       1         std::vector<GMMResult, std::allocator<GMMResult> >::~vector() [clone .lto_priv.0] [51]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2024 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [46] print_result(GMMResult) [16] Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::resize(long, long) [13] void Eigen::HouseholderSequence<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1>, 1>::evalTo<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&) const
+  [25] load_data_from_file(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<int, std::allocator<int> >&, int&) [12] Eigen::HessenbergDecomposition<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::_compute(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, 1, 0, -1, 1>&, Eigen::Matrix<double, 1, -1, 1, 1, -1>&) [47] std::filesystem::__cxx11::path::~path()
+   [7] estimate_weighted_log_probabilities(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&) [32] Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, 1, true>::Block(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, long) [clone .lto_priv.0] [49] std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release()
+  [36] SqMahalanobis::SqMahalanobis(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, bool) [clone .constprop.0] [9] double __vector(4) Eigen::internal::pexp_double<double __vector(4)>(double __vector(4)) [34] std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>::operator()()
+  [19] GeneticalAlgorithm::binary_tournament() [31] Eigen::internal::aligned_malloc(unsigned long) [42] void std::vector<GMMResult, std::allocator<GMMResult> >::_M_realloc_append<GMMResult const&>(GMMResult const&)
+  [24] GeneticalAlgorithm::get_best_solution() [39] Eigen::internal::partial_lu_impl<double, 0, int, -1>::blocked_lu(long, long, double*, long, int*, int&, long) [51] std::vector<GMMResult, std::allocator<GMMResult> >::~vector() [clone .lto_priv.0]
+   [2] GeneticalAlgorithm::run(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [50] Eigen::internal::queryCacheSizes(int&, int&, int&) [48] std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > >::~vector() [clone .lto_priv.0]
+   [3] GeneticalAlgorithm::run(std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > > const&, int) [33] void Eigen::internal::gemv_dense_selector<2, 1, true>::run<Eigen::Transpose<Eigen::Matrix<double, -1, -1, 0, -1, -1> const>, Eigen::Transpose<Eigen::Transpose<Eigen::Matrix<double, -1, 1, 0, -1, 1> > const>, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> > >(Eigen::Transpose<Eigen::Matrix<double, -1, -1, 0, -1, -1> const> const&, Eigen::Transpose<Eigen::Transpose<Eigen::Matrix<double, -1, 1, 0, -1, 1> > const> const&, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> >&, Eigen::Transpose<Eigen::Matrix<double, 1, -1, 1, 1, -1> >::Scalar const&) [41] std::_Rb_tree<int, int, std::_Identity<int>, std::less<int>, std::allocator<int> >::_M_get_insert_unique_pos(int const&)
+   [6] EmpiricalRegularizer::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, std::vector<double, std::allocator<double> > const&) [30] void Eigen::internal::call_dense_assignment_loop<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::internal::assign_op<double, double> >(Eigen::Matrix<double, -1, -1, 0, -1, -1>&, Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, Eigen::internal::assign_op<double, double> const&) [37] Eigen::Matrix<double, -1, -1, 0, -1, -1>* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*>(__gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, __gnu_cxx::__normal_iterator<Eigen::Matrix<double, -1, -1, 0, -1, -1> const*, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > >, Eigen::Matrix<double, -1, -1, 0, -1, -1>*)
+   [5] GMM::expectation_step(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int, GMMResult const&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > > const&) [20] void Eigen::internal::evaluateProductBlockingSizesHeuristic<double, double, 4, long>(long&, long&, long&, long) [clone .constprop.0] [15] void std::__insertion_sort<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0]
+  [10] GMM::compute_precisions_cholesky(GMMResult&, std::vector<Eigen::Matrix<double, -1, -1, 0, -1, -1>, std::allocator<Eigen::Matrix<double, -1, -1, 0, -1, -1> > >&) [44] Eigen::internal::general_matrix_matrix_triangular_product<long, double, 0, false, double, 1, false, 0, 1, 1, 1>::run(long, long, double const*, long, double const*, long, double*, long, long, double const&, Eigen::internal::level3_blocking<double, double>&) [clone .constprop.0] [45] void std::__introsort_loop<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0]
+   [8] GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, int) [38] GMMResult::GMMResult(GMMResult const&) [clone .lto_priv.0] [40] void std::__unguarded_linear_insert<__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(GMMResult const&, GMMResult const&)> >(__gnu_cxx::__normal_iterator<GMMResult*, std::vector<GMMResult, std::allocator<GMMResult> > >, __gnu_cxx::__ops::_Val_comp_iter<bool (*)(GMMResult const&, GMMResult const&)>) [clone .constprop.0]
+  [17] void Eigen::MatrixBase<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1>, -1, -1, false> >::applyHouseholderOnTheLeft<Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1> const, -1, 1, false> >(Eigen::Block<Eigen::Matrix<double, -1, -1, 0, -1, -1> const, -1, 1, false> const&, double const&, double*) [26] GMMResult::GMMResult(int, int, int) [18] void std::shuffle<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, std::mersenne_twister_engine<unsigned long, 32ul, 624ul, 397ul, 31ul, 2567483615ul, 11ul, 4294967295ul, 7ul, 2636928640ul, 15ul, 4022730752ul, 18ul, 1812433253ul>&)
+  [21] Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::doComputeEigenvectors() [43] GMMResult::~GMMResult() [clone .lto_priv.0] [23] _init
+  [11] Eigen::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >::EigenSolver<Eigen::Matrix<double, -1, -1, 0, -1, -1> >(Eigen::EigenBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, bool) [clone .constprop.0] [22] SqMahalanobis::evaluate(Eigen::Matrix<double, -1, 1, 0, -1, 1> const&, Eigen::Matrix<double, -1, 1, 0, -1, 1> const&) const [14] <cycle 1>
+  [35] Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >::resize(long, long) [clone .constprop.0] [4] GMM::fit(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, GMMResult&) const
