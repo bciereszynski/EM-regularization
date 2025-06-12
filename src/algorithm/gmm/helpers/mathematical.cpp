@@ -3,12 +3,18 @@
 #include <cmath>
 #include <limits>
 
-double log_sum_exp(const Eigen::Ref<const Eigen::VectorXd> &values) {
-    const double max_val = values.maxCoeff();
+Eigen::VectorXd log_sum_exp(const Eigen::MatrixXd &m) {
+    Eigen::VectorXd max_vals = m.rowwise().maxCoeff();
 
-    if (std::isinf(max_val)) return max_val;
-
-    return max_val + std::log((values.array() - max_val).exp().sum());
+    Eigen::VectorXd results(m.rows());
+    for (int i = 0; i < m.rows(); ++i) {
+        if (std::isinf(max_vals[i])) {
+            results[i] = max_vals[i];
+        } else {
+            results[i] = max_vals[i] + std::log((m.row(i).array() - max_vals[i]).exp().sum());
+        }
+    }
+    return results;
 }
 
 

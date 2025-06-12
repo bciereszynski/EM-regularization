@@ -168,7 +168,7 @@ TEST(LogSumExpTest, LogSumExp) {
 
     for (const auto &[input, expected]: cases) {
         Eigen::VectorXd vec = Eigen::Map<const Eigen::VectorXd>(input.data(), input.size());
-        const double result = log_sum_exp(vec);
+        const double result = log_sum_exp(vec).value();
         EXPECT_NEAR(result, expected, 1e-10);
     }
 }

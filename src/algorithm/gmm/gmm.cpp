@@ -154,29 +154,19 @@ GMMResult GMM::fit(const Eigen::MatrixXd &data, const int k) {
 
 std::pair<double, Eigen::MatrixXd>
 GMM::expectation_step(const Eigen::MatrixXd &data,
-                      const int k, const GMMResult &result,
+                      const int k,
+                      const GMMResult &result,
                       const std::vector<Eigen::MatrixXd> &precisionsCholesky) {
-    const int n = data.rows();
-
-    const auto weighted_log_probabilities =
+    Eigen::MatrixXd weighted_log_probabilities =
             estimate_weighted_log_probabilities(data, k, result, precisionsCholesky);
 
-    auto log_probabilities_norm = std::vector<double>(n, 0.0);
+    Eigen::VectorXd log_probabilities_norm = log_sum_exp(weighted_log_probabilities);
 
-    for (int i = 0; i < n; ++i) {
-        log_probabilities_norm[i] = log_sum_exp(weighted_log_probabilities.row(i));
-    }
+    Eigen::MatrixXd log_responsibilities = weighted_log_probabilities.colwise() - log_probabilities_norm;
 
-    Eigen::MatrixXd log_responsibilities(n, k);
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < k; ++j) {
-            log_responsibilities(i, j) = weighted_log_probabilities(i, j) - log_probabilities_norm[i];
-        }
-    }
-    double mean = std::accumulate(log_probabilities_norm.begin(), log_probabilities_norm.end(), 0.0) /
-                  log_probabilities_norm.size();
+    double mean_log_likelihood = log_probabilities_norm.mean();
 
-    return {mean, log_responsibilities};
+    return {mean_log_likelihood, log_responsibilities};
 }
 
 void GMM::maximization_step(const Eigen::MatrixXd &data, const int k, GMMResult &result,

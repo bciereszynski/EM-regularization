@@ -14,7 +14,7 @@ T zero(const T &x) {
     return static_cast<T>(0);
 }
 
-double log_sum_exp(const Eigen::Ref<const Eigen::VectorXd> &values);
+Eigen::VectorXd log_sum_exp(const Eigen::MatrixXd &mat);
 
 Eigen::MatrixXd estimate_weighted_log_probabilities(
     const Eigen::MatrixXd &data, int k, const GMMResult &result,
