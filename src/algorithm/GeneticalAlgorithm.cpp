@@ -37,12 +37,12 @@ GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data, const int k) {
 
     auto gmm = GMM(rng);
 
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < pop_max_size; ++i) {
         GMMResult result = gmm.fit(data, k);
         pop.add(result);
     }
 
-    auto start_time = std::chrono::high_resolution_clock::now();
     int iter;
     for (iter = 0; iter < max_iterations; ++iter) {
         auto [parent1, parent2] = binary_tournament();
