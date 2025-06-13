@@ -29,6 +29,7 @@ std::vector<std::vector<double> > load_data_from_file(const std::string &path, s
         throw std::runtime_error("Could not open file: " + path);
     }
 
+    expected_clusters.clear();
     std::string line;
     while (std::getline(file, line)) {
         std::stringstream ss(line);
