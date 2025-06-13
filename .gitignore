@@ -3,3 +3,7 @@ cmake-build-debug
 .cmake
 /Testing/Temporary/
 /cmake-build-release-wsl---gcc/
+*.csv
+report*.txt
+gmon.out
+EM_regularization
