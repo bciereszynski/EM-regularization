@@ -35,36 +35,32 @@ int main(const int argc, char *argv[]) {
         }
     }
 
-    std::vector<std::vector<double> > data;
+
     std::vector<int> expected_clusters;
 
     GeneticalAlgorithm ga{std::mt19937(seed), 200, 150, 40, 50, false};
     std::cout << "precompile ";
-    data = load_data_from_file(R"(data/3_2_-0.26_1.csv)", expected_clusters, k);
-    const auto result = ga.run(data, k);
+    std::vector<std::vector<double> > data = load_data_from_file(R"(data/3_2_-0.26_1.csv)", expected_clusters, k);
+
+    GMMResult result = ga.run(data, k);
     print_result(result);
 
-    GMM gmm{1e-3, 200, false, 123};
     for (const auto &entry: fs::directory_iterator(directory)) {
         if (!entry.is_regular_file() || entry.path().extension() != ".csv") {
             continue;
         }
         std::string path = entry.path().string();
+        std::string filename = entry.path().filename().string();
         data = load_data_from_file(path, expected_clusters, k);
 
-        GMMResult result_i(data[0].size(), data.size(), k);
-        std::cout << "gmm " << path << " ";
-        result_i = gmm.fit(data, k);
-        print_result(result_i);
-
-        std::cout << "gmm_GA " << path << " ";
+        std::cout << "gmm_GA " << filename << " ";
         try {
-            result_i = ga.run(data, k);
+            result = ga.run(data, k);
         } catch (std::exception &e) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
 
-        print_result(result_i);
+        print_result(result);
     }
 
     return 0;
