@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <filesystem>
+#include <fstream>
 
 #include "data.h"
 #include "algorithm/GeneticalAlgorithm.h"
@@ -45,6 +46,8 @@ int main(const int argc, char *argv[]) {
     GMMResult result = ga.run(data, k);
     print_result(result);
 
+    std::ofstream output_file("evaluation/results.txt");
+
     for (const auto &entry: fs::directory_iterator(directory)) {
         if (!entry.is_regular_file() || entry.path().extension() != ".csv") {
             continue;
@@ -53,15 +56,22 @@ int main(const int argc, char *argv[]) {
         std::string filename = entry.path().filename().string();
         data = load_data_from_file(path, expected_clusters, k);
 
-        std::cout << "gmm_GA " << filename << " ";
         try {
             result = ga.run(data, k);
         } catch (std::exception &e) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
-
         print_result(result);
-    }
+        output_file << "gmm_GA " << filename << " "
+                << result.objective << " "
+                << result.iterations << " "
+                << result.elapsed << " ";
+        for (int val: expected_clusters) output_file << val << ",";
+        output_file << " ";
 
+        for (int val: result.assignments) output_file << val << ",";
+        output_file << std::endl;
+    }
+    output_file.close();
     return 0;
 }
