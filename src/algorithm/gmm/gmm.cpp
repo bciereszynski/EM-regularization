@@ -29,6 +29,12 @@ namespace {
 
         return max_cluster;
     }
+
+    Eigen::MatrixXd fix_matrix(const Eigen::MatrixXd &matrix, double param) {
+        Eigen::MatrixXd result = matrix;
+        result.diagonal().array() += param;
+        return result;
+    }
 }
 
 
@@ -185,24 +191,19 @@ void GMM::compute_precisions_cholesky(GMMResult &result,
     const int d = result.covariances[0].rows();
 
     for (int i = 0; i < k; ++i) {
-        Eigen::EigenSolver<Eigen::MatrixXd> eig_check(result.covariances[i]);
-        Eigen::VectorXd eigenvals = eig_check.eigenvalues().real();
-        bool is_pos_def = eigenvals.minCoeff() > 1e-12;
+        Eigen::LLT<Eigen::MatrixXd> covariances_cholesky(result.covariances[i]);
 
-        if (!is_pos_def) {
-            Eigen::EigenSolver<Eigen::MatrixXd> eig(result.covariances[i]);
-            Eigen::MatrixXd eigenvalues = eig.eigenvalues().real().cwiseMax(1e-6).asDiagonal();
-            Eigen::MatrixXd eigenvectors = eig.eigenvectors().real();
-
-            result.covariances[i] = eigenvectors * eigenvalues * eigenvectors.transpose();
-        }
-
-        Eigen::LLT<Eigen::MatrixXd> cholesky(result.covariances[i]);
-
-        if (cholesky.info() == Eigen::Success) {
-            precisions_cholesky[i] = cholesky.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
+        if (covariances_cholesky.info() == Eigen::Success) {
+            precisions_cholesky[i] = covariances_cholesky.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
         } else {
-            throw std::runtime_error("GMM Failed: Cholesky decomposition failed");
+            result.covariances[i] = fix_matrix(result.covariances[i], 1e-6);
+
+            Eigen::LLT<Eigen::MatrixXd> covariances_cholesky_fixed(result.covariances[i]);
+            if (covariances_cholesky_fixed.info() == Eigen::Success) {
+                precisions_cholesky[i] = covariances_cholesky_fixed.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
+            } else {
+                throw std::runtime_error("GMM Failed: Cholesky decomposition failed");
+            }
         }
     }
 }
