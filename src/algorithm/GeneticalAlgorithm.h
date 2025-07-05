@@ -6,7 +6,7 @@
 #include <set>
 #include <random>
 
-constexpr int GA_DEFAULT_MAX_ITERATIONS = 200;
+constexpr int GA_DEFAULT_MAX_ITERATIONS = 250;
 constexpr int GA_DEFAULT_MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 150;
 constexpr int GA_DEFAULT_POPULATION_MAX_SIZE = 50;
 constexpr int GA_DEFAULT_POPULATION_MIN_SIZE = 40;

@@ -38,7 +38,7 @@ int main(const int argc, char *argv[]) {
 
     std::vector<int> expected_clusters;
 
-    GeneticalAlgorithm ga{std::mt19937(seed), 200, 150, 40, 50, false};
+    GeneticalAlgorithm ga{std::mt19937(seed), 250, 150, 40, 50, false};
     std::cout << "precompile ";
     std::vector<std::vector<double> > data = load_data_from_file(R"(data/3_2_-0.26_1.csv)", expected_clusters, k);
 
