@@ -18,6 +18,9 @@ add_executable(EM_regularization src/main.cpp
         src/algorithm/GeneticalAlgorithm.cpp
         src/external/hungarian/hungarian.cpp
         src/algorithm/SqMahalanobis.cpp
+        src/algorithm/regularization/LedoitWolfCovarianceEstimator.cpp
+        src/algorithm/regularization/ShrunkCovarianceEstimator.cpp
+        src/algorithm/regularization/OASCovarianceEstimator.cpp
 )
 
 enable_testing()

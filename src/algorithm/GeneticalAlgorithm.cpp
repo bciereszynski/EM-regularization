@@ -22,7 +22,8 @@ double GeneticalAlgorithm::distance(const GMMResult &a, const int i, const GMMRe
     return (distance1 + distance2) / 2.0;
 }
 
-GMMResult GeneticalAlgorithm::run(const std::vector<std::vector<double> > &data, int k) {
+GMMResult GeneticalAlgorithm::run(const std::vector<std::vector<double> > &data, const int k,
+                                  CovarianceMatrixRegularizer *regularizer) {
     Eigen::MatrixXd data_matrix(data.size(), data[0].size());
     for (size_t i = 0; i < data.size(); ++i) {
         data_matrix.row(i) = Eigen::VectorXd::Map(data[i].data(), data[i].size());
@@ -30,12 +31,13 @@ GMMResult GeneticalAlgorithm::run(const std::vector<std::vector<double> > &data,
     return run(data_matrix, k);
 }
 
-GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data, const int k) {
+GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data, const int k,
+                                  CovarianceMatrixRegularizer *regularizer) {
     auto best_obj = -std::numeric_limits<double>::infinity();
     pop.clear();
     auto iterations_without_improvement = 0;
 
-    auto gmm = GMM(rng);
+    auto gmm = GMM(rng, regularizer);
 
     auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < pop_max_size; ++i) {

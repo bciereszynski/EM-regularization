@@ -44,25 +44,29 @@ GMM::GMM(
     const double tolerance,
     const int max_iterations,
     const bool verbose,
-    const unsigned int seed
+    const unsigned int seed,
+    CovarianceMatrixRegularizer *regularizer
 ) : tolerance(tolerance),
     max_iterations(max_iterations),
     verbose(verbose),
-    rng(seed) {
+    rng(seed),
+    regularizer(regularizer) {
 }
 
 GMM::GMM(
     const std::mt19937 &rng,
+    CovarianceMatrixRegularizer *regularizer,
     const double tolerance,
     const int max_iterations,
     const bool verbose
 ) : tolerance(tolerance),
     max_iterations(max_iterations),
     verbose(verbose),
-    rng(rng) {
+    rng(rng),
+    regularizer(regularizer) {
 }
 
-GMMResult GMM::fit(const std::vector<std::vector<double> > &data, int k) {
+GMMResult GMM::fit(const std::vector<std::vector<double> > &data, const int k) {
     Eigen::MatrixXd data_matrix(data.size(), data[0].size());
     for (size_t i = 0; i < data.size(); ++i) {
         data_matrix.row(i) = Eigen::VectorXd::Map(data[i].data(), data[i].size());
@@ -177,11 +181,10 @@ GMM::expectation_step(const Eigen::MatrixXd &data,
 
 void GMM::maximization_step(const Eigen::MatrixXd &data, const int k, GMMResult &result,
                             const Eigen::MatrixXd &log_responsibilities,
-                            std::vector<Eigen::MatrixXd> &precision_cholesky) {
+                            std::vector<Eigen::MatrixXd> &precision_cholesky) const {
     Eigen::MatrixXd responsibilities = log_responsibilities.array().exp();
-    auto regularizer = EmpiricalRegularizer();
-    std::tie(result.weights, result.clusters, result.covariances) = GMM::estimate_gaussian_parameters(
-        data, k, responsibilities, regularizer);
+    std::tie(result.weights, result.clusters, result.covariances) = estimate_gaussian_parameters(
+        data, k, responsibilities);
     compute_precisions_cholesky(result, precision_cholesky);
 }
 
@@ -211,8 +214,7 @@ void GMM::compute_precisions_cholesky(GMMResult &result,
 std::tuple<std::vector<double>, Eigen::MatrixXd,
     std::vector<Eigen::MatrixXd> >
 GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
-                                  Eigen::MatrixXd &responsibilities,
-                                  CovarianceMatrixRegularizer &regularizer) {
+                                  Eigen::MatrixXd &responsibilities) const {
     const int n = data.rows();
     const int d = data.cols();
     constexpr double eps = 10 * std::numeric_limits<double>::epsilon();
@@ -243,7 +245,7 @@ GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
 
         Eigen::MatrixXd covariances_temp;
         Eigen::VectorXd cluster_temp;
-        std::tie(covariances_temp, cluster_temp) = regularizer.fit(data, responsibility_column);
+        std::tie(covariances_temp, cluster_temp) = regularizer->fit(data, responsibility_column);
 
         clusters.row(i) = cluster_temp.transpose();
         covariances[i] = covariances_temp;

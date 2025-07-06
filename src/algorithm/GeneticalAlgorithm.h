@@ -6,6 +6,8 @@
 #include <set>
 #include <random>
 
+#include "regularization/EmpiricalRegularizer.h"
+
 constexpr int GA_DEFAULT_MAX_ITERATIONS = 250;
 constexpr int GA_DEFAULT_MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 150;
 constexpr int GA_DEFAULT_POPULATION_MAX_SIZE = 50;
@@ -96,9 +98,11 @@ public:
                                 bool verbose = false);
 
 
-    GMMResult run(const Eigen::MatrixXd &data, int k);
+    GMMResult run(const Eigen::MatrixXd &data, int k,
+                  CovarianceMatrixRegularizer *regularizer = new EmpiricalRegularizer());
 
-    GMMResult run(const std::vector<std::vector<double> > &data, int k);
+    GMMResult run(const std::vector<std::vector<double> > &data, int k,
+                  CovarianceMatrixRegularizer *regularizer = new EmpiricalRegularizer());
 
     friend class GATest_FriendAccess;
 };
