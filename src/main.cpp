@@ -8,6 +8,11 @@
 #include "algorithm/gmm/gmm.h"
 #include "algorithm/gmm/gmmResult.h"
 
+#include "algorithm/regularization/ShrunkCovarianceEstimator.h"
+#include "algorithm/regularization/EmpiricalRegularizer.h"
+#include "algorithm/regularization/LedoitWolfCovarianceEstimator.h"
+#include "algorithm/regularization/OASCovarianceEstimator.h"
+
 
 namespace fs = std::filesystem;
 
@@ -56,21 +61,70 @@ int main(const int argc, char *argv[]) {
         std::string filename = entry.path().filename().string();
         data = load_data_from_file(path, expected_clusters, k);
 
+        auto *empirical = new EmpiricalRegularizer();
         try {
-            result = ga.run(data, k);
+            result = ga.run(data, k, empirical);
+            print_result(result);
+            output_file << "gmm_hg " << filename << " "
+                    << result.objective << " "
+                    << result.iterations << " "
+                    << result.elapsed << " ";
+            for (int val: result.assignments) output_file << val << ",";
+            output_file << " ";
+            for (int val: expected_clusters) output_file << val << ",";
+            output_file << std::endl;
         } catch (std::exception &e) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
-        print_result(result);
-        output_file << "gmm_GA " << filename << " "
-                << result.objective << " "
-                << result.iterations << " "
-                << result.elapsed << " ";
-        for (int val: expected_clusters) output_file << val << ",";
-        output_file << " ";
 
-        for (int val: result.assignments) output_file << val << ",";
-        output_file << std::endl;
+        auto *shrunk = new ShrunkCovarianceEstimator();
+        try {
+            result = ga.run(data, k, shrunk);
+            print_result(result);
+            output_file << "gmm_hg_shrunk " << filename << " "
+                    << result.objective << " "
+                    << result.iterations << " "
+                    << result.elapsed << " ";
+            for (int val: result.assignments) output_file << val << ",";
+            output_file << " ";
+            for (int val: expected_clusters) output_file << val << ",";
+            output_file << std::endl;
+        } catch (std::exception &e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+        }
+
+
+        auto *LW = new LedoitWolfCovarianceEstimator();
+        try {
+            result = ga.run(data, k, LW);
+            print_result(result);
+            output_file << "gmm_hg_ledoitwolf " << filename << " "
+                    << result.objective << " "
+                    << result.iterations << " "
+                    << result.elapsed << " ";
+            for (int val: result.assignments) output_file << val << ",";
+            output_file << " ";
+            for (int val: expected_clusters) output_file << val << ",";
+            output_file << std::endl;
+        } catch (std::exception &e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+        }
+
+        auto *OAS = new OASCovarianceEstimator();
+        try {
+            result = ga.run(data, k, OAS);
+            print_result(result);
+            output_file << "gmm_hg_oas " << filename << " "
+                    << result.objective << " "
+                    << result.iterations << " "
+                    << result.elapsed << " ";
+            for (int val: result.assignments) output_file << val << ",";
+            output_file << " ";
+            for (int val: expected_clusters) output_file << val << ",";
+            output_file << std::endl;
+        } catch (std::exception &e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+        }
     }
     output_file.close();
     return 0;
