@@ -29,12 +29,6 @@ namespace {
 
         return max_cluster;
     }
-
-    Eigen::MatrixXd fix_matrix(const Eigen::MatrixXd &matrix, double param) {
-        Eigen::MatrixXd result = matrix;
-        result.diagonal().array() += param;
-        return result;
-    }
 }
 
 
@@ -193,23 +187,32 @@ void GMM::compute_precisions_cholesky(GMMResult &result,
     const int k = result.covariances.size();
     const int d = result.covariances[0].rows();
 
+    const double min_eigenvalue = 1e-6;
+
     for (int i = 0; i < k; ++i) {
-        Eigen::LLT<Eigen::MatrixXd> covariances_cholesky(result.covariances[i]);
+        Eigen::MatrixXd cov = result.covariances[i];
+        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(cov);
+        Eigen::VectorXd eigenvals = eig.eigenvalues();
 
-        if (covariances_cholesky.info() == Eigen::Success) {
-            precisions_cholesky[i] = covariances_cholesky.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
-        } else {
-            result.covariances[i] = fix_matrix(result.covariances[i], 1e-6);
+        Eigen::LLT<Eigen::MatrixXd> cholesky(cov);
 
-            Eigen::LLT<Eigen::MatrixXd> covariances_cholesky_fixed(result.covariances[i]);
-            if (covariances_cholesky_fixed.info() == Eigen::Success) {
-                precisions_cholesky[i] = covariances_cholesky_fixed.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
-            } else {
+        if (cholesky.info() != Eigen::Success || (eigenvals.array() < min_eigenvalue).any()) {
+            eigenvals = eigenvals.array().max(min_eigenvalue);
+            Eigen::MatrixXd eigenvectors = eig.eigenvectors();
+            cov = eigenvectors * eigenvals.asDiagonal() * eigenvectors.transpose();
+            cov = 0.5 * (cov + cov.transpose());
+
+            cholesky.compute(cov);
+
+            if (cholesky.info() != Eigen::Success) {
                 throw std::runtime_error("GMM Failed: Cholesky decomposition failed");
             }
         }
+
+        precisions_cholesky[i] = cholesky.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
     }
 }
+
 
 std::tuple<std::vector<double>, Eigen::MatrixXd,
     std::vector<Eigen::MatrixXd> >
