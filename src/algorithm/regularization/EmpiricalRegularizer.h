@@ -8,7 +8,11 @@ class EmpiricalRegularizer : public CovarianceMatrixRegularizer {
 public:
     std::pair<DoubleMatrix, DoubleVector> fit(
         const DoubleMatrix &data, const std::vector<double> &weights) override;
-};
 
+protected:
+    static std::pair<DoubleMatrix, DoubleVector> compute_empirical(
+        const DoubleMatrix &data,
+        const std::vector<double> &weights);
+};
 
 #endif //EMPIRICALREGULARIZER_H

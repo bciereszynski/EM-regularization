@@ -1,7 +1,6 @@
 #include "EmpiricalRegularizer.h"
-#include <numeric>
 
-std::pair<DoubleMatrix, DoubleVector> EmpiricalRegularizer::fit(
+std::pair<DoubleMatrix, DoubleVector> EmpiricalRegularizer::compute_empirical(
     const DoubleMatrix &data, const std::vector<double> &weights) {
     const int n = data.rows();
 
@@ -11,8 +10,13 @@ std::pair<DoubleMatrix, DoubleVector> EmpiricalRegularizer::fit(
     const double sum_weights = w.sum();
 
     DoubleMatrix centered = data.rowwise() - mu.transpose();
-    DoubleMatrix weighted_centered = centered.array().colwise() * w.array();
-    DoubleMatrix covariance = (weighted_centered.transpose() * centered) / sum_weights;
+    const DoubleMatrix weighted_centered = centered.array().colwise() * w.array();
+    DoubleMatrix covariance = (centered.transpose() * weighted_centered) / sum_weights;
 
     return {covariance, mu};
+}
+
+std::pair<DoubleMatrix, DoubleVector> EmpiricalRegularizer::fit(
+    const DoubleMatrix &data, const std::vector<double> &weights) {
+    return compute_empirical(data, weights);
 }

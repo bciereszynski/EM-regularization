@@ -11,7 +11,8 @@ public:
     std::pair<DoubleMatrix, DoubleVector> fit(
         const DoubleMatrix &data, const std::vector<double> &weights) override;
 
-    DoubleMatrix shrunk_matrix(const DoubleMatrix& covariance, double shrinkage);
+protected:
+    static DoubleMatrix shrunk_matrix(const DoubleMatrix &covariance, double shrinkage);
 };
 
 #endif // SHRUNKCOVARIANCEESTIMATOR_H
