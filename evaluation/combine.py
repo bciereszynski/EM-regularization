@@ -73,3 +73,68 @@ for key in all_keys:
 # Save to Excel
 df = pd.DataFrame(combined)
 df.to_excel("combined_results.xlsx", index=False)
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Ensure clean styling
+sns.set(style="whitegrid")
+
+# 1. Histogram of delta_time_per_iter
+plt.figure(figsize=(8, 5))
+sns.histplot(df["delta_time_per_iter"].dropna(), bins=30, kde=True)
+plt.title("Histogram of Δ Time per Iteration (C++ - Julia)")
+plt.xlabel("Δ Time per Iteration")
+plt.ylabel("Count")
+plt.tight_layout()
+plt.savefig("plot_delta_time_per_iter_hist.png")
+plt.close()
+
+# 2. Scatter: cpp_time_per_iter vs julia_time_per_iter
+plt.figure(figsize=(6, 6))
+sns.scatterplot(data=df, x="cpp_time_per_iter", y="julia_time_per_iter", hue="method")
+plt.plot([0, df[["cpp_time_per_iter", "julia_time_per_iter"]].max().max()],
+         [0, df[["cpp_time_per_iter", "julia_time_per_iter"]].max().max()],
+         'r--', label="x = y")
+plt.legend()
+plt.xlabel("C++ Time per Iteration")
+plt.ylabel("Julia Time per Iteration")
+plt.title("C++ vs Julia Time per Iteration")
+plt.tight_layout()
+plt.savefig("plot_time_per_iter_scatter.png")
+plt.close()
+
+# 3. Scatter: cpp_nmi vs julia_nmi
+plt.figure(figsize=(6, 6))
+sns.scatterplot(data=df, x="cpp_nmi", y="julia_nmi", hue="method")
+plt.plot([0, 1], [0, 1], 'r--', label="x = y")
+plt.xlabel("C++ NMI")
+plt.ylabel("Julia NMI")
+plt.title("C++ vs Julia NMI")
+plt.legend()
+plt.tight_layout()
+plt.savefig("plot_nmi_scatter.png")
+plt.close()
+
+# 4. Bar: average delta_time_per_iter by method
+plt.figure(figsize=(8, 5))
+avg_time_deltas = df.groupby("method")["delta_time_per_iter"].mean().reset_index()
+sns.barplot(data=avg_time_deltas, x="method", y="delta_time_per_iter")
+plt.title("Average Δ Time per Iteration by Method")
+plt.xlabel("Method")
+plt.ylabel("Δ Time per Iteration")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig("plot_avg_delta_time_per_iter_by_method.png")
+plt.close()
+
+# 5. Box plot: delta_ari per method
+plt.figure(figsize=(8, 5))
+sns.boxplot(data=df, x="method", y="delta_ari")
+plt.title("Δ ARI (C++ - Julia) by Method")
+plt.xlabel("Method")
+plt.ylabel("Δ ARI")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig("plot_delta_ari_boxplot.png")
+plt.close()

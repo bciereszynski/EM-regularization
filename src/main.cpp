@@ -26,30 +26,79 @@ void print_result(GMMResult result) {
     // }
 }
 
+void run_and_log(GeneticalAlgorithm &ga,
+                 const std::vector<std::vector<double> > &data,
+                 const int k,
+                 const std::string &filename,
+                 std::ofstream &output_file,
+                 const std::vector<int> &expected_clusters,
+                 CovarianceMatrixRegularizer *estimator,
+                 const std::string &flag) {
+    GMMResult result = ga.run(data, k, estimator);
+    print_result(result);
+
+    output_file << flag << " " << filename << " "
+            << result.objective << " "
+            << result.iterations << " "
+            << result.elapsed << " ";
+    for (const int val: result.assignments) output_file << val << ",";
+    output_file << " ";
+    for (const int val: expected_clusters) output_file << val << ",";
+    output_file << std::endl;
+}
+
+void run_multiple(const std::vector<GeneticalAlgorithm *> &gas,
+                  const std::vector<std::vector<double> > &data, const int k,
+                  const std::string &filename, std::ofstream &output_file,
+                  const std::vector<int> &expected_clusters, CovarianceMatrixRegularizer *estimator,
+                  const std::string &flag) {
+    for (GeneticalAlgorithm *ga: gas) {
+        run_and_log(*ga, data, k, filename, output_file, expected_clusters, estimator, flag);
+    }
+}
+
 int main(const int argc, char *argv[]) {
     std::string directory = "test_data";
     int k;
-    int seed = 123;
 
     for (int i = 1; i < argc; i++) {
         std::string arg = argv[i];
         if (arg == "--path" && i + 1 < argc) {
             directory = argv[++i];
         }
-        if (arg == "--seed" && i + 1 < argc) {
-            seed = std::stoi(argv[++i]);
-        }
     }
+    int max_iterations = 250;
+    int max_iterations_without_improvement = 150;
+    int pop_min_size = 40;
+    int pop_max_size = 50;
 
 
     std::vector<int> expected_clusters;
 
-    GeneticalAlgorithm ga{std::mt19937(seed), 250, 150, 40, 50, false};
-    std::cout << "precompile ";
+    std::vector<GeneticalAlgorithm> gas = {
+        GeneticalAlgorithm{
+            std::mt19937(123), max_iterations, max_iterations_without_improvement, pop_min_size, pop_max_size, false
+        },
+        GeneticalAlgorithm{
+            std::mt19937(42), max_iterations, max_iterations_without_improvement, pop_min_size, pop_max_size, false
+        },
+        GeneticalAlgorithm{
+            std::mt19937(33), max_iterations, max_iterations_without_improvement, pop_min_size, pop_max_size, false
+        }
+    };
+
     std::vector<std::vector<double> > data = load_data_from_file(R"(data/3_2_-0.26_1.csv)", expected_clusters, k);
 
-    GMMResult result = ga.run(data, k);
-    print_result(result);
+    std::cout << "precompile ";
+    for (GeneticalAlgorithm &ga: gas) {
+        GMMResult result = ga.run(data, k);
+        print_result(result);
+    }
+
+    std::vector<GeneticalAlgorithm *> gas_ptrs;
+    for (auto &ga: gas) {
+        gas_ptrs.push_back(&ga);
+    }
 
     std::ofstream output_file("evaluation/results.txt");
 
@@ -61,74 +110,38 @@ int main(const int argc, char *argv[]) {
         std::string filename = entry.path().filename().string();
         data = load_data_from_file(path, expected_clusters, k);
 
-        auto *empirical = new EmpiricalRegularizer();
+        auto empirical = EmpiricalRegularizer();
         try {
-            result = ga.run(data, k, empirical);
-            print_result(result);
-            output_file << "gmm_hg " << filename << " "
-                    << result.objective << " "
-                    << result.iterations << " "
-                    << result.elapsed << " ";
-            for (int val: result.assignments) output_file << val << ",";
-            output_file << " ";
-            for (int val: expected_clusters) output_file << val << ",";
-            output_file << std::endl;
+            run_multiple(gas_ptrs, data, k, filename, output_file, expected_clusters, &empirical,
+                         "gmm_hg");
         } catch (std::exception &e) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
 
-        auto *shrunk = new ShrunkCovarianceEstimator();
+        auto shrunk = ShrunkCovarianceEstimator();
         try {
-            result = ga.run(data, k, shrunk);
-            print_result(result);
-            output_file << "gmm_hg_shrunk " << filename << " "
-                    << result.objective << " "
-                    << result.iterations << " "
-                    << result.elapsed << " ";
-            for (int val: result.assignments) output_file << val << ",";
-            output_file << " ";
-            for (int val: expected_clusters) output_file << val << ",";
-            output_file << std::endl;
+            run_multiple(gas_ptrs, data, k, filename, output_file, expected_clusters, &shrunk,
+                         "gmm_hg_shrunk");
         } catch (std::exception &e) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
 
 
-        auto *LW = new LedoitWolfCovarianceEstimator();
+        auto LW = LedoitWolfCovarianceEstimator();
         try {
-            result = ga.run(data, k, LW);
-            print_result(result);
-            output_file << "gmm_hg_ledoitwolf " << filename << " "
-                    << result.objective << " "
-                    << result.iterations << " "
-                    << result.elapsed << " ";
-            for (int val: result.assignments) output_file << val << ",";
-            output_file << " ";
-            for (int val: expected_clusters) output_file << val << ",";
-            output_file << std::endl;
+            run_multiple(gas_ptrs, data, k, filename, output_file, expected_clusters, &LW,
+                         "gmm_hg_ledoitwolf");
         } catch (std::exception &e) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
 
-        auto *OAS = new OASCovarianceEstimator();
+        auto OAS = OASCovarianceEstimator();
         try {
-            result = ga.run(data, k, OAS);
-            print_result(result);
-            output_file << "gmm_hg_oas " << filename << " "
-                    << result.objective << " "
-                    << result.iterations << " "
-                    << result.elapsed << " ";
-            for (int val: result.assignments) output_file << val << ",";
-            output_file << " ";
-            for (int val: expected_clusters) output_file << val << ",";
-            output_file << std::endl;
+            run_multiple(gas_ptrs, data, k, filename, output_file, expected_clusters, &OAS,
+                         "gmm_hg_oas");
         } catch (std::exception &e) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
-        delete(empirical);
-        delete(shrunk);
-        delete(LW);
-        delete(OAS);
     }
     output_file.close();
     return 0;
