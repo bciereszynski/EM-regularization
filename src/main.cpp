@@ -125,6 +125,10 @@ int main(const int argc, char *argv[]) {
         } catch (std::exception &e) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
+        delete(empirical);
+        delete(shrunk);
+        delete(LW);
+        delete(OAS);
     }
     output_file.close();
     return 0;
