@@ -28,7 +28,7 @@ GMMResult GeneticalAlgorithm::run(const std::vector<std::vector<double> > &data,
     for (size_t i = 0; i < data.size(); ++i) {
         data_matrix.row(i) = Eigen::VectorXd::Map(data[i].data(), data[i].size());
     }
-    return run(data_matrix, k);
+    return run(data_matrix, k, regularizer);
 }
 
 GMMResult GeneticalAlgorithm::run(const Eigen::MatrixXd &data, const int k,
