@@ -207,6 +207,8 @@ void GMM::compute_precisions_cholesky(GMMResult &result,
             if (cholesky.info() != Eigen::Success) {
                 throw std::runtime_error("GMM Failed: Cholesky decomposition failed");
             }
+
+            result.covariances[i] = cov;
         }
 
         precisions_cholesky[i] = cholesky.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
