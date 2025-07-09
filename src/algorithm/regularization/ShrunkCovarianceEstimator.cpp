@@ -5,7 +5,7 @@ std::pair<DoubleMatrix, DoubleVector> ShrunkCovarianceEstimator::fit(
     auto [covariance, mu] = compute_empirical(data, weights);
 
     DoubleMatrix shrunk = shrunk_matrix(covariance, DEFAULT_SHRINKAGE);
-    return {shrunk.selfadjointView<Eigen::Lower>(), mu};
+    return {shrunk, mu};
 }
 
 DoubleMatrix ShrunkCovarianceEstimator::shrunk_matrix(const DoubleMatrix &covariance, const double shrinkage) {
@@ -15,6 +15,6 @@ DoubleMatrix ShrunkCovarianceEstimator::shrunk_matrix(const DoubleMatrix &covari
 
     for (int i = 0; i < d; ++i)
         shrunk(i, i) += shrinkage * trace_mean;
-
+    shrunk = 0.5 * (shrunk + shrunk.transpose());
     return shrunk;
 }
