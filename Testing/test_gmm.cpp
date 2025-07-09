@@ -76,6 +76,40 @@ TEST(GMMTest, HandlesMinimalInputOnePoint) {
         });
 }
 
+TEST(GMMTest, TestFit) {
+    Eigen::MatrixXd data(11, 2);
+    data << 8.446952398696654, 11.512125077077995,
+            15.499610048784618, -3.161120404454193,
+            -9.743336473406703, -18.80630870985824,
+            -17.86342608516553, -11.382757975845214,
+            14.398746744052609, 8.170480801024427,
+            15.330418855520072, -8.057175056487976,
+            4.882465698592702, -0.5870989988150339,
+            -8.907657689495553, 18.466866205980494,
+            2.492129816536738, -14.800565015825306,
+            16.857415857407293, 5.338050934290413,
+            -23.45789229394996, -2.679611133069019;
+
+    constexpr int k = 3;
+    constexpr int max_iterations = 1000;
+    constexpr double tolerance = 0.001;
+
+    const int n = data.rows();
+    const int d = data.cols();
+    GMMResult result(d, n, k);
+
+    const GMM gmm(tolerance, max_iterations, true, 42);
+    result.clusters = Eigen::MatrixXd(k, d);
+    result.clusters << 14.398746744052609, 8.170480801024427,
+            -17.86342608516553, -11.382757975845214,
+            -23.45789229394996, -2.679611133069019;
+    std::cout << result.clusters;
+    result = gmm.fit(data, result);
+
+    constexpr double expected_objective = -5.751353;
+    EXPECT_NEAR(result.objective, expected_objective, 1e-6) << "Objective mismatch";
+}
+
 class GMMTest_FriendAccess : public ::testing::Test {
 protected:
     GMM gmm{1e-3, 100, false, 42};
@@ -209,10 +243,10 @@ protected:
              2.3777773272343468, 3.4557253360212914).finished()
         };
 
-        EmpiricalRegularizer regularizer;
+        const GMM gmm;
 
         auto [computed_weights, computed_centers, computed_covariances] =
-                GMM::estimate_gaussian_parameters(data, 3, responsibilities, regularizer);
+                gmm.estimate_gaussian_parameters(data, 3, responsibilities);
 
         ASSERT_EQ(computed_weights.size(), expected_weights.size());
         for (size_t i = 0; i < computed_weights.size(); ++i) {

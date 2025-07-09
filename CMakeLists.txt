@@ -40,6 +40,9 @@ add_executable(gmm_tests
         src/algorithm/GeneticalAlgorithm.cpp
         src/external/hungarian/hungarian.cpp
         src/algorithm/SqMahalanobis.cpp
+        src/algorithm/regularization/LedoitWolfCovarianceEstimator.cpp
+        src/algorithm/regularization/ShrunkCovarianceEstimator.cpp
+        src/algorithm/regularization/OASCovarianceEstimator.cpp
 )
 target_link_libraries(gmm_tests PRIVATE GTest::gtest_main GTest::gtest Eigen3::Eigen ${BLAS_LIBRARIES})
 target_link_libraries(EM_regularization PRIVATE ${BLAS_LIBRARIES})
