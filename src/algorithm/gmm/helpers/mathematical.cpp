@@ -1,7 +1,6 @@
 #include "mathematical.h"
 
 #include <cmath>
-#include <limits>
 
 Eigen::VectorXd log_sum_exp(const Eigen::MatrixXd &m) {
     Eigen::VectorXd max_vals = m.rowwise().maxCoeff();
@@ -20,27 +19,31 @@ Eigen::VectorXd log_sum_exp(const Eigen::MatrixXd &m) {
 
 Eigen::MatrixXd estimate_weighted_log_probabilities(
     const Eigen::MatrixXd &data, const int k, const GMMResult &result,
-    const std::vector<Eigen::MatrixXd> &precisionsCholesky
-) {
+    const std::vector<Eigen::MatrixXd> &precisionsCholesky) {
     const int n = data.rows();
     const int d = data.cols();
-
     Eigen::MatrixXd log_probabilities(n, k);
-    const double constant_term = -0.5 * d * std::log(2.0 * M_PI);
+    const double log_2pi = std::log(2 * M_PI);
+    const double d_log_2pi = d * log_2pi;
+
+    Eigen::VectorXd log_det(k);
+    for (int i = 0; i < k; ++i) {
+        log_det(i) = precisionsCholesky[i].diagonal().array().log().sum();
+    }
 
     for (int i = 0; i < k; ++i) {
         const Eigen::VectorXd mean = result.clusters.row(i).transpose();
-        const Eigen::MatrixXd &L = precisionsCholesky[i];
-        const double log_det_precision = L.diagonal().array().log().sum();
-
         Eigen::MatrixXd centered = data.rowwise() - mean.transpose();
-        Eigen::MatrixXd transformed = centered * L;
-        Eigen::VectorXd sq_norm = transformed.rowwise().squaredNorm();
-
-        log_probabilities.col(i) = constant_term + log_det_precision
-                                   - 0.5 * sq_norm.array()
-                                   + std::log(result.weights[i]);
+        Eigen::MatrixXd transformed = centered * precisionsCholesky[i];
+        log_probabilities.col(i) = transformed.rowwise().squaredNorm();
     }
 
-    return log_probabilities;
+    Eigen::VectorXd log_weights = Eigen::Map<const Eigen::VectorXd>(
+        result.weights.data(), k).array().log();
+
+    Eigen::MatrixXd result_matrix = (-0.5 * (d_log_2pi + log_probabilities.array())).matrix();
+    result_matrix.rowwise() += log_det.transpose();
+    result_matrix.rowwise() += log_weights.transpose();
+
+    return result_matrix;
 }
