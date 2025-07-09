@@ -29,10 +29,17 @@ namespace {
 
         return max_cluster;
     }
-}
 
+    Eigen::MatrixXd fix_covariance(const Eigen::MatrixXd &cov, double eps) {
+        const Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(cov);
+        Eigen::VectorXd eigenvals = eig.eigenvalues().array().max(eps);
 
-//namespace
+        Eigen::MatrixXd fixed = eig.eigenvectors() * eigenvals.asDiagonal() *
+                                eig.eigenvectors().transpose();
+
+        return fixed.selfadjointView<Eigen::Lower>();
+    }
+} //namespace
 
 GMM::GMM(
     const double tolerance,
@@ -190,25 +197,19 @@ void GMM::compute_precisions_cholesky(GMMResult &result,
     const double min_eigenvalue = 1e-6;
 
     for (int i = 0; i < k; ++i) {
-        Eigen::MatrixXd cov = result.covariances[i];
-        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(cov);
+        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(result.covariances[i]);
         Eigen::VectorXd eigenvals = eig.eigenvalues();
 
-        Eigen::LLT<Eigen::MatrixXd> cholesky(cov);
+        Eigen::LLT<Eigen::MatrixXd> cholesky(result.covariances[i]);
 
         if (cholesky.info() != Eigen::Success || (eigenvals.array() < min_eigenvalue).any()) {
-            eigenvals = eigenvals.array().max(min_eigenvalue);
-            Eigen::MatrixXd eigenvectors = eig.eigenvectors();
-            cov = eigenvectors * eigenvals.asDiagonal() * eigenvectors.transpose();
-            cov = 0.5 * (cov + cov.transpose());
+            result.covariances[i] = fix_covariance(result.covariances[i], min_eigenvalue);
 
-            cholesky.compute(cov);
+            cholesky.compute(result.covariances[i]);
 
             if (cholesky.info() != Eigen::Success) {
                 throw std::runtime_error("GMM Failed: Cholesky decomposition failed");
             }
-
-            result.covariances[i] = cov;
         }
 
         precisions_cholesky[i] = cholesky.matrixU().solve(Eigen::MatrixXd::Identity(d, d));
@@ -227,13 +228,13 @@ GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
     std::vector<double> weights(k, eps);
 
     for (int i = 0; i < k; ++i) {
-        double sum_resp = responsibilities.col(i).sum();
+        const double sum_resp = responsibilities.col(i).sum();
 
         if (sum_resp < 1e-32) {
             responsibilities.col(i).setConstant(1.0 / n);
         }
 
-        weights[i] = responsibilities.col(i).sum();
+        weights[i] += responsibilities.col(i).sum();
     }
 
     const double total_weight = std::accumulate(weights.begin(), weights.end(), 0.0);
@@ -242,15 +243,18 @@ GMM::estimate_gaussian_parameters(const Eigen::MatrixXd &data, const int k,
     }
 
     Eigen::MatrixXd clusters(k, d);
-    std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > covariances(k);
+    std::vector<Eigen::MatrixXd> covariances(k);
 
     for (int i = 0; i < k; ++i) {
-        std::vector<double> responsibility_column(responsibilities.col(i).data(),
-                                                  responsibilities.col(i).data() + n);
+        auto resp_vec = responsibilities.col(i);
 
         Eigen::MatrixXd covariances_temp;
         Eigen::VectorXd cluster_temp;
-        std::tie(covariances_temp, cluster_temp) = regularizer->fit(data, responsibility_column);
+        std::tie(covariances_temp, cluster_temp) =
+                regularizer->fit(data,
+                                 std::vector<double>(resp_vec.data(), resp_vec.data() + n));
+
+        covariances_temp = 0.5 * (covariances_temp + covariances_temp.transpose());
 
         clusters.row(i) = cluster_temp.transpose();
         covariances[i] = covariances_temp;
