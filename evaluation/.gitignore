@@ -1,5 +1,6 @@
 results.txt
 summary_results.txt
+summary_julia_results.txt
 julia_results.txt
 combined_results.xlsx
 plot_avg_delta_time_per_iter_by_method.png

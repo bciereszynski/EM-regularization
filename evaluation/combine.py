@@ -18,19 +18,20 @@ with open("summary_results.txt", "r") as f:
         }
 
 julia_results = {}
-with open("julia_results.txt", "r") as f:
+with open("summary_julia_results.txt", "r") as f:
     for line in f:
-        parts = [p.strip() for p in line.strip().split(",")]
-        if len(parts) != 7:
+        parts = [p.strip() for p in line.strip().split()]
+        if len(parts) != 8:
             continue
-        method, filename, nmi, ari, obj, iters, time_total = parts
+        method, filename, obj, nmi, ari, iters, time_total, time_per_iter = parts
         key = (method, filename)
         julia_results[key] = {
             "julia_nmi": float(nmi),
             "julia_ari": float(ari),
             "julia_obj": float(obj),
             "julia_iter": int(iters),
-            "julia_time": float(time_total)
+            "julia_time": float(time_total),
+            "julia_time_per_iter": float(time_per_iter)
         }
 
 all_keys = sorted(set(cpp_results.keys()) | set(julia_results.keys()))
@@ -59,10 +60,10 @@ for key in all_keys:
         "julia_ari": julia.get("julia_ari", ""),
         "delta_ari": (cpp.get("cpp_ari", 0) - julia.get("julia_ari", 0)) if cpp and julia else "",
         "cpp_time_per_iter": cpp.get("cpp_time_per_iter", ""),
-        "julia_time_per_iter": (julia.get("julia_time", 0) / julia.get("julia_iter", 1)) if julia else "",
+        "julia_time_per_iter": julia.get("julia_time_per_iter", ""),
         "delta_time_per_iter": (
                 cpp.get("cpp_time_per_iter", 0) -
-                (julia.get("julia_time", 0) / julia.get("julia_iter", 1))
+                julia.get("julia_time_per_iter", 0)
         ) if cpp and julia else "",
         "cpp_obj": cpp.get("cpp_obj", ""),
         "julia_obj": julia.get("julia_obj", ""),

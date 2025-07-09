@@ -41,9 +41,14 @@ void run_and_log(GeneticalAlgorithm &ga,
             << result.objective << " "
             << result.iterations << " "
             << result.elapsed << " ";
+
+    output_file << "[";
     for (const int val: result.assignments) output_file << val << ",";
-    output_file << " ";
+    output_file << "] ";
+
+    output_file << "[";
     for (const int val: expected_clusters) output_file << val << ",";
+    output_file << "] ";
     output_file << std::endl;
 }
 
