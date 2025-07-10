@@ -30,7 +30,7 @@ namespace {
         return max_cluster;
     }
 
-    Eigen::MatrixXd fix_covariance(const Eigen::MatrixXd &cov, double eps) {
+    Eigen::MatrixXd fix_covariance(const Eigen::MatrixXd &cov, const double eps) {
         const Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(cov);
         Eigen::VectorXd eigenvals = eig.eigenvalues().array().max(eps);
 
@@ -197,12 +197,9 @@ void GMM::compute_precisions_cholesky(GMMResult &result,
     const double min_eigenvalue = 1e-6;
 
     for (int i = 0; i < k; ++i) {
-        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(result.covariances[i]);
-        Eigen::VectorXd eigenvals = eig.eigenvalues();
-
         Eigen::LLT<Eigen::MatrixXd> cholesky(result.covariances[i]);
 
-        if (cholesky.info() != Eigen::Success || (eigenvals.array() < min_eigenvalue).any()) {
+        if (cholesky.info() != Eigen::Success) {
             result.covariances[i] = fix_covariance(result.covariances[i], min_eigenvalue);
 
             cholesky.compute(result.covariances[i]);
