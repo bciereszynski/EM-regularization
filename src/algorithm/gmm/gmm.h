@@ -8,6 +8,7 @@
 constexpr bool DEFAULT_VERBOSE = false;
 constexpr double DEFAULT_TOLERANCE = 1e-3;
 constexpr int DEFAULT_MAX_ITERATIONS = 200;
+inline auto DEFAULT_REGULARIZER = EmpiricalRegularizer();
 
 // The GMM is a clustering algorithm that models the underlying data distribution as a mixture of Gaussian distributions.
 class GMM {
@@ -23,7 +24,8 @@ public:
         int max_iterations = DEFAULT_MAX_ITERATIONS,
         bool verbose = DEFAULT_VERBOSE,
         unsigned int seed = std::random_device{}(),
-        CovarianceMatrixRegularizer *regularizer = new EmpiricalRegularizer()
+        CovarianceMatrixRegularizer *regularizer = &DEFAULT_REGULARIZER
+
     );
 
     explicit GMM(

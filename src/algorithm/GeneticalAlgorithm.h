@@ -6,12 +6,14 @@
 #include <set>
 #include <random>
 
+#include "gmm/GMM.h"
 #include "regularization/EmpiricalRegularizer.h"
 
 constexpr int GA_DEFAULT_MAX_ITERATIONS = 250;
 constexpr int GA_DEFAULT_MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 150;
 constexpr int GA_DEFAULT_POPULATION_MAX_SIZE = 50;
 constexpr int GA_DEFAULT_POPULATION_MIN_SIZE = 40;
+inline auto GA_DEFAULT_REGULARIZER = EmpiricalRegularizer();
 
 class GeneticalAlgorithm {
     class Population {
@@ -99,10 +101,10 @@ public:
 
 
     GMMResult run(const Eigen::MatrixXd &data, int k,
-                  CovarianceMatrixRegularizer *regularizer = new EmpiricalRegularizer());
+                  CovarianceMatrixRegularizer *regularizer = &DEFAULT_REGULARIZER);
 
     GMMResult run(const std::vector<std::vector<double> > &data, int k,
-                  CovarianceMatrixRegularizer *regularizer = new EmpiricalRegularizer());
+                  CovarianceMatrixRegularizer *regularizer = &DEFAULT_REGULARIZER);
 
     friend class GATest_FriendAccess;
 };
