@@ -6,17 +6,18 @@ std::pair<DoubleMatrix, DoubleVector> OASCovarianceEstimator::fit(
     const int d = data.cols();
 
     DoubleVector mu = get_mu(data, weights);
-
     DoubleMatrix X = data.rowwise() - mu.transpose();
 
-    auto [covariance, _] = compute_empirical(data, weights);
+    DoubleMatrix covariance;
+    std::tie(covariance, std::ignore) = compute_empirical(data, weights);
 
-    const double trace_mean = covariance.trace() / d;
-    const double alpha = covariance.array().square().mean();
+    const double trace_mean = covariance.diagonal().sum() / d;
+    const double alpha = covariance.squaredNorm() / (d * d);
 
-    const double num = alpha + trace_mean * trace_mean;
-    const double den = (n + 1.0) * (alpha - (trace_mean * trace_mean) / d);
-    const double shrinkage = (abs(den) <= EPS) ? 1.0 : std::min(num / den, 1.0);
+    const double trace_sq = trace_mean * trace_mean;
+    const double num = alpha + trace_sq;
+    const double den = (n + 1.0) * (alpha - (trace_sq) / d);
+    const double shrinkage = (abs(den) <= EPS) ? 1.0 : std::clamp(num / den, 0.0, 1.0);
 
     DoubleMatrix shrunk = shrunk_matrix(covariance, shrinkage);
 

@@ -30,15 +30,16 @@ Eigen::MatrixXd estimate_weighted_log_probabilities(
         log_det(i) = precisionsCholesky[i].diagonal().array().log().sum();
     }
     for (int i = 0; i < k; ++i) {
-
-        Eigen::MatrixXd transformed = data * precisionsCholesky[i];
+        Eigen::MatrixXd transformed(data.rows(), data.cols());
+        transformed.noalias() = data * precisionsCholesky[i];
         const Eigen::RowVectorXd mean_transformed = result.clusters.row(i) * precisionsCholesky[i];
         transformed.rowwise() -= mean_transformed;
 
-        Eigen::VectorXd sq_norms = transformed.rowwise().squaredNorm();
+        Eigen::VectorXd sq_norms(transformed.rows());
+        sq_norms.noalias() = transformed.rowwise().squaredNorm();
 
         log_probabilities.col(i) =
-                (-0.5 * d * log_2pi + log_det(i) + std::log(result.weights[i]))
+                (-0.5 * d * log_2pi + log_det(i) + log(result.weights[i]))
                 - 0.5 * sq_norms.array();
     }
 

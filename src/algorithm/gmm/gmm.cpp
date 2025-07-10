@@ -32,10 +32,12 @@ namespace {
 
     Eigen::MatrixXd fix_covariance(const Eigen::MatrixXd &cov, const double eps) {
         const Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eig(cov);
-        Eigen::VectorXd eigenvals = eig.eigenvalues().array().max(eps);
+        const auto &eigenvectors = eig.eigenvectors();
+        const Eigen::VectorXd eigenvals = eig.eigenvalues().array().max(eps).eval();
 
-        Eigen::MatrixXd fixed = eig.eigenvectors() * eigenvals.asDiagonal() *
-                                eig.eigenvectors().transpose();
+        Eigen::MatrixXd fixed(eigenvectors.rows(), eigenvectors.rows());
+        fixed.noalias() = eigenvectors * eigenvals.asDiagonal();
+        fixed.noalias() = fixed * eigenvectors.transpose();
 
         return fixed.selfadjointView<Eigen::Lower>();
     }
@@ -168,12 +170,16 @@ GMM::expectation_step(const Eigen::MatrixXd &data,
                       const int k,
                       const GMMResult &result,
                       const std::vector<Eigen::MatrixXd> &precisionsCholesky) {
-    Eigen::MatrixXd weighted_log_probabilities =
+    const int n = data.rows();
+    Eigen::MatrixXd weighted_log_probabilities(n, k);
+    Eigen::VectorXd log_probabilities_norm(n);
+    Eigen::MatrixXd log_responsibilities(n, k);
+    weighted_log_probabilities =
             estimate_weighted_log_probabilities(data, k, result, precisionsCholesky);
 
-    Eigen::VectorXd log_probabilities_norm = log_sum_exp(weighted_log_probabilities);
+    log_probabilities_norm = log_sum_exp(weighted_log_probabilities);
 
-    Eigen::MatrixXd log_responsibilities = weighted_log_probabilities.colwise() - log_probabilities_norm;
+    log_responsibilities = (weighted_log_probabilities.colwise() - log_probabilities_norm).eval();
 
     double mean_log_likelihood = log_probabilities_norm.mean();
 
@@ -183,7 +189,8 @@ GMM::expectation_step(const Eigen::MatrixXd &data,
 void GMM::maximization_step(const Eigen::MatrixXd &data, const int k, GMMResult &result,
                             const Eigen::MatrixXd &log_responsibilities,
                             std::vector<Eigen::MatrixXd> &precision_cholesky) const {
-    Eigen::MatrixXd responsibilities = log_responsibilities.array().exp();
+    Eigen::MatrixXd responsibilities(log_responsibilities.rows(), log_responsibilities.cols());
+    responsibilities.array() = log_responsibilities.array().exp();
     std::tie(result.weights, result.clusters, result.covariances) = estimate_gaussian_parameters(
         data, k, responsibilities);
     compute_precisions_cholesky(result, precision_cholesky);
