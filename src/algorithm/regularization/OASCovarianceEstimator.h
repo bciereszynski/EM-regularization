@@ -7,10 +7,7 @@
 class OASCovarianceEstimator : public LedoitWolfCovarianceEstimator {
 public:
     std::pair<DoubleMatrix, DoubleVector> fit(
-        const DoubleMatrix &data, const std::vector<double> &weights) override;
-
-private:
-    std::pair<DoubleMatrix, DoubleVector> empirical(const DoubleMatrix &data, const std::vector<double> &weights);
+        const DoubleMatrix &data, const DoubleVector &weights) override;
 };
 
 #endif // OASESTIMATOR_H

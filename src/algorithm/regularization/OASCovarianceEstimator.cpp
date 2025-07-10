@@ -1,7 +1,7 @@
 #include "OASCovarianceEstimator.h"
 
 std::pair<DoubleMatrix, DoubleVector> OASCovarianceEstimator::fit(
-    const DoubleMatrix &data, const std::vector<double> &weights) {
+    const DoubleMatrix &data, const DoubleVector &weights) {
     const int n = data.rows();
     const int d = data.cols();
 

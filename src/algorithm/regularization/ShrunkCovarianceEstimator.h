@@ -9,10 +9,10 @@
 class ShrunkCovarianceEstimator : public EmpiricalRegularizer {
 public:
     std::pair<DoubleMatrix, DoubleVector> fit(
-        const DoubleMatrix &data, const std::vector<double> &weights) override;
+        const DoubleMatrix &data, const DoubleVector &weights) override;
 
 protected:
-    static std::pair<DoubleMatrix, DoubleVector> shrunk(const DoubleMatrix &data, const std::vector<double> &weights,
+    static std::pair<DoubleMatrix, DoubleVector> shrunk(const DoubleMatrix &data, const DoubleVector &weights,
                                                         double shrinkage);
 
     static DoubleMatrix shrunk_matrix(const DoubleMatrix &covariance, double shrinkage);

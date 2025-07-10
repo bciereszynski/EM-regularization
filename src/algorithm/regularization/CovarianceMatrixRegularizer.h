@@ -14,10 +14,10 @@ public:
   virtual ~CovarianceMatrixRegularizer() = default;
 
   virtual std::pair<DoubleMatrix, DoubleVector> fit(
-    const DoubleMatrix &data, const std::vector<double> &weights) = 0;
+    const DoubleMatrix &data, const DoubleVector &weights) = 0;
 
 protected:
-  static DoubleVector get_mu(const DoubleMatrix &data, const std::vector<double> &weights);
+  static DoubleVector get_mu(const DoubleMatrix &data, const DoubleVector &weights);
 
   friend class RegularizationTest_FriendAccess;
 };

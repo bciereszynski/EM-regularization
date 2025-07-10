@@ -7,7 +7,7 @@
 class LedoitWolfCovarianceEstimator : public ShrunkCovarianceEstimator {
 public:
     std::pair<DoubleMatrix, DoubleVector> fit(
-        const DoubleMatrix &data, const std::vector<double> &weights) override;
+        const DoubleMatrix &data, const DoubleVector &weights) override;
 
 protected:
     static void translate_to_zero(DoubleMatrix &data, const DoubleVector &mu);

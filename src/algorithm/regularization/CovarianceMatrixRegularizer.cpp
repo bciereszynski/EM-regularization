@@ -1,11 +1,10 @@
 #include "CovarianceMatrixRegularizer.h"
 
 Eigen::VectorXd CovarianceMatrixRegularizer::get_mu(
-    const DoubleMatrix &data, const std::vector<double> &weights) {
-    Eigen::VectorXd w = Eigen::Map<const Eigen::VectorXd>(weights.data(), weights.size());
-    const double weight_sum = w.sum();
+    const DoubleMatrix &data, const DoubleVector &weights) {
+    const double weight_sum = weights.sum();
 
-    Eigen::VectorXd mu = (data.array().colwise() * w.array()).colwise().sum() / weight_sum;
+    Eigen::VectorXd mu = (data.array().colwise() * weights.array()).colwise().sum() / weight_sum;
 
     return mu;
 }
