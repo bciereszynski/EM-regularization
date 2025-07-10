@@ -23,5 +23,5 @@ std::pair<DoubleMatrix, DoubleVector> OASCovarianceEstimator::fit(
 
     DoubleMatrix shrunk = shrunk_matrix(covariance, shrinkage);
 
-    return {shrunk.selfadjointView<Eigen::Lower>(), mu};
+    return {shrunk, mu};
 }

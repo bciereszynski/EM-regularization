@@ -15,6 +15,5 @@ DoubleMatrix ShrunkCovarianceEstimator::shrunk_matrix(const DoubleMatrix &covari
 
     for (int i = 0; i < d; ++i)
         shrunk(i, i) += shrinkage * trace_mean;
-    shrunk = 0.5 * (shrunk + shrunk.transpose());
-    return shrunk;
+    return shrunk.selfadjointView<Eigen::Lower>();
 }

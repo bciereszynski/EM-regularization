@@ -32,7 +32,7 @@ std::pair<DoubleMatrix, DoubleVector> LedoitWolfCovarianceEstimator::fit(
 
     DoubleMatrix shrunk = shrunk_matrix(covariance, shrinkage);
 
-    return {shrunk.selfadjointView<Eigen::Lower>(), mu};
+    return {shrunk, mu};
 }
 
 void LedoitWolfCovarianceEstimator::translate_to_zero(DoubleMatrix &data, const DoubleVector &mu) {
