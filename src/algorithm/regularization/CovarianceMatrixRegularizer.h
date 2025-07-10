@@ -4,6 +4,8 @@
 #include <vector>
 #include <Eigen/Dense>
 
+#define EPS 1e-6
+
 using DoubleMatrix = Eigen::MatrixXd;
 using DoubleVector = Eigen::VectorXd;
 

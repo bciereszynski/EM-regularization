@@ -13,7 +13,7 @@ std::pair<DoubleMatrix, DoubleVector> EmpiricalRegularizer::compute_empirical(
     DoubleMatrix covariance = (centered.transpose() * weighted_centered) / sum_weights;
 
     covariance = 0.5 * (covariance + covariance.transpose());
-    covariance.diagonal().array() += 1e-6;
+    covariance.diagonal().array() += EPS;
 
     return {covariance, mu};
 }

@@ -23,16 +23,9 @@ std::pair<DoubleMatrix, DoubleVector> LedoitWolfCovarianceEstimator::fit(
     delta /= d;
 
     beta = std::min(beta, delta);
-    const double shrinkage = (beta <= 0.0) ? 0.0 : beta / delta;
+    const double shrinkage = (abs(beta) <= EPS) ? 0.0 : beta / delta;
 
-    Eigen::VectorXd w = Eigen::Map<const Eigen::VectorXd>(weights.data(), weights.size());
-    const double sum_weights = w.sum();
-    DoubleMatrix weighted_centered = X.array().colwise() * w.array();
-    const DoubleMatrix covariance = (weighted_centered.transpose() * X) / sum_weights;
-
-    DoubleMatrix shrunk = shrunk_matrix(covariance, shrinkage);
-
-    return {shrunk, mu};
+    return shrunk(data, weights, shrinkage);
 }
 
 void LedoitWolfCovarianceEstimator::translate_to_zero(DoubleMatrix &data, const DoubleVector &mu) {

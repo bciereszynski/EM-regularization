@@ -1,10 +1,16 @@
 #include "ShrunkCovarianceEstimator.h"
 
+
 std::pair<DoubleMatrix, DoubleVector> ShrunkCovarianceEstimator::fit(
     const DoubleMatrix &data, const std::vector<double> &weights) {
+    return shrunk(data, weights, DEFAULT_SHRINKAGE);
+}
+
+std::pair<DoubleMatrix, DoubleVector> ShrunkCovarianceEstimator::shrunk(
+    const DoubleMatrix &data, const std::vector<double> &weights, const double shrinkage = DEFAULT_SHRINKAGE) {
     auto [covariance, mu] = compute_empirical(data, weights);
 
-    DoubleMatrix shrunk = shrunk_matrix(covariance, DEFAULT_SHRINKAGE);
+    DoubleMatrix shrunk = shrunk_matrix(covariance, shrinkage);
     return {shrunk, mu};
 }
 
