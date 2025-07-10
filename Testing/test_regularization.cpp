@@ -12,7 +12,8 @@ protected:
                 3.0, 4.0,
                 5.0, 6.0;
 
-        const std::vector<double> weights = {0.2, 0.5, 0.3};
+        Eigen::VectorXd weights(3);
+        weights << 0.2, 0.5, 0.3;
 
         Eigen::VectorXd expected_mu(2);
         expected_mu << 3.2, 4.2;
@@ -36,10 +37,10 @@ protected:
                 16.857415857407293, 5.338050934290413,
                 -23.45789229394996, -2.679611133069019;
 
-        const std::vector<double> weights = {
-            1.0, 1.0, 4.944828537633115e-259, 9.1422604084118e-310, 1.0, 1.0, 1.0, 0.9921502699429642,
-            1.3962696635361188e-53, 1.0, 0.0
-        };
+        auto weights = Eigen::VectorXd(11);
+
+        weights << 1.0, 1.0, 4.944828537633115e-259, 9.1422604084118e-310, 1.0, 1.0, 1.0, 0.9921502699429642,
+                1.3962696635361188e-53, 1.0, 0.0;
 
         Eigen::VectorXd expected_mu(2);
         expected_mu << 9.521802600275707, 4.510367687529266;
@@ -78,10 +79,10 @@ TEST_F(RegularizationTest_FriendAccess, TestGetMu_basic) {
 }
 
 TEST_F(EmpiricalRegularizerTest, Fit) {
-    const std::vector<double> weights = {
-        1.0, 1.0, 4.944828537633115e-259, 9.1422604084118e-310, 1.0,
-        1.0, 1.0, 0.9921502699429642, 1.3962696635361188e-53, 1.0, 0.0
-    };
+    Eigen::VectorXd weights(11);
+    weights <<
+            1.0, 1.0, 4.944828537633115e-259, 9.1422604084118e-310, 1.0,
+            1.0, 1.0, 0.9921502699429642, 1.3962696635361188e-53, 1.0, 0.0;
 
     Eigen::VectorXd expected_mu(2);
     expected_mu << 9.521802600275707, 4.510367687529266;
@@ -97,16 +98,18 @@ TEST_F(EmpiricalRegularizerTest, Fit) {
 }
 
 TEST_F(EmpiricalRegularizerTest, ExtremeWeights) {
-    const std::vector<double> weights = {
-        1.0, 1.0, 1e-259, 1e-310, 1.0,
-        1.0, 1.0, 0.99215, 1e-53, 1.0, 0.0
-    };
+    Eigen::VectorXd weights(11);
+    weights <<
+            1.0, 1.0, 1e-259, 1e-310, 1.0,
+            1.0, 1.0, 0.99215, 1e-53, 1.0, 0.0;
 
     EmpiricalRegularizer regularizer;
     auto [cov, mu] = regularizer.fit(X_, weights);
 
     ASSERT_FALSE(mu.hasNaN());
+
     ASSERT_FALSE(cov.hasNaN());
+
     ASSERT_TRUE(cov.llt().info() == Eigen::Success); // Positive definite
 }
 
@@ -125,12 +128,12 @@ TEST(ShrunkCovarianceTest, ExactNumericalComparison) {
             16.8574, 5.33805,
             -23.4579, -2.67961;
 
-    const std::vector<double> weights = {
-        0.061250745076178954, 0.999999999999841, 0.0016794498296731847,
-        0.00022390588318295702, 0.01695985184643251, 1.0,
-        1.0, 0.9999999997194706, 0.9999999763559252,
-        0.025782471947576716, 0.00030634259915663547
-    };
+    Eigen::VectorXd weights(11);
+    weights <<
+            0.061250745076178954, 0.999999999999841, 0.0016794498296731847,
+            0.00022390588318295702, 0.01695985184643251, 1.0,
+            1.0, 0.9999999997194706, 0.9999999763559252,
+            0.025782471947576716, 0.00030634259915663547;
 
     constexpr double tolerance = 1e-4;
 

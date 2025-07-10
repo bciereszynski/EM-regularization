@@ -116,7 +116,10 @@ TEST(MathTest, EstimateWeightedLogProbabilities_RealData) {
     result.clusters << 10.706315370566315, -15.655038396575486,
             1.5346346971608753, 10.172773119928657,
             0.8125445826316164, -9.318465733509676;
-    result.weights = {0.12309068557448444, 0.30756460120925033, 0.5693447132162652};
+
+    result.weights = Eigen::Vector3d(0.12309068557448444,
+                                     0.30756460120925033,
+                                     0.5693447132162652);
 
     std::vector<Eigen::MatrixXd> precisions_cholesky(k, Eigen::MatrixXd(d, d));
 
