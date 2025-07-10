@@ -24,26 +24,23 @@ Eigen::MatrixXd estimate_weighted_log_probabilities(
     const int d = data.cols();
     Eigen::MatrixXd log_probabilities(n, k);
     const double log_2pi = std::log(2 * M_PI);
-    const double d_log_2pi = d * log_2pi;
 
     Eigen::VectorXd log_det(k);
     for (int i = 0; i < k; ++i) {
         log_det(i) = precisionsCholesky[i].diagonal().array().log().sum();
     }
-
     for (int i = 0; i < k; ++i) {
-        const Eigen::VectorXd mean = result.clusters.row(i).transpose();
-        Eigen::MatrixXd centered = data.rowwise() - mean.transpose();
-        Eigen::MatrixXd transformed = centered * precisionsCholesky[i];
-        log_probabilities.col(i) = transformed.rowwise().squaredNorm();
+
+        Eigen::MatrixXd transformed = data * precisionsCholesky[i];
+        const Eigen::RowVectorXd mean_transformed = result.clusters.row(i) * precisionsCholesky[i];
+        transformed.rowwise() -= mean_transformed;
+
+        Eigen::VectorXd sq_norms = transformed.rowwise().squaredNorm();
+
+        log_probabilities.col(i) =
+                (-0.5 * d * log_2pi + log_det(i) + std::log(result.weights[i]))
+                - 0.5 * sq_norms.array();
     }
 
-    Eigen::VectorXd log_weights = Eigen::Map<const Eigen::VectorXd>(
-        result.weights.data(), k).array().log();
-
-    Eigen::MatrixXd result_matrix = (-0.5 * (d_log_2pi + log_probabilities.array())).matrix();
-    result_matrix.rowwise() += log_det.transpose();
-    result_matrix.rowwise() += log_weights.transpose();
-
-    return result_matrix;
+    return log_probabilities;
 }
