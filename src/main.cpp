@@ -13,7 +13,6 @@
 #include "algorithm/regularization/LedoitWolfCovarianceEstimator.h"
 #include "algorithm/regularization/OASCovarianceEstimator.h"
 
-
 namespace fs = std::filesystem;
 
 void print_result(GMMResult result) {
@@ -63,6 +62,8 @@ void run_multiple(const std::vector<GeneticalAlgorithm *> &gas,
 }
 
 int main(const int argc, char *argv[]) {
+    Eigen::setNbThreads(1);
+
     std::string directory = "test_data";
     int k;
 
@@ -92,12 +93,19 @@ int main(const int argc, char *argv[]) {
         }
     };
 
-    std::vector<std::vector<double> > data = load_data_from_file(R"(data/3_2_-0.26_1.csv)", expected_clusters, k);
+    std::vector<std::vector<double> > data;
 
-    std::cout << "precompile ";
+    auto empirical = EmpiricalRegularizer();
+    auto shrunk = ShrunkCovarianceEstimator();
+    auto LW = LedoitWolfCovarianceEstimator();
+    auto OAS = OASCovarianceEstimator();
+    std::cout << "precompile\n";
+    data = load_data_from_file(R"(data/3_2_-0.26_1.csv)", expected_clusters, k);
     for (GeneticalAlgorithm &ga: gas) {
-        GMMResult result = ga.run(data, k);
-        print_result(result);
+        ga.run(data, k, &empirical);
+        ga.run(data, k, &shrunk);
+        ga.run(data, k, &LW);
+        ga.run(data, k, &OAS);
     }
 
     std::vector<GeneticalAlgorithm *> gas_ptrs;
@@ -107,15 +115,27 @@ int main(const int argc, char *argv[]) {
 
     std::ofstream output_file("evaluation/results.txt");
 
+    int total_files = 0;
+    for (const auto &entry: fs::directory_iterator(directory)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".csv") {
+            total_files++;
+        }
+    }
+    int processed_files = 0;
+
     for (const auto &entry: fs::directory_iterator(directory)) {
         if (!entry.is_regular_file() || entry.path().extension() != ".csv") {
             continue;
         }
+
         std::string path = entry.path().string();
         std::string filename = entry.path().filename().string();
         data = load_data_from_file(path, expected_clusters, k);
 
-        auto empirical = EmpiricalRegularizer();
+        processed_files++;
+        std::cout << "Processing " << filename
+                << " (" << processed_files << "/" << total_files << ")\n";
+
         try {
             run_multiple(gas_ptrs, data, k, filename, output_file, expected_clusters, &empirical,
                          "gmm_hg");
@@ -123,7 +143,6 @@ int main(const int argc, char *argv[]) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
 
-        auto shrunk = ShrunkCovarianceEstimator();
         try {
             run_multiple(gas_ptrs, data, k, filename, output_file, expected_clusters, &shrunk,
                          "gmm_hg_shrunk");
@@ -131,8 +150,6 @@ int main(const int argc, char *argv[]) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
 
-
-        auto LW = LedoitWolfCovarianceEstimator();
         try {
             run_multiple(gas_ptrs, data, k, filename, output_file, expected_clusters, &LW,
                          "gmm_hg_ledoitwolf");
@@ -140,7 +157,6 @@ int main(const int argc, char *argv[]) {
             std::cerr << "Error: " << e.what() << std::endl;
         }
 
-        auto OAS = OASCovarianceEstimator();
         try {
             run_multiple(gas_ptrs, data, k, filename, output_file, expected_clusters, &OAS,
                          "gmm_hg_oas");
