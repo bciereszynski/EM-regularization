@@ -8,3 +8,5 @@ plot_delta_ari_boxplot.png
 plot_delta_time_per_iter_hist.png
 plot_nmi_scatter.png
 plot_time_per_iter_scatter.png
+/avg_deltas_by_method_detailed.xlsx
+/plot_delta_ari_heatmaps.png
